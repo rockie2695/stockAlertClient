@@ -10,9 +10,10 @@ const App = () => {
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
   //this clientId is wrong please create in https://developers.google.com/identity/sign-in/web/sign-in
 
-  const [ws, setWs] = useState(null)
+  const [login, setLogin] = useState(null)
 
   const responseGoogle = (response) => {
+    console.log(response)
     if (response.hasOwnProperty('tokenId')) {
       //this.setState({ login: { id: response.tokenId, username: response.w3.ig, photo: response.w3.Paa, email: response.w3.U3 } })
       //cookies.set('id', response.tokenId, { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host });
@@ -29,6 +30,7 @@ const App = () => {
         clientId={clientId}
         buttonText="Login"
         onSuccess={responseGoogle}
+        onFailure={responseGoogle}
         cookiePolicy={'single_host_origin'}
         isSignedIn={true}
       />
