@@ -7,7 +7,7 @@ import './App.css';
 
 const App = () => {
   const cookies = new Cookies();
-  const clientId = "637550083168-0aqnadjb5ealolonvioba828rki4dhlo.apps.googleusercontent.com"
+  const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
   //this clientId is wrong please create in https://developers.google.com/identity/sign-in/web/sign-in
 
   const [ws, setWs] = useState(null)
