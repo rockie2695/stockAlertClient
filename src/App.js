@@ -21,7 +21,7 @@ const App = () => {
   const responseGoogle = (response) => {
     console.log(response)
     if (response.hasOwnProperty('tokenId')) {
-      let newLoginObj = { id: response.tokenId, username: response.w3.ig, photo: response.w3.Paa, email: response.w3.U3 }
+      let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: response.Qt.zu }
       setLogin(prevState => {
         return { ...prevState, ...newLoginObj }
       });
