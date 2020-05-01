@@ -5,7 +5,7 @@ import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import './App.css';
 
-var host = 'https://stockAlertServer.herokuapp.com'
+var host = 'https://rockie-stockAlertServer.herokuapp.com'
 
 const App = () => {
   const cookies = new Cookies();
