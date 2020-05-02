@@ -32,11 +32,12 @@ const App = () => {
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
       }
+      console.log(login.email)
       fetch(host + '/select/stockNotify', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'rockie2695@yahoo.com.hk'//login.email
+          email: 'rockie2695@gmail.com'//login.email
         })
       })
         .then(res => res.json())
@@ -47,6 +48,24 @@ const App = () => {
   }
   const test = () => {
     console.log('test')
+    if (typeof cookies.get('id') !== 'undefined' && cookies.get('id') !== '') {
+      fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + cookies.get('id'), {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(res => res.json())
+        .then((result) => {
+          /*if (result.hasOwnProperty('aud') && result.hasOwnProperty('azp') && result.aud === clientId && result.azp === clientId) {
+            this.setState({ login: { id: cookies.get('id'), username: result.name, photo: result.picture, email: result.email } })
+            this.getAccountInfo(result.email)
+          } else if (result.hasOwnProperty('error_description')) {
+            cookies.remove('id')
+          }*/
+          console.log(result)
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
   }
   return (
     <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
