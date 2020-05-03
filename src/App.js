@@ -3,6 +3,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
+import webSocket from 'socket.io-client'
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -10,13 +11,30 @@ var host = 'https://rockie-stockAlertServer.herokuapp.com'
 const App = () => {
   const cookies = new Cookies();
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
-  //this clientId is wrong please create in https://developers.google.com/identity/sign-in/web/sign-in
 
   const [login, setLogin] = useState({})
+  const [ws, setWs] = useState(null)
+  const connectWebSocket = () => {
+    //開啟
+    setWs(webSocket(host))
+  }
 
   useEffect(() => {
     test()
-  }, []);
+    if (ws) {
+      //連線成功在 console 中打印訊息
+      console.log('success connect!')
+      //設定監聽
+      initWebSocket()
+    }
+  }, [ws]);
+
+  const initWebSocket = () => {
+    // Server 通知完後再傳送 disConnection 通知關閉連線
+    ws.on('disConnection', () => {
+      ws.close()
+    })
+  }
 
   const responseGoogle = (response) => {
     console.log(response)
@@ -61,6 +79,7 @@ const App = () => {
           } else if (result.hasOwnProperty('error_description')) {
             cookies.remove('id')
           }*/
+          connectWebSocket()
           console.log(result)
         }).catch((err) => {
           console.log(err)
