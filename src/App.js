@@ -24,7 +24,7 @@ const App = () => {
       //連線成功在 console 中打印訊息
       console.log('success connect!')
       //設定監聽
-      //initWebSocket()
+      initWebSocket()
     }
   }, [ws]);
 
