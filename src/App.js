@@ -76,15 +76,19 @@ const App = () => {
       })
         .then(res => res.json())
         .then((result) => {
-          /*if (result.hasOwnProperty('aud') && result.hasOwnProperty('azp') && result.aud === clientId && result.azp === clientId) {
-            this.setState({ login: { id: cookies.get('id'), username: result.name, photo: result.picture, email: result.email } })
-            this.getAccountInfo(result.email)
+          if (result.hasOwnProperty('aud') && result.hasOwnProperty('azp') && result.aud === clientId && result.azp === clientId) {
+            let newLoginObj = { id: cookies.get('id'), username: result.name, photo: result.picture, email: result.email }
+            setLogin(prevState => {
+              return { ...prevState, ...newLoginObj }
+            });
+            cookies.set('id', cookies.get('id'), { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host });
+            connectWebSocket()
           } else if (result.hasOwnProperty('error_description')) {
             cookies.remove('id')
-          }*/
-          connectWebSocket()
+          }
           console.log(result)
-        }).catch((err) => {
+        })
+        .catch((err) => {
           console.log(err)
         })
     }
