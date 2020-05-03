@@ -20,17 +20,20 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (Object.keys(login).length !== 0) {
-      console.log('do test')
-      test()
-    }
     if (ws) {
       //連線成功在 console 中打印訊息
       console.log('success connect!')
       //設定監聽
       //initWebSocket()
     }
-  }, [ws, login]);
+  }, [ws]);
+
+  useEffect(() => {
+    if (Object.keys(login).length !== 0) {
+      console.log('do test')
+      test()
+    }
+  }, [login]);
 
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
