@@ -22,7 +22,7 @@ const App = () => {
   useEffect(() => {
     if (Object.keys(login).length !== 0) {
       console.log('do test')
-      //test()
+      test()
     }
     if (ws) {
       //連線成功在 console 中打印訊息
@@ -66,9 +66,9 @@ const App = () => {
         })
     }
   }
-  const test = () => {
+  const test = () => {//run when have login object
     console.log('test')
-    if (typeof cookies.get('id') !== 'undefined' && cookies.get('id') !== '') {
+    /*if (typeof cookies.get('id') !== 'undefined' && cookies.get('id') !== '') {
       fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + cookies.get('id'), {
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
@@ -81,7 +81,7 @@ const App = () => {
               return { ...prevState, ...newLoginObj }
             });
             cookies.set('id', cookies.get('id'), { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host });
-            connectWebSocket()
+            
           } else if (result.hasOwnProperty('error_description')) {
             cookies.remove('id')
           }
@@ -90,7 +90,8 @@ const App = () => {
         .catch((err) => {
           console.log(err)
         })
-    }
+    }*/
+      connectWebSocket()
   }
   return (
     <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
