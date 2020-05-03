@@ -91,7 +91,7 @@ const App = () => {
           console.log(err)
         })
     }*/
-      connectWebSocket()
+    //connectWebSocket()
   }
   return (
     <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
