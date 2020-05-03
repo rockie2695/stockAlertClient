@@ -22,13 +22,13 @@ const App = () => {
   useEffect(() => {
     if (Object.keys(login).length !== 0) {
       console.log('do test')
-      test()
+      //test()
     }
     if (ws) {
       //連線成功在 console 中打印訊息
       console.log('success connect!')
       //設定監聽
-      initWebSocket()
+      //initWebSocket()
     }
   }, [ws, login]);
 
@@ -40,7 +40,6 @@ const App = () => {
   }
 
   const responseGoogle = (response) => {
-    console.log(response)
     if (response.hasOwnProperty('tokenId')) {
       let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: response.Qt.zu }
       setLogin(prevState => {
