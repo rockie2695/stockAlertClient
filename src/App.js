@@ -14,6 +14,7 @@ const App = () => {
 
   const [login, setLogin] = useState({})
   const [ws, setWs] = useState(null)
+  const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -42,9 +43,10 @@ const App = () => {
     })
   }
 
-  const responseGoogle = (response) => {
+  const fun_login = (response) => {
     if (response.hasOwnProperty('tokenId')) {
-      let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: response.Qt.zu }
+      let email = response.Qt.zu
+      let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: email }
       setLogin(prevState => {
         return { ...prevState, ...newLoginObj }
       });
@@ -55,22 +57,37 @@ const App = () => {
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
       }
-      console.log(login.email)
+      console.log(email)
       fetch(host + '/select/stockNotify', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'rockie2695@gmail.com'//login.email
+          email: email//login.email
         })
       })
         .then(res => res.json())
         .then((result) => {
           console.log(result)
+          for (let i = 0; i < result.length; i++) {
+            if (!stockNotify.some(e => e._id === result[i]._id)) {
+              setStockNotify(prevState => {
+                prevState.push(result[i])
+                return prevState
+              });
+            }
+          }
         })
     }
   }
+  const fun_logout = () => {
+    setLogin(prevState => {
+      return {}
+    });
+    cookies.remove('id', { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host })
+  }
   const test = () => {//run when have login object
     console.log('test')
+    connectWebSocket()
     /*if (typeof cookies.get('id') !== 'undefined' && cookies.get('id') !== '') {
       fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + cookies.get('id'), {
         method: 'get',
@@ -94,21 +111,29 @@ const App = () => {
           console.log(err)
         })
     }*/
-    connectWebSocket()
   }
   return (
     <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
       <Typography variant="h6" style={{ flexGrow: 1 }}>
         stockAlertClient
       </Typography>
-      <GoogleLogin
-        clientId={clientId}
-        buttonText="Login"
-        onSuccess={responseGoogle}
-        onFailure={responseGoogle}
-        cookiePolicy={'single_host_origin'}
-        isSignedIn={true}
-      />
+      {Object.keys(login).length === 0
+        ?
+        <GoogleLogin
+          clientId={clientId}
+          buttonText="Login"
+          onSuccess={fun_login}
+          onFailure={fun_login}
+          cookiePolicy={'single_host_origin'}
+          isSignedIn={true}
+        />
+        :
+        <GoogleLogout
+          clientId={clientId}
+          buttonText="Logout"
+          onLogoutSuccess={fun_logout}
+        ></GoogleLogout>
+      }
     </Toolbar>
   );
 }
