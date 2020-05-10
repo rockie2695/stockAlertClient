@@ -4,6 +4,11 @@ import Typography from '@material-ui/core/Typography';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import webSocket from 'socket.io-client'
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Card from '@material-ui/core/Card';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -112,29 +117,93 @@ const App = () => {
         })
     }*/
   }
+  const test2 = () => {
+    console.log('test2')
+  }
   return (
-    <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
-      <Typography variant="h6" style={{ flexGrow: 1 }}>
-        stockAlertClient
+    <Box bgcolor="text.disabled" style={{ height: '99vh' }}>
+      <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
+        <Typography variant="h6" style={{ flexGrow: 1 }}>
+          stockAlertClient
       </Typography>
-      {Object.keys(login).length === 0
-        ?
-        <GoogleLogin
-          clientId={clientId}
-          buttonText="Login"
-          onSuccess={fun_login}
-          onFailure={fun_login}
-          cookiePolicy={'single_host_origin'}
-          isSignedIn={true}
-        />
-        :
-        <GoogleLogout
-          clientId={clientId}
-          buttonText="Logout"
-          onLogoutSuccess={fun_logout}
-        ></GoogleLogout>
-      }
-    </Toolbar>
+        {Object.keys(login).length === 0
+          ?
+          <GoogleLogin
+            clientId={clientId}
+            buttonText="Login"
+            onSuccess={fun_login}
+            onFailure={fun_login}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={true}
+          />
+          :
+          <GoogleLogout
+            clientId={clientId}
+            buttonText="Logout"
+            onLogoutSuccess={fun_logout}
+          ></GoogleLogout>
+        }
+      </Toolbar>
+      <Typography align='right'>
+
+      </Typography>
+      <Box margin={2} overflow="auto">
+        <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}>
+          <Typography align='right'>
+            <Button variant="contained">Default</Button>
+          </Typography>
+          <Card>
+            {stockNotify.length !== 0
+              ?
+              stockNotify.map((row, index) => (<div>test</div>))
+              :
+              null
+            }
+
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={true}
+                  onChange={test2}
+                  name="checkedB"
+                  color="primary"
+                />
+              }
+              label="Primary"
+            />
+          </Card>
+
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+        test
+      </Box>
+      </Box>
+
+    </Box>
   );
 }
 
