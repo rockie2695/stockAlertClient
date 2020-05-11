@@ -174,7 +174,8 @@ const App = () => {
             <Box display="flex" alignItems="center" margin={2} className={classes.root}>
               <Avatar>1</Avatar>
               00001
-              50.5
+              NowPrice:50.5
+              AlertPrice:50.5
               >=
               <FormControlLabel
                 control={
