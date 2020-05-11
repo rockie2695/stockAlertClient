@@ -206,5 +206,5 @@ const App = () => {
     </Box>
   );
 }
-
+//chart:https://canvasjs.com/docs/charts/integration/react/
 export default App;
