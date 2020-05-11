@@ -9,6 +9,10 @@ import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Card from '@material-ui/core/Card';
+import Divider from '@material-ui/core/Divider';
+import Avatar from '@material-ui/core/Avatar';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -47,7 +51,14 @@ const App = () => {
       ws.close()
     })
   }
-
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+    }
+  }))
+  const classes = useStyles();
   const fun_login = (response) => {
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
@@ -121,7 +132,7 @@ const App = () => {
     console.log('test2')
   }
   return (
-    <Box bgcolor="text.disabled" style={{ height: '99vh' }}>
+    <Box bgcolor="text.disabled" style={{ height: '100vh' }}>
       <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           stockAlertClient
@@ -149,60 +160,39 @@ const App = () => {
       </Typography>
       <Box margin={2} overflow="auto">
         <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}>
-          <Typography align='right'>
-            <Button variant="contained">Default</Button>
-          </Typography>
-          <Card>
+          <Paper elevation={0}>
+            <Typography align='right' className={classes.root}>
+              <Button variant="contained" margin={1}>Default</Button>
+              <Button variant="contained">Default</Button>
+            </Typography>
             {stockNotify.length !== 0
               ?
               stockNotify.map((row, index) => (<div>test</div>))
               :
               null
             }
-
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={true}
-                  onChange={test2}
-                  name="checkedB"
-                  color="primary"
-                />
-              }
-              label="Primary"
-            />
-          </Card>
-
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
-        test
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+          </Paper>
+        </Box>
       </Box>
-      </Box>
-
     </Box>
   );
 }
