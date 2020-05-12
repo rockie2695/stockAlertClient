@@ -8,7 +8,6 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import Card from '@material-ui/core/Card';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
@@ -132,7 +131,7 @@ const App = () => {
     console.log('test2')
   }
   return (
-    <Box bgcolor="text.disabled" style={{ height: '100vh' }}>
+    <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
       <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           stockAlertClient
@@ -155,10 +154,17 @@ const App = () => {
           ></GoogleLogout>
         }
       </Toolbar>
-      <Typography align='right'>
+      <Box position="relative">
+        <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="50vh" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
+          <Typography align="center" variant="h2">
+            For Stock Price Showing And Notification
+        </Typography>
+        </Box>
+        <Box height="50%" minHeight="50vh">
 
-      </Typography>
-      <Box margin={2} overflow="auto">
+        </Box>
+      </Box>
+      <Box margin={2} overflow="auto" position="relative">
         <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}>
           <Paper elevation={0}>
             <Typography align='right' className={classes.root}>
@@ -191,9 +197,210 @@ const App = () => {
               <Button variant="contained">Go</Button>
             </Box>
             <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
+            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
+              <Avatar>1</Avatar>
+              00001
+              NowPrice:50.5
+              AlertPrice:50.5
+              >=
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={true}
+                    onChange={test2}
+                    name="checkedA"
+                    color="primary"
+                  />
+                }
+                label="Alert"
+              />
+              <Button variant="contained">Go</Button>
+            </Box>
+            <Divider />
           </Paper>
-        </Box>
-      </Box>
+        </Box>{/* <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}> */}
+      </Box>{/* <Box margin={2} overflow="auto"> */}
+      {/* close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
     </Box>
   );
 }
