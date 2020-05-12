@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Typography from '@material-ui/core/Typography';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
@@ -130,30 +133,48 @@ const App = () => {
   const test2 = () => {
     console.log('test2')
   }
+
+  function ElevationScroll(props) {
+    const { children } = props;
+    // Note that you normally won't need to set the window ref as useScrollTrigger
+    // will default to window.
+    // This is only being set here because the demo is in an iframe.
+    const trigger = useScrollTrigger();
+    console.log(trigger)
+    return React.cloneElement(children, {
+      elevation: trigger ? 4 : 0,
+    });
+  }
   return (
     <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
-      <Toolbar style={{ backgroundColor: "rgba(255,255,255,0.9)" }}>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
-          stockAlertClient
-      </Typography>
-        {Object.keys(login).length === 0
-          ?
-          <GoogleLogin
-            clientId={clientId}
-            buttonText="Login"
-            onSuccess={fun_login}
-            onFailure={fun_login}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={true}
-          />
-          :
-          <GoogleLogout
-            clientId={clientId}
-            buttonText="Logout"
-            onLogoutSuccess={fun_logout}
-          ></GoogleLogout>
-        }
-      </Toolbar>
+      <ElevationScroll {...App.props}>
+        <AppBar color="default" position="sticky" top={0}>
+          <Toolbar>
+            <Typography variant="h6" style={{ flexGrow: 1 }}>
+              stockAlertClient
+          </Typography>
+            {Object.keys(login).length === 0
+              ?
+              <GoogleLogin
+                clientId={clientId}
+                buttonText="Login"
+                onSuccess={fun_login}
+                onFailure={fun_login}
+                cookiePolicy={'single_host_origin'}
+                isSignedIn={true}
+              />
+              :
+              <GoogleLogout
+                clientId={clientId}
+                buttonText="Logout"
+                onLogoutSuccess={fun_logout}
+              ></GoogleLogout>
+            }
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
+
+
       <Box position="relative">
         <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="50vh" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
           <Typography align="center" variant="h2">
@@ -164,7 +185,7 @@ const App = () => {
 
         </Box>
       </Box>
-      <Box margin={2} overflow="auto" position="relative">
+      <Box padding={3} overflow="auto" position="relative">
         <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}>
           <Paper elevation={0}>
             <Typography align='right' className={classes.root}>
