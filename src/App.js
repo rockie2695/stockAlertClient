@@ -15,6 +15,7 @@ import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -189,7 +190,7 @@ const App = () => {
         <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}>
           <Paper elevation={0}>
             <Typography align='right' className={classes.root}>
-              <Button variant="contained" margin={1}>Default</Button>
+              <Button variant="contained" margin={2}>Default</Button>
               <Button variant="contained">Default</Button>
             </Typography>
             {stockNotify.length !== 0
@@ -198,6 +199,17 @@ const App = () => {
               :
               null
             }
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>xs=12</Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>xs=6</Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>xs=6</Paper>
+              </Grid>
+            </Grid>
             <Box display="flex" alignItems="center" margin={2} className={classes.root}>
               <Avatar>1</Avatar>
               00001
