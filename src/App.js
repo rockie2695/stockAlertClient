@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -58,7 +58,12 @@ const App = () => {
     root: {
       '& > *': {
         margin: theme.spacing(1),
-      },
+      }
+    },
+    margin2: {
+      '& > *': {
+        margin: theme.spacing(2),
+      }
     }
   }))
   const classes = useStyles();
@@ -187,10 +192,10 @@ const App = () => {
         </Box>
       </Box>
       <Box padding={3} overflow="auto" position="relative">
-        <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}>
-          <Paper elevation={0}>
-            <Typography align='right' className={classes.root}>
-              <Button variant="contained" margin={2}>Default</Button>
+        <Box marginX="auto" maxWidth={1000} width="75%">
+          <Paper>
+            <Typography align='right' className={classes.margin2}>
+              <Button variant="contained">Default</Button>
               <Button variant="contained">Default</Button>
             </Typography>
             {stockNotify.length !== 0
@@ -199,237 +204,47 @@ const App = () => {
               :
               null
             }
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>xs=12</Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>xs=6</Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>xs=6</Paper>
-              </Grid>
-            </Grid>
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
-            <Box display="flex" alignItems="center" margin={2} className={classes.root}>
-              <Avatar>1</Avatar>
-              00001
-              NowPrice:50.5
-              AlertPrice:50.5
-              >=
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={true}
-                    onChange={test2}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Alert"
-              />
-              <Button variant="contained">Go</Button>
-            </Box>
-            <Divider />
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((row, index) => (
+              <Fragment>
+                <Box display="flex" alignItems="center" margin={2}>
+                  <Grid container spacing={3} alignItems="center">
+                    <Grid item sm={4} md={1} className={classes.root}>
+                      <Avatar>{index + 1}</Avatar>
+                    </Grid>
+                    <Grid item sm={4} md={2} className={classes.root}>
+                      00001
+                    </Grid>
+                    <Grid item sm={4} md={2} className={classes.root}>
+                      NowPrice:50.5
+                    </Grid>
+
+                    <Grid item sm={3} md={2} className={classes.root}>
+                      AlertPrice:50.5
+                     </Grid>
+                    <Grid item sm={3} md={1} className={classes.root}>
+                      >=
+                    </Grid>
+                    <Grid item sm={3} md={2} className={classes.root}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={true}
+                            onChange={test2}
+                            name="checkedA"
+                            color="primary"
+                          />
+                        }
+                        label="Alert"
+                      />
+                    </Grid>
+                    <Grid item sm={3} md={2} className={classes.root}>
+                      <Button variant="contained">Go</Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Divider />
+              </Fragment>
+            ))}
           </Paper>
         </Box>{/* <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}> */}
       </Box>{/* <Box margin={2} overflow="auto"> */}
