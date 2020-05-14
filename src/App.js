@@ -248,7 +248,7 @@ const App = () => {
           </Paper>
         </Box>{/* <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}> */}
       </Box>{/* <Box margin={2} overflow="auto"> */}
-      {/* close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
+      {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
     </Box>
   );
 }
