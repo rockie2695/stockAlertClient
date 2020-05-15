@@ -16,6 +16,9 @@ import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import Fab from '@material-ui/core/Fab';
+import Hidden from '@material-ui/core/Hidden';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -182,7 +185,7 @@ const App = () => {
 
 
       <Box position="relative">
-        <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="50vh" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
+        <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
           <Typography align="center" variant="h2">
             For Stock Price Showing And Notification
         </Typography>
@@ -192,61 +195,97 @@ const App = () => {
         </Box>
       </Box>
       <Box padding={3} overflow="auto" position="relative">
-        <Box marginX="auto" maxWidth={1000} width="75%">
-          <Paper>
-            <Typography align='right' className={classes.margin2}>
-              <Button variant="contained">Default</Button>
-              <Button variant="contained">Default</Button>
-            </Typography>
-            {stockNotify.length !== 0
-              ?
-              stockNotify.map((row, index) => (<div>test</div>))
-              :
-              null
-            }
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((row, index) => (
-              <Fragment>
-                <Box display="flex" alignItems="center" margin={2}>
-                  <Grid container spacing={3} alignItems="center">
-                    <Grid item sm={4} md={1} className={classes.root}>
-                      <Avatar>{index + 1}</Avatar>
-                    </Grid>
-                    <Grid item sm={4} md={2} className={classes.root}>
-                      00001
-                    </Grid>
-                    <Grid item sm={4} md={2} className={classes.root}>
-                      NowPrice:50.5
-                    </Grid>
-
-                    <Grid item sm={3} md={2} className={classes.root}>
-                      AlertPrice:50.5
-                     </Grid>
-                    <Grid item sm={3} md={1} className={classes.root}>
-                      >=
-                    </Grid>
-                    <Grid item sm={3} md={2} className={classes.root}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={true}
-                            onChange={test2}
-                            name="checkedA"
-                            color="primary"
-                          />
-                        }
-                        label="Alert"
-                      />
-                    </Grid>
-                    <Grid item sm={3} md={2} className={classes.root}>
-                      <Button variant="contained">Go</Button>
-                    </Grid>
+        <Grid container alignItems="center">
+          <Hidden only={['xs', 'sm']}>
+            <Grid item sm={0} md={2} className={classes.root}>
+            </Grid>
+          </Hidden>
+          <Grid item xs={12} sm={12} md={8} className={classes.root}>
+            <Paper>
+              <Typography align='right' className={classes.margin2}>
+                <Button variant="contained">Default</Button>
+                <Button variant="contained">Default</Button>
+              </Typography>
+              <Box display="flex" alignItems="center" margin={2}>
+                <Grid container spacing={3} alignItems="center">
+                  <Grid item xs={3} sm={1} md={1} className={classes.root}>
                   </Grid>
-                </Box>
-                <Divider />
-              </Fragment>
-            ))}
-          </Paper>
-        </Box>{/* <Box marginX="auto" maxWidth={1000} width="75%" minWidth={500}> */}
+                  <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                    <Typography>Stock Number</Typography>
+                  </Grid>
+                  <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                    <Typography>Price</Typography>
+                  </Grid>
+                  <Hidden only="xs">
+                    <Grid item xs={0} sm={7} md={7} className={classes.root}>
+                      <Typography>Alert</Typography>
+                    </Grid>
+                  </Hidden>
+                </Grid>
+              </Box>
+              <Divider />
+              {stockNotify.length !== 0
+                ?
+                stockNotify.map((row, index) => (<div>test</div>))
+                :
+                null
+              }
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((row, index) => (
+                <Fragment>
+                  <Box display="flex" alignItems="center" margin={2}>
+                    <Grid container spacing={3} alignItems="center">
+                      <Grid item xs={3} sm={1} md={1} className={classes.root}>
+                        <Avatar>{index + 1}</Avatar>
+                      </Grid>
+                      <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                        <Typography>00001</Typography>
+                      </Grid>
+                      <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                        <Typography>$50.5</Typography>
+                      </Grid>
+                      <Hidden only="xs">
+                        <Grid item xs={0} sm={2} md={2} className={classes.root}>
+                          <Typography>$50.5</Typography>
+                        </Grid>
+                        <Grid item xs={0} sm={1} md={1} className={classes.root}>
+                          <Typography>>=</Typography>
+                        </Grid>
+                        <Grid item xs={0} sm={2} md={2} className={classes.root}>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={true}
+                                onChange={test2}
+                                name="checkedA"
+                                color="primary"
+                              />
+                            }
+                            label="Alert"
+                          />
+                        </Grid>
+                      </Hidden>
+                      <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                        <Fab
+                          color="primary"
+                          size="small"
+                          variant="extended"
+                        >
+                          Go<ArrowForwardIcon />
+                        </Fab>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Divider />
+                </Fragment>
+              ))}
+            </Paper>
+
+          </Grid>
+          <Hidden only={['xs', 'sm']}>
+            <Grid item sm={0} md={2} className={classes.root}>
+            </Grid>
+          </Hidden>
+        </Grid>
       </Box>{/* <Box margin={2} overflow="auto"> */}
       {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
     </Box>
