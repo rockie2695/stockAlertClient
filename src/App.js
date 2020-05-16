@@ -56,6 +56,13 @@ const App = () => {
     ws.on('disConnection', () => {
       ws.close()
     })
+    ws.on('connect_error', function () {
+      console.log('Failed to connect to server');
+    });
+  }
+  const disConnectWebSocket = () => {
+    //向 Server 送出申請中斷的訊息，讓它通知其他 Client
+    ws.emit('disConnection', 'XXX')
   }
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -194,7 +201,7 @@ const App = () => {
 
         </Box>
       </Box>
-      <Box padding={3} overflow="auto" position="relative">
+      <Box paddingX={2} paddingY={3} overflow="auto" position="relative">
         <Grid container alignItems="center">
           <Hidden only={['xs', 'sm']}>
             <Grid item sm={0} md={2} className={classes.root}>
@@ -260,7 +267,6 @@ const App = () => {
                                 color="primary"
                               />
                             }
-                            label="Alert"
                           />
                         </Grid>
                       </Hidden>
