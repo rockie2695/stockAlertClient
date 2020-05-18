@@ -59,6 +59,9 @@ const App = () => {
     ws.on('connect_error', function () {
       console.log('Failed to connect to server');
     });
+    ws.on('stockPrice', message => {
+      console.log(message)
+    })
   }
   const disConnectWebSocket = () => {
     //向 Server 送出申請中斷的訊息，讓它通知其他 Client
@@ -108,6 +111,7 @@ const App = () => {
                 prevState.push(result[i])
                 return prevState
               });
+              ws.emit('addRoom', result[i].room)
             }
           }
         })
