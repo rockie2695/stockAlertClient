@@ -106,7 +106,7 @@ const App = () => {
         .then((result) => {
           console.log(result)
           if (typeof result.ok !== 'undefined') {
-            resultArray = result.ok
+            let resultArray = result.ok
             for (let i = 0; i < resultArray.length; i++) {
               console.log(stockNotify.some(e => e._id === resultArray[i]._id))
               if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
