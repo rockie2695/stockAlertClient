@@ -106,6 +106,7 @@ const App = () => {
         .then((result) => {
           console.log(result)
           for (let i = 0; i < result.length; i++) {
+            console.log(stockNotify.some(e => e._id === result[i]._id))
             if (!stockNotify.some(e => e._id === result[i]._id)) {
               setStockNotify(prevState => {
                 prevState.push(result[i])
