@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -34,6 +34,8 @@ const App = () => {
     //開啟
     setWs(prevState => webSocket(host))
   }
+  const wsRef = useRef(ws);
+  wsRef.current = ws;
 
   useEffect(() => {
     if (ws) {
@@ -121,7 +123,11 @@ const App = () => {
         })
     }
   }
-
+  const addRoom = (room) => {
+    setTimeout(function () {
+      console.log(ws, room, wsRef)
+    }, 5000)
+  }
   const fun_logout = () => {
     setLogin(prevState => {
       return {}
@@ -170,11 +176,7 @@ const App = () => {
       elevation: trigger ? 4 : 0,
     });
   }
-  const addRoom = (room) => {
-    setTimeout(function () {
-      console.log(ws, room)
-    }, 5000)
-  }
+
   return (
     <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
       <ElevationScroll {...App.props}>
