@@ -55,7 +55,7 @@ const App = () => {
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
     ws.on('disConnection', () => {
-      ws.close()
+      //ws.close()
     })
     ws.on('connect_error', function () {
       console.log('Failed to connect to server');
@@ -123,6 +123,8 @@ const App = () => {
           }
 
 
+        }).then((result) => {
+          console.log(ws)
         })
     }
   }
