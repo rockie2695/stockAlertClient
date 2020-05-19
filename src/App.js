@@ -219,7 +219,7 @@ const App = () => {
           <Grid item xs={12} sm={12} md={8} className={classes.root}>
             <Paper>
               <Typography align='right' className={classes.margin2}>
-                <Button variant="contained" onClick={addRoom}>Default</Button>
+                <Button variant="contained">Default</Button>
                 <Button variant="contained">Default</Button>
               </Typography>
               <Box display="flex" alignItems="center" margin={2}>
