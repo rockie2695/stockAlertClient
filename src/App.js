@@ -32,7 +32,10 @@ const App = () => {
   const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
     //開啟
-    setWs(webSocket(host))
+    webSocket(host)
+    setWs(prevState => {
+      return { host }
+    })
   }
 
   useEffect(() => {
@@ -170,7 +173,7 @@ const App = () => {
       elevation: trigger ? 4 : 0,
     });
   }
-  const addRoom = (room)=>{
+  const addRoom = (room) => {
     setTimeout(function () {
       console.log(ws, room)
     }, 5000)
