@@ -171,6 +171,7 @@ const App = () => {
     console.log(ws, room)
   }
   function ElevationScroll(props) {
+    console.log(ws)
     const { children } = props;
     // Note that you normally won't need to set the window ref as useScrollTrigger
     // will default to window.
