@@ -56,7 +56,7 @@ const App = () => {
 
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
-    /*ws.on('disConnection', () => {
+    ws.on('disConnection', () => {
       //ws.close()
     })
     ws.on('connect_error', function () {
@@ -64,11 +64,11 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log(message)
-    })*/
+    })
   }
   const disConnectWebSocket = () => {
     //向 Server 送出申請中斷的訊息，讓它通知其他 Client
-    //ws.emit('disConnection', 'XXX')
+    ws.emit('disConnection', 'XXX')
   }
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -116,17 +116,12 @@ const App = () => {
                   return prevState
                 });
                 addRoom(resultArray[i].stock)
-                //ws.emit('addRoom', resultArray[i].room)
+                wsRef.emit('addRoom', resultArray[i].room)
               }
             }
           }
         })
     }
-  }
-  const addRoom = (room) => {
-    setTimeout(function () {
-      console.log(ws, room, wsRef)
-    }, 5000)
   }
   const fun_logout = () => {
     setLogin(prevState => {
@@ -171,7 +166,6 @@ const App = () => {
     // will default to window.
     // This is only being set here because the demo is in an iframe.
     const trigger = useScrollTrigger();
-    console.log(ws)
     return React.cloneElement(children, {
       elevation: trigger ? 4 : 0,
     });
