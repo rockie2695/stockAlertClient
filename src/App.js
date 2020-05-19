@@ -32,10 +32,7 @@ const App = () => {
   const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
     //開啟
-    webSocket(host)
-    setWs(prevState => {
-      return { host }
-    })
+    setWs(prevState => webSocket(host))
   }
 
   useEffect(() => {
