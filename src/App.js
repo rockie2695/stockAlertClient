@@ -87,7 +87,7 @@ const App = () => {
     }
   }))
   const classes = useStyles();
-  const fun_login = (response) => {
+  function fun_login(response){
     console.log(ws)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
@@ -122,7 +122,8 @@ const App = () => {
                   prevState.push(resultArray[i])
                   return prevState
                 });
-                addRoom(resultArray[i].stock)
+                console.log(ws)
+                //addRoom(resultArray[i].stock)
                 //ws.emit('addRoom', resultArray[i].room)
               }
             }
