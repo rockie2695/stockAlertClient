@@ -39,6 +39,7 @@ const App = () => {
     if (ws) {
       //連線成功在 console 中打印訊息
       console.log('success connect!')
+      console.log(ws)
       //設定監聽
       initWebSocket()
     }
@@ -116,7 +117,7 @@ const App = () => {
                 });
                 console.log(ws)
                 //ws.emit('addRoom', resultArray[i].room)
-                console.log('add Room' + resultArray[i].room)
+                console.log('add Room' + resultArray[i].stock)
               }
             }
           }
