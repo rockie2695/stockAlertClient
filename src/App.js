@@ -112,6 +112,7 @@ const App = () => {
                 return prevState
               });
               ws.emit('addRoom', result[i].room)
+              console.log('add Room' + result[i].room)
             }
           }
         })
