@@ -121,8 +121,10 @@ const App = () => {
         })
     }
   }
-  function addRoom(room){
-    console.log(ws, room)
+  function addRoom(room) {
+    setTimeout(function () {
+      console.log(ws, room)
+    }, 0)
   }
   const fun_logout = () => {
     setLogin(prevState => {
@@ -160,7 +162,7 @@ const App = () => {
   const test2 = () => {
     console.log('test2')
   }
-  
+
   function ElevationScroll(props) {
     const { children } = props;
     // Note that you normally won't need to set the window ref as useScrollTrigger
