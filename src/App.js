@@ -121,11 +121,7 @@ const App = () => {
         })
     }
   }
-  function addRoom(room) {
-    setTimeout(function () {
-      console.log(ws, room)
-    }, 5000)
-  }
+
   const fun_logout = () => {
     setLogin(prevState => {
       return {}
@@ -173,6 +169,11 @@ const App = () => {
     return React.cloneElement(children, {
       elevation: trigger ? 4 : 0,
     });
+  }
+  addRoom = function (room) {
+    setTimeout(function () {
+      console.log(ws, room)
+    }, 5000)
   }
   return (
     <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
