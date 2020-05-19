@@ -52,6 +52,12 @@ const App = () => {
     }
   }, [login]);
 
+  useEffect(() => {
+    if (ws) {
+      console.log(ws)
+    }
+  }, [ws])
+
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
     ws.on('disConnection', () => {
@@ -81,7 +87,7 @@ const App = () => {
     }
   }))
   const classes = useStyles();
-  const fun_login = (response) => {
+  let fun_login = (response) => {
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
       let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: email }
