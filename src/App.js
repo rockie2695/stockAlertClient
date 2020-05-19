@@ -124,7 +124,7 @@ const App = () => {
   function addRoom(room) {
     setTimeout(function () {
       console.log(ws, room)
-    }, 0)
+    }, 5000)
   }
   const fun_logout = () => {
     setLogin(prevState => {
