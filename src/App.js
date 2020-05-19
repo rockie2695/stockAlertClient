@@ -87,7 +87,7 @@ const App = () => {
     }
   }))
   const classes = useStyles();
-  function fun_login(response){
+  const fun_login = (response) => {
     console.log(ws)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
@@ -122,8 +122,7 @@ const App = () => {
                   prevState.push(resultArray[i])
                   return prevState
                 });
-                console.log(ws)
-                //addRoom(resultArray[i].stock)
+                addRoom(resultArray[i].stock)
                 //ws.emit('addRoom', resultArray[i].room)
               }
             }
@@ -131,7 +130,9 @@ const App = () => {
         })
     }
   }
-
+  function addRoom(room){
+    console.log(ws, room)
+  }
   const fun_logout = () => {
     setLogin(prevState => {
       return {}
@@ -168,11 +169,8 @@ const App = () => {
   const test2 = () => {
     console.log('test2')
   }
-  const addRoom = (room) => {
-    console.log(ws, room)
-  }
+  
   function ElevationScroll(props) {
-    console.log(ws)
     const { children } = props;
     // Note that you normally won't need to set the window ref as useScrollTrigger
     // will default to window.
