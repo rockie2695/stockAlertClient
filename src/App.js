@@ -56,7 +56,7 @@ const App = () => {
     if (ws) {
       console.log(ws)
     }
-  }, [ws])
+  }, [ws, stockNotify])
 
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
@@ -130,9 +130,7 @@ const App = () => {
         })
     }
   }
-  const addRoom = (room) => {
-    console.log(ws, room)
-  }
+
   const fun_logout = () => {
     setLogin(prevState => {
       return {}
@@ -169,7 +167,9 @@ const App = () => {
   const test2 = () => {
     console.log('test2')
   }
-
+  const addRoom = (room) => {
+    console.log(ws, room)
+  }
   function ElevationScroll(props) {
     const { children } = props;
     // Note that you normally won't need to set the window ref as useScrollTrigger
@@ -230,7 +230,7 @@ const App = () => {
           <Grid item xs={12} sm={12} md={8} className={classes.root}>
             <Paper>
               <Typography align='right' className={classes.margin2}>
-                <Button variant="contained">Default</Button>
+                <Button variant="contained" onClick={addRoom}>Default</Button>
                 <Button variant="contained">Default</Button>
               </Typography>
               <Box display="flex" alignItems="center" margin={2}>
