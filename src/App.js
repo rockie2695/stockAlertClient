@@ -87,7 +87,8 @@ const App = () => {
     }
   }))
   const classes = useStyles();
-  let fun_login = (response) => {
+  const fun_login = (response) => {
+    console.log(ws)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
       let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: email }
@@ -121,18 +122,16 @@ const App = () => {
                   prevState.push(resultArray[i])
                   return prevState
                 });
-                console.log(ws)
+                addRoom(resultArray[i].stock)
                 //ws.emit('addRoom', resultArray[i].room)
-                console.log('add Room' + resultArray[i].stock)
               }
             }
           }
-
-
-        }).then((result) => {
-          console.log(ws)
         })
     }
+  }
+  const addRoom = (room) => {
+    console.log(ws, room)
   }
   const fun_logout = () => {
     setLogin(prevState => {
