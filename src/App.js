@@ -52,12 +52,6 @@ const App = () => {
     }
   }, [login]);
 
-  useEffect(() => {
-    if (ws) {
-      console.log(ws)
-    }
-  }, [ws, stockNotify])
-
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
     /*ws.on('disConnection', () => {
@@ -88,7 +82,6 @@ const App = () => {
   }))
   const classes = useStyles();
   const fun_login = (response) => {
-    console.log(ws)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
       let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: email }
@@ -102,7 +95,6 @@ const App = () => {
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
       }
-      console.log(email)
       fetch(host + '/select/stockNotify', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -112,7 +104,6 @@ const App = () => {
       })
         .then(res => res.json())
         .then((result) => {
-          console.log(result)
           if (typeof result.ok !== 'undefined') {
             let resultArray = result.ok
             for (let i = 0; i < resultArray.length; i++) {
@@ -176,7 +167,7 @@ const App = () => {
     // will default to window.
     // This is only being set here because the demo is in an iframe.
     const trigger = useScrollTrigger();
-    console.log(trigger)
+    console.log(ws)
     return React.cloneElement(children, {
       elevation: trigger ? 4 : 0,
     });
