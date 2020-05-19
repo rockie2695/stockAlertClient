@@ -170,7 +170,7 @@ const App = () => {
       elevation: trigger ? 4 : 0,
     });
   }
-  addRoom = function (room) {
+  const addRoom = (room)=>{
     setTimeout(function () {
       console.log(ws, room)
     }, 5000)
