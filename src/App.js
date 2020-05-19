@@ -114,7 +114,8 @@ const App = () => {
                   prevState.push(resultArray[i])
                   return prevState
                 });
-                ws.emit('addRoom', resultArray[i].room)
+                console.log(ws)
+                //ws.emit('addRoom', resultArray[i].room)
                 console.log('add Room' + resultArray[i].room)
               }
             }
