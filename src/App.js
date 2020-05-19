@@ -32,7 +32,7 @@ const App = () => {
   const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
     //開啟
-    setWs(prevState => webSocket(host))
+    setWs(webSocket(host))
   }
   const wsRef = useRef(ws);
   wsRef.current = ws;
@@ -41,7 +41,6 @@ const App = () => {
     if (ws) {
       //連線成功在 console 中打印訊息
       console.log('success connect!')
-      console.log(ws)
       //設定監聽
       initWebSocket()
     }
@@ -57,7 +56,7 @@ const App = () => {
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
     ws.on('disConnection', () => {
-      //ws.close()
+      ws.close()
     })
     ws.on('connect_error', function () {
       console.log('Failed to connect to server');
@@ -115,7 +114,8 @@ const App = () => {
                   prevState.push(resultArray[i])
                   return prevState
                 });
-                wsRef.emit('addRoom', resultArray[i].room)
+                console.log(wsRef)
+                //wsRef.emit('addRoom', resultArray[i].room)
               }
             }
           }
