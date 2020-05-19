@@ -105,17 +105,22 @@ const App = () => {
         .then(res => res.json())
         .then((result) => {
           console.log(result)
-          for (let i = 0; i < result.length; i++) {
-            console.log(stockNotify.some(e => e._id === result[i]._id))
-            if (!stockNotify.some(e => e._id === result[i]._id)) {
-              setStockNotify(prevState => {
-                prevState.push(result[i])
-                return prevState
-              });
-              ws.emit('addRoom', result[i].room)
-              console.log('add Room' + result[i].room)
+          if (typeof result.ok !== 'undefined') {
+            resultArray = result.ok
+            for (let i = 0; i < resultArray.length; i++) {
+              console.log(stockNotify.some(e => e._id === resultArray[i]._id))
+              if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
+                setStockNotify(prevState => {
+                  prevState.push(resultArray[i])
+                  return prevState
+                });
+                ws.emit('addRoom', resultArray[i].room)
+                console.log('add Room' + resultArray[i].room)
+              }
             }
           }
+
+
         })
     }
   }
