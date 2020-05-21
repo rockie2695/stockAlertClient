@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
@@ -33,6 +33,9 @@ const App = () => {
     //開啟
     setWs(webSocket(host))
   }
+
+  const wsRef = useRef(ws);
+  wsRef.current = ws;
 
   useEffect(() => {
     if (ws) {
@@ -90,7 +93,6 @@ const App = () => {
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
       }
-      console.log(email)
       fetch(host + '/select/stockNotify', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -100,15 +102,18 @@ const App = () => {
       })
         .then(res => res.json())
         .then((result) => {
-          console.log(result)
-          for (let i = 0; i < result.length; i++) {
-            if (!stockNotify.some(e => e._id === result[i]._id)) {
-              setStockNotify(prevState => {
-                prevState.push(result[i])
-                return prevState
-              });
-              console.log(stockNotify)
-              ws.emit('addRoom', result[i].room)
+          if (typeof result.ok !== 'undefined') {
+            let resultArray = result.ok
+            for (let i = 0; i < resultArray.length; i++) {
+              console.log(stockNotify.some(e => e._id === resultArray[i]._id))
+              if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
+                setStockNotify(prevState => {
+                  prevState.push(resultArray[i])
+                  return prevState
+                });
+                console.log(resultArray[i].stock)
+                wsRef.current.emit('addRoom', resultArray[i].stock)
+              }
             }
           }
         })
