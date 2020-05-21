@@ -81,8 +81,8 @@ const App = () => {
   const fun_login = (response) => {
     console.log(response)
     if (response.hasOwnProperty('tokenId')) {
-      let email = response.Qt.zu
-      let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: email }
+      let email = response.profileObj.email
+      let newLoginObj = { id: response.tokenId, username: response.profileObj.name, photo: response.profileObj.imageUrl, email: email }
       setLogin(prevState => {
         return { ...prevState, ...newLoginObj }
       });
@@ -105,13 +105,11 @@ const App = () => {
           if (typeof result.ok !== 'undefined') {
             let resultArray = result.ok
             for (let i = 0; i < resultArray.length; i++) {
-              console.log(stockNotify.some(e => e._id === resultArray[i]._id))
               if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
                 setStockNotify(prevState => {
                   prevState.push(resultArray[i])
                   return prevState
                 });
-                console.log(resultArray[i].stock)
                 wsRef.current.emit('addRoom', resultArray[i].stock)
               }
             }
@@ -241,23 +239,23 @@ const App = () => {
                           <Avatar>{index + 1}</Avatar>
                         </Grid>
                         <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                          <Typography>00001</Typography>
+                          <Typography>{row.stock}</Typography>
                         </Grid>
                         <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                          <Typography>$50.5</Typography>
+                          <Typography>$XXX</Typography>
                         </Grid>
                         <Hidden only="xs">
                           <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                            <Typography>$50.5</Typography>
+                            <Typography>${row.price}</Typography>
                           </Grid>
                           <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
-                            <Typography>>=</Typography>
+                            <Typography>{row.equal}</Typography>
                           </Grid>
                           <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
                             <FormControlLabel
                               control={
                                 <Switch
-                                  checked={true}
+                                  checked={row.alert}
                                   onChange={test2}
                                   name="checkedA"
                                   color="primary"
