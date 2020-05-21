@@ -111,6 +111,7 @@ const App = () => {
                   return prevState
                 });
                 wsRef.current.emit('addRoom', resultArray[i].stock)
+                console.log(setStockNotify)
               }
             }
           }
@@ -153,6 +154,7 @@ const App = () => {
   }
 
   function ElevationScroll(props) {
+    console.log(stockNotify)
     const { children } = props;
     const trigger = useScrollTrigger();
     return React.cloneElement(children, {
