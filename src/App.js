@@ -111,7 +111,7 @@ const App = () => {
                   return prevState
                 });
                 wsRef.current.emit('addRoom', resultArray[i].stock)
-                console.log(setStockNotify)
+                console.log(stockNotify)
               }
             }
           }
