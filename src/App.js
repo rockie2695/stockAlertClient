@@ -1,5 +1,4 @@
-import React, { useState, useEffect, Fragment, useRef } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect, Fragment } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
@@ -34,8 +33,6 @@ const App = () => {
     //開啟
     setWs(webSocket(host))
   }
-  const wsRef = useRef(ws);
-  wsRef.current = ws;
 
   useEffect(() => {
     if (ws) {
@@ -65,12 +62,8 @@ const App = () => {
       console.log(message)
     })
   }
-  const disConnectWebSocket = () => {
-    //向 Server 送出申請中斷的訊息，讓它通知其他 Client
-    ws.emit('disConnection', 'XXX')
-  }
   const useStyles = makeStyles((theme) => ({
-    root: {
+    margin1: {
       '& > *': {
         margin: theme.spacing(1),
       }
@@ -83,6 +76,7 @@ const App = () => {
   }))
   const classes = useStyles();
   const fun_login = (response) => {
+    console.log(response)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.Qt.zu
       let newLoginObj = { id: response.tokenId, username: response.Qt.Ad, photo: response.Qt.gL, email: email }
@@ -96,6 +90,7 @@ const App = () => {
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
       }
+      console.log(email)
       fetch(host + '/select/stockNotify', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -105,27 +100,22 @@ const App = () => {
       })
         .then(res => res.json())
         .then((result) => {
-          if (typeof result.ok !== 'undefined') {
-            let resultArray = result.ok
-            for (let i = 0; i < resultArray.length; i++) {
-              console.log(stockNotify.some(e => e._id === resultArray[i]._id))
-              if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
-                setStockNotify(prevState => {
-                  prevState.push(resultArray[i])
-                  return prevState
-                });
-                console.log(resultArray[i].stock)
-                wsRef.current.emit('addRoom', resultArray[i].stock)
-              }
+          console.log(result)
+          for (let i = 0; i < result.length; i++) {
+            if (!stockNotify.some(e => e._id === result[i]._id)) {
+              setStockNotify(prevState => {
+                prevState.push(result[i])
+                return prevState
+              });
+              console.log(stockNotify)
+              ws.emit('addRoom', result[i].room)
             }
           }
         })
     }
   }
   const fun_logout = () => {
-    setLogin(prevState => {
-      return {}
-    });
+    setLogin(prevState => { });
     cookies.remove('id', { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host })
   }
   const test = () => {//run when have login object
@@ -161,15 +151,11 @@ const App = () => {
 
   function ElevationScroll(props) {
     const { children } = props;
-    // Note that you normally won't need to set the window ref as useScrollTrigger
-    // will default to window.
-    // This is only being set here because the demo is in an iframe.
     const trigger = useScrollTrigger();
     return React.cloneElement(children, {
       elevation: trigger ? 4 : 0,
     });
   }
-
   return (
     <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
       <ElevationScroll {...App.props}>
@@ -213,10 +199,10 @@ const App = () => {
       <Box paddingX={2} paddingY={3} overflow="auto" position="relative">
         <Grid container alignItems="center">
           <Hidden only={['xs', 'sm']}>
-            <Grid item sm={0} md={2} className={classes.root}>
+            <Grid item sm={0} md={2} className={classes.margin1}>
             </Grid>
           </Hidden>
-          <Grid item xs={12} sm={12} md={8} className={classes.root}>
+          <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
             <Paper>
               <Typography align='right' className={classes.margin2}>
                 <Button variant="contained">Default</Button>
@@ -224,16 +210,16 @@ const App = () => {
               </Typography>
               <Box display="flex" alignItems="center" margin={2}>
                 <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={3} sm={1} md={1} className={classes.root}>
+                  <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                   </Grid>
-                  <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                  <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
                     <Typography>Stock Number</Typography>
                   </Grid>
-                  <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                  <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
                     <Typography>Price</Typography>
                   </Grid>
                   <Hidden only="xs">
-                    <Grid item xs={0} sm={7} md={7} className={classes.root}>
+                    <Grid item xs={0} sm={7} md={7} className={classes.margin1}>
                       <Typography>Alert</Typography>
                     </Grid>
                   </Hidden>
@@ -242,7 +228,53 @@ const App = () => {
               <Divider />
               {stockNotify.length !== 0
                 ?
-                stockNotify.map((row, index) => (<div>test</div>))
+                stockNotify.map((row, index) => (
+                  <Fragment>
+                    <Box display="flex" alignItems="center" margin={2}>
+                      <Grid container spacing={3} alignItems="center">
+                        <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
+                          <Avatar>{index + 1}</Avatar>
+                        </Grid>
+                        <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                          <Typography>00001</Typography>
+                        </Grid>
+                        <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                          <Typography>$50.5</Typography>
+                        </Grid>
+                        <Hidden only="xs">
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                            <Typography>$50.5</Typography>
+                          </Grid>
+                          <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
+                            <Typography>>=</Typography>
+                          </Grid>
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={true}
+                                  onChange={test2}
+                                  name="checkedA"
+                                  color="primary"
+                                />
+                              }
+                            />
+                          </Grid>
+                        </Hidden>
+                        <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                          <Fab
+                            color="primary"
+                            size="small"
+                            variant="extended"
+                          >
+                            Go<ArrowForwardIcon />
+                          </Fab>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                    <Divider />
+                  </Fragment>
+                ))
                 :
                 null
               }
@@ -250,23 +282,23 @@ const App = () => {
                 <Fragment>
                   <Box display="flex" alignItems="center" margin={2}>
                     <Grid container spacing={3} alignItems="center">
-                      <Grid item xs={3} sm={1} md={1} className={classes.root}>
+                      <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                         <Avatar>{index + 1}</Avatar>
                       </Grid>
-                      <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                      <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
                         <Typography>00001</Typography>
                       </Grid>
-                      <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                      <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
                         <Typography>$50.5</Typography>
                       </Grid>
                       <Hidden only="xs">
-                        <Grid item xs={0} sm={2} md={2} className={classes.root}>
+                        <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
                           <Typography>$50.5</Typography>
                         </Grid>
-                        <Grid item xs={0} sm={1} md={1} className={classes.root}>
+                        <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
                           <Typography>>=</Typography>
                         </Grid>
-                        <Grid item xs={0} sm={2} md={2} className={classes.root}>
+                        <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
                           <FormControlLabel
                             control={
                               <Switch
@@ -279,7 +311,7 @@ const App = () => {
                           />
                         </Grid>
                       </Hidden>
-                      <Grid item xs={3} sm={2} md={2} className={classes.root}>
+                      <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
                         <Fab
                           color="primary"
                           size="small"
@@ -297,7 +329,7 @@ const App = () => {
 
           </Grid>
           <Hidden only={['xs', 'sm']}>
-            <Grid item sm={0} md={2} className={classes.root}>
+            <Grid item sm={0} md={2} className={classes.margin1}>
             </Grid>
           </Hidden>
         </Grid>
