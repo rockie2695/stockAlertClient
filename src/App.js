@@ -107,8 +107,7 @@ const App = () => {
             for (let i = 0; i < resultArray.length; i++) {
               if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
                 setStockNotify(prevState => {
-                  prevState.push(resultArray[i])
-                  return prevState
+                  return [...prevState, resultArray[i]]
                 });
                 wsRef.current.emit('addRoom', resultArray[i].stock)
                 console.log(stockNotify)
