@@ -63,6 +63,16 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log(message)
+      setStockNotify(prevState => {
+        return prevState.map((row, index) => {
+          let addObject = {}
+          if (row.stock === message.stock) {
+            addObject = { price: message.price }
+          }
+          return { ...row, ...addObject }
+        })
+        //return [...prevState, resultArray[i]]
+      });
     })
   }
   const useStyles = makeStyles((theme) => ({
