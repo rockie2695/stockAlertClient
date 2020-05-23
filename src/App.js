@@ -161,7 +161,17 @@ const App = () => {
   const test2 = () => {
     console.log('test2')
   }
-
+  const changeAlertSwitch = (rowIndex) => {
+    setStockNotify(prevState => {
+      return prevState.map((row, index) => {
+        let addObject = {}
+        if (index === rowIndex) {
+          addObject = { alert: !row.alert }
+        }
+        return { ...row, ...addObject }
+      })
+    });
+  }
   function ElevationScroll(props) {
     console.log(stockNotify)
     const { children } = props;
@@ -267,7 +277,7 @@ const App = () => {
                               control={
                                 <Switch
                                   checked={row.alert}
-                                  onChange={test2}
+                                  onChange={() => changeAlertSwitch(index)}
                                   name="checkedA"
                                   color="primary"
                                 />
