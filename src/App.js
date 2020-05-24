@@ -161,16 +161,33 @@ const App = () => {
   const test2 = () => {
     console.log('test2')
   }
-  const changeAlertSwitch = (rowIndex) => {
-    setStockNotify(prevState => {
-      return prevState.map((row, index) => {
-        let addObject = {}
-        if (index === rowIndex) {
-          addObject = { alert: !row.alert }
-        }
-        return { ...row, ...addObject }
+  const changeAlertSwitch = (rowIndex, _id, alert) => {
+    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+      host = 'http://localhost:8080'
+    }
+    fetch(host + '/update/stockNotify/alert', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: login.email,
+        _id: _id,
+        alert: !alert
       })
-    });
+    })
+      .then(res => res.json())
+      .then((result) => {
+        console.log(result)
+      })
+    /*
+  setStockNotify(prevState => {
+    return prevState.map((row, index) => {
+      let addObject = {}
+      if (index === rowIndex) {
+        addObject = { alert: !row.alert }
+      }
+      return { ...row, ...addObject }
+    })
+  });*/
   }
   function ElevationScroll(props) {
     console.log(stockNotify)
@@ -277,7 +294,7 @@ const App = () => {
                               control={
                                 <Switch
                                   checked={row.alert}
-                                  onChange={() => changeAlertSwitch(index)}
+                                  onChange={() => changeAlertSwitch(index, row._id, row.alert)}
                                   name="checkedA"
                                   color="primary"
                                 />
