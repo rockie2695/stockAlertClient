@@ -181,8 +181,7 @@ const App = () => {
             return prevState.map((row, index) => {
               let addObject = {}
               if (index === rowIndex) {
-                console.log(alert)
-                addObject = { alert: !row.alert }
+                addObject = { alert: !alert }
               }
               return { ...row, ...addObject }
             })
