@@ -176,18 +176,19 @@ const App = () => {
     })
       .then(res => res.json())
       .then((result) => {
-        console.log(result)
+        if (typeof result.ok !== 'undefined') {
+          setStockNotify(prevState => {
+            return prevState.map((row, index) => {
+              let addObject = {}
+              if (index === rowIndex) {
+                console.log(alert)
+                addObject = { alert: !row.alert }
+              }
+              return { ...row, ...addObject }
+            })
+          });
+        }
       })
-    /*
-  setStockNotify(prevState => {
-    return prevState.map((row, index) => {
-      let addObject = {}
-      if (index === rowIndex) {
-        addObject = { alert: !row.alert }
-      }
-      return { ...row, ...addObject }
-    })
-  });*/
   }
   function ElevationScroll(props) {
     console.log(stockNotify)
