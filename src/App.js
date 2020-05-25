@@ -27,11 +27,15 @@ const App = () => {
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
 
   const [login, setLogin] = useState({})
+  const [stockHistory, setStockHistory] = useState({})
   const [ws, setWs] = useState(null)
   const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
     //開啟
-    setWs(webSocket(host))
+    //setWs(webSocket(host))
+    setWs(prevState => {
+      return { ...prevState, ...webSocket(host) }
+    })
   }
 
   const wsRef = useRef(ws);
@@ -119,6 +123,7 @@ const App = () => {
                 setStockNotify(prevState => {
                   return [...prevState, resultArray[i]]
                 });
+                console.log(ws)
                 wsRef.current.emit('addRoom', resultArray[i].stock)
                 console.log(stockNotify)
               }
