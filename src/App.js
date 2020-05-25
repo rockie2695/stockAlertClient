@@ -28,7 +28,7 @@ const App = () => {
 
   const [login, setLogin] = useState({})
   const [stockHistory, setStockHistory] = useState({})
-  const [ws, setWs] = useState(null)
+  const [ws, setWs] = useState({})
   const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
     //開啟
@@ -42,7 +42,7 @@ const App = () => {
   wsRef.current = ws;
 
   useEffect(() => {
-    if (ws) {
+    if (Object.keys(ws).length !== 0) {
       //連線成功在 console 中打印訊息
       console.log('success connect!')
       //設定監聽
