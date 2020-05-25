@@ -35,7 +35,7 @@ const App = () => {
     //setWs(webSocket(host))
     setWs(prevState => {
       let test = webSocket(host)
-      console.log(test)
+      console.log(test, { ...prevState, ...test })
       return { ...prevState, ...test }
     })
   }
