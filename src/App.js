@@ -27,7 +27,7 @@ const App = () => {
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
 
   const [login, setLogin] = useState({})
-  const [stockHistory, setStockHistory] = useState({})
+  const [stockHistory, setStockHistory] = useState([])
   const [ws, setWs] = useState(null)
   const [stockNotify, setStockNotify] = useState([])
   const connectWebSocket = () => {
@@ -64,7 +64,7 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log(message)
-      setStockNotify(prevState => {
+      /*setStockNotify(prevState => {
         return prevState.map((row, index) => {
           let addObject = {}
           if (row.stock === message.stock) {
@@ -72,8 +72,24 @@ const App = () => {
           }
           return { ...row, ...addObject }
         })
-        //return [...prevState, resultArray[i]]
-      });
+      });*/
+      /*if (typeof stockHistory[message.stock] === "undefined") {
+        let newObj = {}
+        newObj[message.stock] = []
+        setStockHistory(prevState => {
+          return { ...prevState, ...newObj }
+        })
+      }*/
+      //[{ stock: resultArray[i].stock, priceWithTime: [] }]
+      setStockHistory(prevState => {
+        return prevState.map((row, index) => {
+          if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time)) {
+            return [...prevState, { time: message.time, price: message.price }]
+          } else {
+            return prevState
+          }
+        })
+      })
     })
   }
   const useStyles = makeStyles((theme) => ({
@@ -120,6 +136,13 @@ const App = () => {
                 setStockNotify(prevState => {
                   return [...prevState, resultArray[i]]
                 });
+                setStockHistory(prevState => {
+                  if (!prevState.some(e => e.stock === resultArray[i].stock)) {
+                    return [...prevState, { stock: resultArray[i].stock, priceWithTime: [] }]
+                  } else {
+                    return prevState
+                  }
+                })
                 console.log(ws)
                 wsRef.current.emit('addRoom', resultArray[i].stock)
                 console.log(stockNotify)
