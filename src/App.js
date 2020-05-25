@@ -64,15 +64,15 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log(message)
-      /*setStockNotify(prevState => {
+      setStockNotify(prevState => {
         return prevState.map((row, index) => {
           let addObject = {}
           if (row.stock === message.stock) {
-            addObject = { price: message.price }
+            addObject = { nowPrice: message.price }
           }
           return { ...row, ...addObject }
         })
-      });*/
+      });
       /*if (typeof stockHistory[message.stock] === "undefined") {
         let newObj = {}
         newObj[message.stock] = []
@@ -84,7 +84,7 @@ const App = () => {
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
           if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time)) {
-            return [...prevState, { time: message.time, price: message.price }]
+            return { ...prevState, priceWithTime: [...row.priceWithTime, { time: message.time, price: message.price }] }
           } else {
             return prevState
           }
@@ -305,7 +305,14 @@ const App = () => {
                           <Typography>{row.stock}</Typography>
                         </Grid>
                         <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                          <Typography>$XXX</Typography>
+                          <Typography>$
+                            {typeof row.nowPrice !== "undefined"
+                              ?
+                              row.nowPrice
+                              :
+                              '???'
+                            }
+                          </Typography>
                         </Grid>
                         <Hidden only="xs">
                           <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
