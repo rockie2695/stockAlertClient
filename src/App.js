@@ -18,6 +18,7 @@ import Grid from '@material-ui/core/Grid';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Fab from '@material-ui/core/Fab';
 import Hidden from '@material-ui/core/Hidden';
+import Skeleton from '@material-ui/lab/Skeleton';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -68,7 +69,7 @@ const App = () => {
         return prevState.map((row, index) => {
           let addObject = {}
           if (row.stock === message.stock) {
-            addObject = { nowPrice: message.price }
+            addObject = { nowPrice: message.price, nowTime: message.time }
           }
           return { ...row, ...addObject }
         })
@@ -143,7 +144,6 @@ const App = () => {
                     return prevState
                   }
                 })
-                console.log(ws)
                 wsRef.current.emit('addRoom', resultArray[i].stock)
                 console.log(stockNotify)
               }
@@ -215,11 +215,10 @@ const App = () => {
       })
   }
   function ElevationScroll(props) {
-    console.log(stockNotify)
     const { children } = props;
     const trigger = useScrollTrigger();
     return React.cloneElement(children, {
-      elevation: trigger ? 4 : 0,
+      elevation: trigger ? 4 : 1,
     });
   }
   return (
@@ -251,7 +250,6 @@ const App = () => {
         </AppBar>
       </ElevationScroll>
 
-
       <Box position="relative">
         <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
           <Typography align="center" variant="h2">
@@ -262,7 +260,7 @@ const App = () => {
 
         </Box>
       </Box>
-      <Box paddingX={2} paddingY={3} overflow="auto" position="relative">
+      <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
         <Grid container alignItems="center">
           <Hidden only={['xs', 'sm']}>
             <Grid item sm={0} md={2} className={classes.margin1}>
@@ -296,21 +294,22 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box display="flex" alignItems="center" margin={2}>
+                    <Box display="flex" alignItems="center" margin={2} onclick={test2} onMouseOver={test2}>
                       <Grid container spacing={3} alignItems="center">
-                        <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
+                        <Grid item xs={4} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
                         </Grid>
-                        <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                        <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
                           <Typography>{row.stock}</Typography>
                         </Grid>
-                        <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                        <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
                           <Typography>$
-                            {typeof row.nowPrice !== "undefined"
-                              ?
-                              row.nowPrice
-                              :
-                              '???'
+                            {
+                              typeof row.nowPrice !== "undefined"
+                                ?
+                                row.nowPrice
+                                :
+                                <Skeleton />
                             }
                           </Typography>
                         </Grid>
@@ -334,14 +333,24 @@ const App = () => {
                             />
                           </Grid>
                         </Hidden>
-                        <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                          <Fab
+                        <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
+                          {/*<Fab
                             color="primary"
                             size="small"
                             variant="extended"
                           >
                             Go<ArrowForwardIcon />
-                          </Fab>
+                          </Fab>*/}
+                          <Typography color="secondary">
+
+                          </Typography>
+                          {
+                            typeof row.nowTime !== "undefined"
+                              ?
+                              row.nowTime
+                              :
+                              <Skeleton />
+                          }
                         </Grid>
                       </Grid>
                     </Box>
