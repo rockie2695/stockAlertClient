@@ -294,7 +294,7 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box display="flex" alignItems="center" margin={2} onclick={test2} onMouseOver={test2}>
+                    <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseOut={test2}>
                       <Grid container spacing={3} alignItems="center">
                         <Grid item xs={4} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
@@ -303,11 +303,11 @@ const App = () => {
                           <Typography>{row.stock}</Typography>
                         </Grid>
                         <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
-                          <Typography>$
+                          <Typography>
                             {
                               typeof row.nowPrice !== "undefined"
                                 ?
-                                row.nowPrice
+                                '$' + row.nowPrice
                                 :
                                 <Skeleton />
                             }
@@ -326,7 +326,7 @@ const App = () => {
                                 <Switch
                                   checked={row.alert}
                                   onChange={() => changeAlertSwitch(index, row._id, row.alert)}
-                                  name="checkedA"
+                                  name="alertCheck"
                                   color="primary"
                                 />
                               }
@@ -341,16 +341,15 @@ const App = () => {
                           >
                             Go<ArrowForwardIcon />
                           </Fab>*/}
-                          <Typography color="secondary">
-
+                          <Typography color="textSecondary" align="center">
+                            {
+                              typeof row.nowTime !== "undefined"
+                                ?
+                                row.nowTime
+                                :
+                                <Skeleton />
+                            }
                           </Typography>
-                          {
-                            typeof row.nowTime !== "undefined"
-                              ?
-                              row.nowTime
-                              :
-                              <Skeleton />
-                          }
                         </Grid>
                       </Grid>
                     </Box>
