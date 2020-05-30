@@ -31,6 +31,8 @@ const App = () => {
   const [stockHistory, setStockHistory] = useState([])
   const [ws, setWs] = useState(null)
   const [stockNotify, setStockNotify] = useState([])
+  const [edit, setEdit] = useState(false)
+
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -107,7 +109,6 @@ const App = () => {
   }))
   const classes = useStyles();
   const fun_login = (response) => {
-    console.log(response)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.profileObj.email
       let newLoginObj = { id: response.tokenId, username: response.profileObj.name, photo: response.profileObj.imageUrl, email: email }
@@ -185,6 +186,11 @@ const App = () => {
   }
   const test2 = () => {
     console.log('test2')
+  }
+  const fun_edit = () => {
+    setEdit(prevState => {
+      return !prevState
+    });
   }
   const changeAlertSwitch = (rowIndex, _id, alert) => {
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
@@ -269,21 +275,23 @@ const App = () => {
           <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
             <Paper>
               <Typography align='right' className={classes.margin2}>
-                <Button variant="contained">Default</Button>
-                <Button variant="contained">Default</Button>
+                <Button variant="contained" color="primary" onClick={fun_edit}>Edit</Button>
+                <Button variant="contained" color="primary">Default</Button>
               </Typography>
               <Box display="flex" alignItems="center" margin={2}>
                 <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
+                  <Grid item xs={4} sm={1} md={1} className={classes.margin1}>
                   </Grid>
-                  <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                  <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
                     <Typography>Stock Number</Typography>
                   </Grid>
-                  <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
+                  <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
                     <Typography>Price</Typography>
                   </Grid>
                   <Hidden only="xs">
-                    <Grid item xs={0} sm={7} md={7} className={classes.margin1}>
+                    <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                    </Grid>
+                    <Grid item xs={0} sm={5} md={5} className={classes.margin1}>
                       <Typography>Alert</Typography>
                     </Grid>
                   </Hidden>
@@ -294,7 +302,7 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseOut={test2}>
+                    <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
                       <Grid container spacing={3} alignItems="center">
                         <Grid item xs={4} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
@@ -308,6 +316,24 @@ const App = () => {
                               typeof row.nowPrice !== "undefined"
                                 ?
                                 '$' + row.nowPrice
+                                :
+                                <Skeleton />
+                            }
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
+                          {/*<Fab
+                            color="primary"
+                            size="small"
+                            variant="extended"
+                          >
+                            Go<ArrowForwardIcon />
+                          </Fab>*/}
+                          <Typography color="textSecondary" align="center">
+                            {
+                              typeof row.nowTime !== "undefined"
+                                ?
+                                row.nowTime
                                 :
                                 <Skeleton />
                             }
@@ -333,29 +359,25 @@ const App = () => {
                             />
                           </Grid>
                         </Hidden>
-                        <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
-                          {/*<Fab
-                            color="primary"
-                            size="small"
-                            variant="extended"
-                          >
-                            Go<ArrowForwardIcon />
-                          </Fab>*/}
-                          <Typography color="textSecondary" align="center">
-                            {
-                              typeof row.nowTime !== "undefined"
-                                ?
-                                row.nowTime
-                                :
-                                <Skeleton />
-                            }
-                          </Typography>
-                        </Grid>
                       </Grid>
                     </Box>
                     <Divider />
                   </Fragment>
                 ))
+                :
+                <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                  <Typography color="textSecondary" align="center">
+                    None of record
+                  </Typography>
+                </Box>
+              }
+              {stockNotify.length < 10 && edit === true
+                ?
+                <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                  <Typography color="textSecondary" align="center">
+                    Add Button
+                  </Typography>
+                </Box>
                 :
                 null
               }
