@@ -377,11 +377,11 @@ const App = () => {
               {stockNotify.length < 10 && edit === true
                 ?
                 <Fragment>
-                  <Box display="flex" textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
-                    <Typography color="textSecondary" align="center">
+                  <Typography color="textSecondary" align="center">
+                    <Box display="flex" textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
                       Add Button
-                  </Typography>
                   </Box>
+                  </Typography>
                   <Divider />
                 </Fragment>
                 :
