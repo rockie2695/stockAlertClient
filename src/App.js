@@ -366,11 +366,11 @@ const App = () => {
                 ))
                 :
                 <Fragment>
-                  <Box display="flex" textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
-                    <Typography color="textSecondary" align="center">
+                  <Typography color="textSecondary" align="center">
+                  <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
                       None of record
-                  </Typography>
                   </Box>
+                  </Typography>
                   <Divider />
                 </Fragment>
               }
@@ -378,7 +378,7 @@ const App = () => {
                 ?
                 <Fragment>
                   <Typography color="textSecondary" align="center">
-                    <Box display="flex" textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
                       Add Button
                   </Box>
                   </Typography>
