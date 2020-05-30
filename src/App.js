@@ -365,19 +365,25 @@ const App = () => {
                   </Fragment>
                 ))
                 :
-                <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
-                  <Typography color="textSecondary" align="center">
-                    None of record
+                <Fragment>
+                  <Box display="flex" textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Typography color="textSecondary" align="center">
+                      None of record
                   </Typography>
-                </Box>
+                  </Box>
+                  <Divider />
+                </Fragment>
               }
               {stockNotify.length < 10 && edit === true
                 ?
-                <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
-                  <Typography color="textSecondary" align="center">
-                    Add Button
+                <Fragment>
+                  <Box display="flex" textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Typography color="textSecondary" align="center">
+                      Add Button
                   </Typography>
-                </Box>
+                  </Box>
+                  <Divider />
+                </Fragment>
                 :
                 null
               }
