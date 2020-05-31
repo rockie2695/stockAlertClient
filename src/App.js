@@ -19,6 +19,8 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Fab from '@material-ui/core/Fab';
 import Hidden from '@material-ui/core/Hidden';
 import Skeleton from '@material-ui/lab/Skeleton';
+import IconButton from '@material-ui/core/IconButton';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -157,6 +159,11 @@ const App = () => {
     setLogin(prevState => { });
     cookies.remove('id', { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host })
   }
+  const fun_addNotify = () => {
+    setStockNotify(prevState => {
+      return [...prevState, { stock: "", price: "", equal: ">=", alert: true }]
+    });
+  }
   const test = () => {//run when have login object
     console.log('test')
     connectWebSocket()
@@ -193,32 +200,34 @@ const App = () => {
     });
   }
   const changeAlertSwitch = (rowIndex, _id, alert) => {
-    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
-      host = 'http://localhost:8080'
+    if (edit === true) {
+      if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+        host = 'http://localhost:8080'
+      }
+      fetch(host + '/update/stockNotify/alert', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: login.email,
+          _id: _id,
+          alert: !alert
+        })
+      })
+        .then(res => res.json())
+        .then((result) => {
+          if (typeof result.ok !== 'undefined') {
+            setStockNotify(prevState => {
+              return prevState.map((row, index) => {
+                let addObject = {}
+                if (index === rowIndex) {
+                  addObject = { alert: !alert }
+                }
+                return { ...row, ...addObject }
+              })
+            });
+          }
+        })
     }
-    fetch(host + '/update/stockNotify/alert', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: login.email,
-        _id: _id,
-        alert: !alert
-      })
-    })
-      .then(res => res.json())
-      .then((result) => {
-        if (typeof result.ok !== 'undefined') {
-          setStockNotify(prevState => {
-            return prevState.map((row, index) => {
-              let addObject = {}
-              if (index === rowIndex) {
-                addObject = { alert: !alert }
-              }
-              return { ...row, ...addObject }
-            })
-          });
-        }
-      })
   }
   function ElevationScroll(props) {
     const { children } = props;
@@ -354,6 +363,7 @@ const App = () => {
                                   onChange={() => changeAlertSwitch(index, row._id, row.alert)}
                                   name="alertCheck"
                                   color="primary"
+                                  disabled={!edit}
                                 />
                               }
                             />
@@ -367,7 +377,7 @@ const App = () => {
                 :
                 <Fragment>
                   <Typography color="textSecondary" align="center">
-                  <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
                       None of record
                   </Box>
                   </Typography>
@@ -379,8 +389,10 @@ const App = () => {
                 <Fragment>
                   <Typography color="textSecondary" align="center">
                     <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
-                      Add Button
-                  </Box>
+                      <IconButton color="primary" aria-label="add notify" onClick={fun_addNotify}>
+                        <AddCircleIcon fontSize="large" />
+                      </IconButton>
+                    </Box>
                   </Typography>
                   <Divider />
                 </Fragment>
