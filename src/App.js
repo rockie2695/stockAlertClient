@@ -78,14 +78,6 @@ const App = () => {
           return { ...row, ...addObject }
         })
       });
-      /*if (typeof stockHistory[message.stock] === "undefined") {
-        let newObj = {}
-        newObj[message.stock] = []
-        setStockHistory(prevState => {
-          return { ...prevState, ...newObj }
-        })
-      }*/
-      //[{ stock: resultArray[i].stock, priceWithTime: [] }]
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
           if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time)) {
@@ -95,6 +87,18 @@ const App = () => {
           }
         })
       })
+    })
+    ws.on('changeAlert', message => {
+      console.log(message)
+      setStockNotify(prevState => {
+        return prevState.map((row, index) => {
+          let addObject = {}
+          if (row._id === message._id && row.stock === message.stock) {
+            addObject = { alert: message.alert }
+          }
+          return { ...row, ...addObject }
+        })
+      });
     })
   }
   const useStyles = makeStyles((theme) => ({
@@ -135,6 +139,7 @@ const App = () => {
         .then((result) => {
           if (typeof result.ok !== 'undefined') {
             let resultArray = result.ok
+            wsRef.current.emit('addRoom', email)
             for (let i = 0; i < resultArray.length; i++) {
               if (!stockNotify.some(e => e._id === resultArray[i]._id)) {
                 setStockNotify(prevState => {
@@ -148,7 +153,6 @@ const App = () => {
                   }
                 })
                 wsRef.current.emit('addRoom', resultArray[i].stock)
-                console.log(stockNotify)
               }
             }
           }
@@ -284,8 +288,16 @@ const App = () => {
           <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
             <Paper>
               <Typography align='right' className={classes.margin2}>
-                <Button variant="contained" color="primary" onClick={fun_edit}>Edit</Button>
-                <Button variant="contained" color="primary">Default</Button>
+                {
+                  edit === true
+                    ?
+                    <Fragment>
+                      <Button variant="contained" color="primary">Save</Button>
+                      <Button variant="contained" color="primary" onClick={fun_edit}>Cancel</Button>
+                    </Fragment>
+                    :
+                    <Button variant="contained" color="primary" onClick={fun_edit}>Edit</Button>
+                }
               </Typography>
               <Box display="flex" alignItems="center" margin={2}>
                 <Grid container spacing={3} alignItems="center">
