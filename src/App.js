@@ -304,9 +304,9 @@ const App = () => {
               </Typography>
               <Box display="flex" alignItems="center" margin={2}>
                 <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={4} sm={1} md={1} className={classes.margin1}>
+                  <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                   </Grid>
-                  <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                  <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
                     <Typography>Stock Number</Typography>
                   </Grid>
                   <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
@@ -387,6 +387,7 @@ const App = () => {
                                   select
                                   label="equal"
                                   variant="outlined"
+                                  margin="dense"
                                   value={row.equal}
                                 >
                                   <MenuItem key='>=' value='>='>
