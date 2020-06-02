@@ -383,12 +383,9 @@ const App = () => {
                               edit
                                 ?
                                 <TextField
-                                  id="outlined-select-currency"
+                                  id="equal"
                                   select
-                                  label="Select"
-                                  value={currency}
-                                  onChange={handleChange}
-                                  helperText="Please select your currency"
+                                  label="equal"
                                   variant="outlined"
                                   value={row.equal}
                                 >
