@@ -21,6 +21,7 @@ import Hidden from '@material-ui/core/Hidden';
 import Skeleton from '@material-ui/lab/Skeleton';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import TextField from '@material-ui/core/TextField';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -73,7 +74,7 @@ const App = () => {
         return prevState.map((row, index) => {
           let addObject = {}
           if (row.stock === message.stock) {
-            addObject = { nowPrice: message.price, nowTime: message.time }
+            addObject = { nowPrice: message.price, nowTime: message.time, elevation:0}
           }
           return { ...row, ...addObject }
         })
@@ -329,7 +330,13 @@ const App = () => {
                           <Avatar>{index + 1}</Avatar>
                         </Grid>
                         <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                          {
+                          edit
+                          ?
+                          <TextField id="stock" label="stock" variant="outlined" value="{row.stock}"/>
+                          :
                           <Typography>{row.stock}</Typography>
+                          }
                         </Grid>
                         <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
                           <Typography>
@@ -350,7 +357,7 @@ const App = () => {
                           >
                             Go<ArrowForwardIcon />
                           </Fab>*/}
-                          <Typography color="textSecondary" align="center">
+                          <Typography color="textSecondary" align="center" variant="subtitle2">
                             {
                               typeof row.nowTime !== "undefined"
                                 ?
