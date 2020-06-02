@@ -22,6 +22,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import MenuItem from '@material-ui/core/MenuItem';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -74,7 +76,7 @@ const App = () => {
         return prevState.map((row, index) => {
           let addObject = {}
           if (row.stock === message.stock) {
-            addObject = { nowPrice: message.price, nowTime: message.time, elevation:0}
+            addObject = { nowPrice: message.price, nowTime: message.time, elevation: 0 }
           }
           return { ...row, ...addObject }
         })
@@ -326,16 +328,16 @@ const App = () => {
                   <Fragment>
                     <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
                       <Grid container spacing={3} alignItems="center">
-                        <Grid item xs={4} sm={1} md={1} className={classes.margin1}>
+                        <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
                         </Grid>
-                        <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                        <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
                           {
-                          edit
-                          ?
-                          <TextField id="stock" label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off'/>
-                          :
-                          <Typography>{row.stock}</Typography>
+                            edit === true
+                              ?
+                              <TextField id="stock" label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                              :
+                              <Typography>{row.stock}</Typography>
                           }
                         </Grid>
                         <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
@@ -369,10 +371,38 @@ const App = () => {
                         </Grid>
                         <Hidden only="xs">
                           <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                            <Typography>${row.price}</Typography>
+                            {edit
+                              ?
+                              <TextField id="price" label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off' startAdornment={<InputAdornment position="start">$</InputAdornment>} />
+                              :
+                              <Typography>${row.price}</Typography>
+                            }
                           </Grid>
                           <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
-                            <Typography>{row.equal}</Typography>
+                            {
+                              edit
+                                ?
+                                <TextField
+                                  id="outlined-select-currency"
+                                  select
+                                  label="Select"
+                                  value={currency}
+                                  onChange={handleChange}
+                                  helperText="Please select your currency"
+                                  variant="outlined"
+                                  value={row.equal}
+                                >
+                                  <MenuItem key='>=' value='>='>
+                                    >=
+                                  </MenuItem>
+                                  <MenuItem key='<=' value='<='>
+                                    <=
+                                  </MenuItem>
+                                </TextField>
+                                :
+                                <Typography>{row.equal}</Typography>
+                            }
+
                           </Grid>
                           <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
                             <FormControlLabel
