@@ -333,7 +333,7 @@ const App = () => {
                           {
                           edit
                           ?
-                          <TextField id="stock" label="stock" variant="outlined" value="{row.stock}"/>
+                          <TextField id="stock" label="stock" variant="outlined" value={row.stock}/>
                           :
                           <Typography>{row.stock}</Typography>
                           }
