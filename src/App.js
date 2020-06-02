@@ -396,7 +396,7 @@ const App = () => {
                                     >=
                                   </MenuItem>
                                   <MenuItem key='<=' value='<='>
-                                    <=
+                                    {"<="}
                                   </MenuItem>
                                 </TextField>
                                 :
