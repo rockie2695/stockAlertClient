@@ -353,7 +353,7 @@ const App = () => {
                               <TextField
                                 id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
                                 InputProps={{
-                                  startAdornment=<InputAdornment position="start">$</InputAdornment>
+                                  startAdornment: <InputAdornment position="start">$</InputAdornment>
                                 }}
                               />
                               :
