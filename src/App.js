@@ -174,29 +174,6 @@ const App = () => {
   const test = () => {//run when have login object
     console.log('test')
     connectWebSocket()
-    /*if (typeof cookies.get('id') !== 'undefined' && cookies.get('id') !== '') {
-      fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + cookies.get('id'), {
-        method: 'get',
-        headers: { 'Content-Type': 'application/json' }
-      })
-        .then(res => res.json())
-        .then((result) => {
-          if (result.hasOwnProperty('aud') && result.hasOwnProperty('azp') && result.aud === clientId && result.azp === clientId) {
-            let newLoginObj = { id: cookies.get('id'), username: result.name, photo: result.picture, email: result.email }
-            setLogin(prevState => {
-              return { ...prevState, ...newLoginObj }
-            });
-            cookies.set('id', cookies.get('id'), { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host });
-            
-          } else if (result.hasOwnProperty('error_description')) {
-            cookies.remove('id')
-          }
-          console.log(result)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }*/
   }
   const test2 = () => {
     console.log('test2')
@@ -335,7 +312,7 @@ const App = () => {
                           {
                             edit === true
                               ?
-                              <TextField id="stock" label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                              <TextField id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
                               :
                               <Typography>{row.stock}</Typography>
                           }
@@ -373,7 +350,12 @@ const App = () => {
                           <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
                             {edit
                               ?
-                              <TextField id="price" label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off' startAdornment={<InputAdornment position="start">$</InputAdornment>} />
+                              <TextField
+                                id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
+                                InputProps={{
+                                  startAdornment=<InputAdornment position="start">$</InputAdornment>
+                                }}
+                              />
                               :
                               <Typography>${row.price}</Typography>
                             }
@@ -402,7 +384,7 @@ const App = () => {
                             }
 
                           </Grid>
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
                             <FormControlLabel
                               control={
                                 <Switch
