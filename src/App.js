@@ -69,6 +69,8 @@ const App = () => {
     })
     ws.on('connect_error', function () {
       console.log('Failed to connect to server');
+      alert('websocket is fail to connect. Now refresh!')
+      window.location.reload()
     });
     ws.on('stockPrice', message => {
       console.log(message)
@@ -177,6 +179,9 @@ const App = () => {
   }
   const test2 = () => {
     console.log('test2')
+  }
+  const fun_boxShadow = (index) => {
+    console.log(index)
   }
   const fun_edit = () => {
     setEdit(prevState => {
@@ -384,7 +389,7 @@ const App = () => {
                             }
 
                           </Grid>
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" justify="center">
                             <FormControlLabel
                               control={
                                 <Switch
@@ -406,7 +411,7 @@ const App = () => {
                 :
                 <Fragment>
                   <Typography color="textSecondary" align="center">
-                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={() => test2(index)} onMouseLeave={() => test2(index)}>
                       None of record
                   </Box>
                   </Typography>
