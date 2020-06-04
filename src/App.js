@@ -308,7 +308,7 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                       <Grid container spacing={3} alignItems="center">
                         <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
@@ -411,7 +411,7 @@ const App = () => {
                 :
                 <Fragment>
                   <Typography color="textSecondary" align="center">
-                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={() => test2(index)} onMouseLeave={() => test2(index)}>
+                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2(index)} onMouseLeave={test2(index)}>
                       None of record
                   </Box>
                   </Typography>
