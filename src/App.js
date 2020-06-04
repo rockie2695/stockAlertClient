@@ -411,7 +411,7 @@ const App = () => {
                 :
                 <Fragment>
                   <Typography color="textSecondary" align="center">
-                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2(index)} onMouseLeave={test2(index)}>
+                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
                       None of record
                   </Box>
                   </Typography>
