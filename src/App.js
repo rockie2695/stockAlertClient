@@ -314,106 +314,103 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box >
-                      <Box display="flex" alignItems="center" padding={2} onClick={test2} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
-                        <Grid container spacing={3} alignItems="center">
-                          <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
-                            <Avatar>{index + 1}</Avatar>
-                          </Grid>
-                          <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
+                    <Box display="flex" alignItems="center" padding={2} onClick={test2} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                      <Grid container spacing={3} alignItems="center">
+                        <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
+                          <Avatar>{index + 1}</Avatar>
+                        </Grid>
+                        <Grid minHeight={50} item xs={5} sm={2} md={2} className={classes.margin1}>
+                          {
+                            edit === true
+                              ?
+                              <TextField minHeight={50} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                              :
+                              <Typography>{row.stock}</Typography>
+                          }
+                        </Grid>
+                        <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                          <Typography>
                             {
-                              edit === true
+                              typeof row.nowPrice !== "undefined"
                                 ?
-                                <TextField id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                                '$' + row.nowPrice
                                 :
-                                <Typography>{row.stock}</Typography>
+                                <Skeleton />
                             }
-                          </Grid>
-                          <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
-                            <Typography>
-                              {
-                                typeof row.nowPrice !== "undefined"
-                                  ?
-                                  '$' + row.nowPrice
-                                  :
-                                  <Skeleton />
-                              }
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
-                            {/*<Fab
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
+                          {/*<Fab
                             color="primary"
                             size="small"
                             variant="extended"
                           >
                             Go<ArrowForwardIcon />
                           </Fab>*/}
-                            <Typography color="textSecondary" align="center" variant="subtitle2">
-                              {
-                                typeof row.nowTime !== "undefined"
-                                  ?
-                                  row.nowTime
-                                  :
-                                  <Skeleton />
-                              }
-                            </Typography>
+                          <Typography color="textSecondary" align="center" variant="subtitle2">
+                            {
+                              typeof row.nowTime !== "undefined"
+                                ?
+                                row.nowTime
+                                :
+                                <Skeleton />
+                            }
+                          </Typography>
+                        </Grid>
+                        <Hidden only="xs">
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                            {edit
+                              ?
+                              <TextField
+                                id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
+                                InputProps={{
+                                  startAdornment: <InputAdornment position="start">$</InputAdornment>
+                                }}
+                              />
+                              :
+                              <Typography>${row.price}</Typography>
+                            }
                           </Grid>
-                          <Hidden only="xs">
-                            <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                              {edit
+                          <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
+                            {
+                              edit
                                 ?
                                 <TextField
-                                  id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
-                                  InputProps={{
-                                    startAdornment: <InputAdornment position="start">$</InputAdornment>
-                                  }}
-                                />
-                                :
-                                <Typography>${row.price}</Typography>
-                              }
-                            </Grid>
-                            <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
-                              {
-                                edit
-                                  ?
-                                  <TextField
-                                    id="equal"
-                                    select
-                                    label="equal"
-                                    variant="outlined"
-                                    margin="dense"
-                                    value={row.equal}
-                                  >
-                                    <MenuItem key='>=' value='>='>
-                                      >=
+                                  id="equal"
+                                  select
+                                  label="equal"
+                                  variant="outlined"
+                                  margin="dense"
+                                  value={row.equal}
+                                >
+                                  <MenuItem key='>=' value='>='>
+                                    >=
                                   </MenuItem>
-                                    <MenuItem key='<=' value='<='>
-                                      {"<="}
-                                    </MenuItem>
-                                  </TextField>
-                                  :
-                                  <Typography>{row.equal}</Typography>
+                                  <MenuItem key='<=' value='<='>
+                                    {"<="}
+                                  </MenuItem>
+                                </TextField>
+                                :
+                                <Typography>{row.equal}</Typography>
+                            }
+
+                          </Grid>
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" textAlign="center">
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={row.alert}
+                                  onChange={() => changeAlertSwitch(index, row._id, row.alert)}
+                                  name="alertCheck"
+                                  color="primary"
+                                  disabled={!edit}
+                                />
                               }
-
-                            </Grid>
-                            <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" justify="center">
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    checked={row.alert}
-                                    onChange={() => changeAlertSwitch(index, row._id, row.alert)}
-                                    name="alertCheck"
-                                    color="primary"
-                                    disabled={!edit}
-                                  />
-                                }
-                              />
-                            </Grid>
-                          </Hidden>
-                        </Grid>
-                      </Box>
+                            />
+                          </Grid>
+                        </Hidden>
+                      </Grid>
                     </Box>
-
                     <Divider />
                   </Fragment>
                 ))
