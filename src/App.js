@@ -319,11 +319,11 @@ const App = () => {
                         <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
                         </Grid>
-                        <Grid minHeight="50px" item xs={5} sm={2} md={2} className={classes.margin1}>
+                        <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
                           {
                             edit === true
                               ?
-                              <TextField minHeight="50px" id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                              <TextField style={{ minWidth: '50px' }} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
                               :
                               <Typography>{row.stock}</Typography>
                           }
@@ -395,8 +395,9 @@ const App = () => {
                             }
 
                           </Grid>
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
-                            <Typography align="center">
+                          <Typography align="center">
+                            <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
+
                               <FormControlLabel
                                 control={
                                   <Switch
@@ -408,9 +409,10 @@ const App = () => {
                                   />
                                 }
                               />
-                            </Typography>
 
-                          </Grid>
+
+                            </Grid>
+                          </Typography>
                         </Hidden>
                       </Grid>
                     </Box>
@@ -499,7 +501,7 @@ const App = () => {
         </Grid>
       </Box>{/* <Box margin={2} overflow="auto"> */}
       {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
-    </Box>
+    </Box >
   );
 }
 //chart:https://canvasjs.com/docs/charts/integration/react/
