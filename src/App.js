@@ -323,7 +323,7 @@ const App = () => {
                           {
                             edit === true
                               ?
-                              <TextField style={{ minWidth: '50px' }} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                              <TextField style={{ minWidth: '75px' }} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
                               :
                               <Typography>{row.stock}</Typography>
                           }
@@ -366,6 +366,7 @@ const App = () => {
                                 InputProps={{
                                   startAdornment: <InputAdornment position="start">$</InputAdornment>
                                 }}
+                                style={{ minWidth: '80px' }}
                               />
                               :
                               <Typography>${row.price}</Typography>
@@ -382,6 +383,7 @@ const App = () => {
                                   variant="outlined"
                                   margin="dense"
                                   value={row.equal}
+                                  style={{ minWidth: '18px' }}
                                 >
                                   <MenuItem key='>=' value='>='>
                                     >=
@@ -395,24 +397,20 @@ const App = () => {
                             }
 
                           </Grid>
-                          <Typography align="center">
-                            <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
-
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    checked={row.alert}
-                                    onChange={() => changeAlertSwitch(index, row._id, row.alert)}
-                                    name="alertCheck"
-                                    color="primary"
-                                    disabled={!edit}
-                                  />
-                                }
-                              />
-
-
-                            </Grid>
-                          </Typography>
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={row.alert}
+                                  onChange={() => changeAlertSwitch(index, row._id, row.alert)}
+                                  name="alertCheck"
+                                  color="primary"
+                                  disabled={!edit}
+                                />
+                              }
+                              style={{ textAlign: "center" }}
+                            />
+                          </Grid>
                         </Hidden>
                       </Grid>
                     </Box>
