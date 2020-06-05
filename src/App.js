@@ -397,7 +397,7 @@ const App = () => {
                             }
 
                           </Grid>
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" style={{ textAlign: "center" }}>
                             <FormControlLabel
                               control={
                                 <Switch
@@ -408,7 +408,7 @@ const App = () => {
                                   disabled={!edit}
                                 />
                               }
-                              style={{ textAlign: "center" }}
+
                             />
                           </Grid>
                         </Hidden>
