@@ -37,7 +37,7 @@ const App = () => {
   const [ws, setWs] = useState(null)
   const [stockNotify, setStockNotify] = useState([])
   const [edit, setEdit] = useState(false)
-
+  const [boxShadow, setBoxShadow] = useState(-1)
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -181,7 +181,13 @@ const App = () => {
     console.log('test2')
   }
   const fun_boxShadow = (index) => {
-    console.log(index)
+    setBoxShadow(prevState => {
+      if (prevState === index) {
+        return -1
+      } else {
+        return index
+      }
+    })
   }
   const fun_edit = () => {
     setEdit(prevState => {
@@ -308,7 +314,7 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                    <Box display="flex" alignItems="center" margin={2} boxShadow={boxShadow === index ? 1 : 0} onClick={test2} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                       <Grid container spacing={3} alignItems="center">
                         <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
