@@ -314,8 +314,8 @@ const App = () => {
                 ?
                 stockNotify.map((row, index) => (
                   <Fragment>
-                    <Box boxShadow={boxShadow === index ? 1 : 0}>
-                      <Box display="flex" alignItems="center" margin={2} onClick={test2} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                    <Box >
+                      <Box display="flex" alignItems="center" padding={2} onClick={test2} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                         <Grid container spacing={3} alignItems="center">
                           <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                             <Avatar>{index + 1}</Avatar>
