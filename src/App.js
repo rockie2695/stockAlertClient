@@ -319,11 +319,11 @@ const App = () => {
                         <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                           <Avatar>{index + 1}</Avatar>
                         </Grid>
-                        <Grid minHeight={50} item xs={5} sm={2} md={2} className={classes.margin1}>
+                        <Grid minHeight="50px" item xs={5} sm={2} md={2} className={classes.margin1}>
                           {
                             edit === true
                               ?
-                              <TextField minHeight={50} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
+                              <TextField minHeight="50px" id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
                               :
                               <Typography>{row.stock}</Typography>
                           }
@@ -395,18 +395,21 @@ const App = () => {
                             }
 
                           </Grid>
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" textAlign="center">
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  checked={row.alert}
-                                  onChange={() => changeAlertSwitch(index, row._id, row.alert)}
-                                  name="alertCheck"
-                                  color="primary"
-                                  disabled={!edit}
-                                />
-                              }
-                            />
+                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center">
+                            <Typography align="center">
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={row.alert}
+                                    onChange={() => changeAlertSwitch(index, row._id, row.alert)}
+                                    name="alertCheck"
+                                    color="primary"
+                                    disabled={!edit}
+                                  />
+                                }
+                              />
+                            </Typography>
+
                           </Grid>
                         </Hidden>
                       </Grid>
