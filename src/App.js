@@ -36,8 +36,10 @@ const App = () => {
   const [stockHistory, setStockHistory] = useState([])
   const [ws, setWs] = useState(null)
   const [stockNotify, setStockNotify] = useState([])
+  const [oldStockNotify, setOldStockNotify] = useState([])
   const [edit, setEdit] = useState(false)
   const [boxShadow, setBoxShadow] = useState(-1)
+  const [loading, setLoading] = useState(false)
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -127,8 +129,9 @@ const App = () => {
         return { ...prevState, ...newLoginObj }
       });
       cookies.set('id', response.tokenId, { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host });
-      //this.getAccountInfo(response.w3.U3)
-
+      setLoading(prevState => {
+        return true
+      })
       //getstockNotify
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
@@ -150,6 +153,9 @@ const App = () => {
                 setStockNotify(prevState => {
                   return [...prevState, resultArray[i]]
                 });
+                setOldStockNotify(prevState => {
+                  return [...prevState, resultArray[i]]
+                });
                 setStockHistory(prevState => {
                   if (!prevState.some(e => e.stock === resultArray[i].stock)) {
                     return [...prevState, { stock: resultArray[i].stock, priceWithTime: [] }]
@@ -160,7 +166,16 @@ const App = () => {
                 wsRef.current.emit('addRoom', resultArray[i].stock)
               }
             }
+            setLoading(prevState => {
+              return false;
+            })
+          } else {
+            console.log(result)
+            alert('server error')
           }
+        }).catch(err => {
+          console.log(err)
+          alert("Can\'t get your notification. Please refresh")
         })
     }
   }
@@ -189,7 +204,22 @@ const App = () => {
       }
     })
   }
+  const fun_save = () => {
+    console.log(oldStockNotify, stockNotify)
+  }
   const fun_edit = () => {
+    if (edit === true) {
+      setStockHistory(prevState => {
+        return prevState.filter((row, index) => {
+          return (!(row.price === '' || row.stock === '') && typeof row._id === "undefined");
+        });
+      })
+      setStockHistory(prevState => {
+        return prevState.map((row, index) => {
+          return { ...prevState, ...{ stock: oldStockNotify[index].stock, price: oldStockNotify[index].price, equal: oldStockNotify[index].equal } }
+        })
+      })
+    }
     setEdit(prevState => {
       return !prevState
     });
@@ -408,7 +438,6 @@ const App = () => {
                                   disabled={!edit}
                                 />
                               }
-
                             />
                           </Grid>
                         </Hidden>
@@ -418,14 +447,25 @@ const App = () => {
                   </Fragment>
                 ))
                 :
-                <Fragment>
-                  <Typography color="textSecondary" align="center">
-                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
-                      None of record
+                loading === true
+                  ?
+                  <Fragment>
+                    <Typography color="textSecondary" align="center">
+                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                        Loading
                   </Box>
-                  </Typography>
-                  <Divider />
-                </Fragment>
+                    </Typography>
+                    <Divider />
+                  </Fragment>
+                  :
+                  <Fragment>
+                    <Typography color="textSecondary" align="center">
+                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                        None of record
+                  </Box>
+                    </Typography>
+                    <Divider />
+                  </Fragment>
               }
               {stockNotify.length < 10 && edit === true
                 ?
@@ -442,53 +482,6 @@ const App = () => {
                 :
                 null
               }
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((row, index) => (
-                <Fragment>
-                  <Box display="flex" alignItems="center" margin={2}>
-                    <Grid container spacing={3} alignItems="center">
-                      <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
-                        <Avatar>{index + 1}</Avatar>
-                      </Grid>
-                      <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                        <Typography>00001</Typography>
-                      </Grid>
-                      <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                        <Typography>$50.5</Typography>
-                      </Grid>
-                      <Hidden only="xs">
-                        <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                          <Typography>$50.5</Typography>
-                        </Grid>
-                        <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
-                          <Typography>>=</Typography>
-                        </Grid>
-                        <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={true}
-                                onChange={test2}
-                                name="checkedA"
-                                color="primary"
-                              />
-                            }
-                          />
-                        </Grid>
-                      </Hidden>
-                      <Grid item xs={3} sm={2} md={2} className={classes.margin1}>
-                        <Fab
-                          color="primary"
-                          size="small"
-                          variant="extended"
-                        >
-                          Go<ArrowForwardIcon />
-                        </Fab>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Divider />
-                </Fragment>
-              ))}
             </Paper>
 
           </Grid>
