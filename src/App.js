@@ -209,12 +209,13 @@ const App = () => {
   }
   const fun_edit = () => {
     if (edit === true) {
-      setStockHistory(prevState => {
+      setStockNotify(prevState => {
         return prevState.filter((row, index) => {
-          return (!typeof row._id === "undefined");
+          return typeof row._id !== "undefined";
         });
       })
-      setStockHistory(prevState => {
+      console.log(stockNotify)
+      setStockNotify(prevState => {
         return prevState.map((row, index) => {
           return { ...row, ...{ stock: oldStockNotify[index].stock, price: oldStockNotify[index].price, equal: oldStockNotify[index].equal } }
         })
