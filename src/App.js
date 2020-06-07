@@ -211,12 +211,12 @@ const App = () => {
     if (edit === true) {
       setStockHistory(prevState => {
         return prevState.filter((row, index) => {
-          return (!(row.price === '' || row.stock === '') && typeof row._id === "undefined");
+          return (!typeof row._id === "undefined");
         });
       })
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
-          return { ...prevState, ...{ stock: oldStockNotify[index].stock, price: oldStockNotify[index].price, equal: oldStockNotify[index].equal } }
+          return { ...row, ...{ stock: oldStockNotify[index].stock, price: oldStockNotify[index].price, equal: oldStockNotify[index].equal } }
         })
       })
     }
@@ -313,7 +313,7 @@ const App = () => {
                   edit === true
                     ?
                     <Fragment>
-                      <Button variant="contained" color="primary">Save</Button>
+                      <Button variant="contained" color="primary" onClick={fun_save}>Save</Button>
                       <Button variant="contained" color="primary" onClick={fun_edit}>Cancel</Button>
                     </Fragment>
                     :
@@ -370,13 +370,6 @@ const App = () => {
                           </Typography>
                         </Grid>
                         <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
-                          {/*<Fab
-                            color="primary"
-                            size="small"
-                            variant="extended"
-                          >
-                            Go<ArrowForwardIcon />
-                          </Fab>*/}
                           <Typography color="textSecondary" align="center" variant="subtitle2">
                             {
                               typeof row.nowTime !== "undefined"
