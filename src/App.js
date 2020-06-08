@@ -24,6 +24,8 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
+import Link from '@material-ui/core/Link';
+import HttpsRedirect from 'react-https-redirect';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -204,6 +206,9 @@ const App = () => {
       }
     })
   }
+  const changeAlertInfo = (event) => {
+    console.log(event, event.target.value)
+  }
   const fun_save = () => {
     console.log(oldStockNotify, stockNotify)
     let updateMessage = []
@@ -288,230 +293,236 @@ const App = () => {
     });
   }
   return (
-    <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
-      <ElevationScroll {...App.props}>
-        <AppBar color="default" position="sticky" top={0}>
-          <Toolbar>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              stockAlertClient
-          </Typography>
-            {Object.keys(login).length === 0
-              ?
-              <GoogleLogin
-                clientId={clientId}
-                buttonText="Login"
-                onSuccess={fun_login}
-                onFailure={fun_login}
-                cookiePolicy={'single_host_origin'}
-                isSignedIn={true}
-              />
-              :
-              <GoogleLogout
-                clientId={clientId}
-                buttonText="Logout"
-                onLogoutSuccess={fun_logout}
-              ></GoogleLogout>
-            }
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
-
-      <Box position="relative">
-        <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
-          <Typography align="center" variant="h2">
-            For Stock Price Showing And Notification
-        </Typography>
-        </Box>
-        <Box height="50%" minHeight="50vh">
-
-        </Box>
-      </Box>
-      <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
-        <Grid container alignItems="center">
-          <Hidden only={['xs', 'sm']}>
-            <Grid item sm={0} md={2} className={classes.margin1}>
-            </Grid>
-          </Hidden>
-          <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
-            <Paper>
-              <Typography align='right' className={classes.margin2}>
-                {
-                  edit === true
-                    ?
-                    <Fragment>
-                      <Button variant="contained" color="primary" onClick={fun_save}>Save</Button>
-                      <Button variant="contained" color="primary" onClick={fun_edit}>Cancel</Button>
-                    </Fragment>
-                    :
-                    <Button variant="contained" color="primary" onClick={fun_edit}>Edit</Button>
-                }
+    <HttpsRedirect>
+      <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
+        <ElevationScroll {...App.props}>
+          <AppBar color="default" position="sticky" top={0}>
+            <Toolbar>
+              <Typography variant="h6" style={{ flexGrow: 1 }}>
+                <Link href="https://rockie-stockalertclient.herokuapp.com/">
+                  StockAlertClient
+            </Link>
               </Typography>
-              <Box display="flex" alignItems="center" margin={2}>
-                <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
-                  </Grid>
-                  <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
-                    <Typography>Stock Number</Typography>
-                  </Grid>
-                  <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
-                    <Typography>Price</Typography>
-                  </Grid>
-                  <Hidden only="xs">
-                    <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                    </Grid>
-                    <Grid item xs={0} sm={5} md={5} className={classes.margin1}>
-                      <Typography>Alert</Typography>
-                    </Grid>
-                  </Hidden>
-                </Grid>
-              </Box>
-              <Divider />
-              {stockNotify.length !== 0
+              {Object.keys(login).length === 0
                 ?
-                stockNotify.map((row, index) => (
-                  <Fragment>
-                    <Box display="flex" alignItems="center" padding={2} onClick={test2} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
-                      <Grid container spacing={3} alignItems="center">
-                        <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
-                          <Avatar>{index + 1}</Avatar>
-                        </Grid>
-                        <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
-                          {
-                            edit === true
-                              ?
-                              <TextField style={{ minWidth: '75px' }} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' />
-                              :
-                              <Typography>{row.stock}</Typography>
-                          }
-                        </Grid>
-                        <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
-                          <Typography>
+                <GoogleLogin
+                  clientId={clientId}
+                  buttonText="Login"
+                  onSuccess={fun_login}
+                  onFailure={fun_login}
+                  cookiePolicy={'single_host_origin'}
+                  isSignedIn={true}
+                />
+                :
+                <GoogleLogout
+                  clientId={clientId}
+                  buttonText="Logout"
+                  onLogoutSuccess={fun_logout}
+                ></GoogleLogout>
+              }
+            </Toolbar>
+          </AppBar>
+        </ElevationScroll>
+
+        <Box position="relative">
+          <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
+            <Typography align="center" variant="h2">
+              For Stock Price Showing And Notification
+        </Typography>
+          </Box>
+          <Box height="50%" minHeight="50vh">
+
+          </Box>
+        </Box>
+        <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
+          <Grid container alignItems="center">
+            <Hidden only={['xs', 'sm']}>
+              <Grid item sm={0} md={2} className={classes.margin1}>
+              </Grid>
+            </Hidden>
+            <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
+              <Paper>
+                <Typography align='right' className={classes.margin2}>
+                  {
+                    edit === true
+                      ?
+                      <Fragment>
+                        <Button variant="contained" color="primary" onClick={fun_save}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={fun_edit}>Cancel</Button>
+                      </Fragment>
+                      :
+                      <Button variant="contained" color="primary" onClick={fun_edit}>Edit</Button>
+                  }
+                </Typography>
+                <Box display="flex" alignItems="center" margin={2}>
+                  <Grid container spacing={3} alignItems="center">
+                    <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
+                    </Grid>
+                    <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
+                      <Typography>Stock Number</Typography>
+                    </Grid>
+                    <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                      <Typography>Price</Typography>
+                    </Grid>
+                    <Hidden only="xs">
+                      <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                      </Grid>
+                      <Grid item xs={0} sm={5} md={5} className={classes.margin1}>
+                        <Typography>Alert</Typography>
+                      </Grid>
+                    </Hidden>
+                  </Grid>
+                </Box>
+                <Divider />
+                {stockNotify.length !== 0
+                  ?
+                  stockNotify.map((row, index) => (
+                    <Fragment>
+                      <Box display="flex" alignItems="center" padding={2} onClick={test2} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                        <Grid container spacing={3} alignItems="center">
+                          <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
+                            <Avatar>{index + 1}</Avatar>
+                          </Grid>
+                          <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
                             {
-                              typeof row.nowPrice !== "undefined"
+                              edit === true
                                 ?
-                                '$' + row.nowPrice
+                                <TextField style={{ minWidth: '75px' }} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' onChange={changeAlertInfo} />
                                 :
-                                <Skeleton />
-                            }
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
-                          <Typography color="textSecondary" align="center" variant="subtitle2">
-                            {
-                              typeof row.nowTime !== "undefined"
-                                ?
-                                row.nowTime
-                                :
-                                <Skeleton />
-                            }
-                          </Typography>
-                        </Grid>
-                        <Hidden only="xs">
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
-                            {edit
-                              ?
-                              <TextField
-                                id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
-                                InputProps={{
-                                  startAdornment: <InputAdornment position="start">$</InputAdornment>
-                                }}
-                                style={{ minWidth: '80px' }}
-                              />
-                              :
-                              <Typography>${row.price}</Typography>
+                                <Typography>{row.stock}</Typography>
                             }
                           </Grid>
-                          <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
-                            {
-                              edit
+                          <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                            <Typography>
+                              {
+                                typeof row.nowPrice !== "undefined"
+                                  ?
+                                  '$' + row.nowPrice
+                                  :
+                                  <Skeleton />
+                              }
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
+                            <Typography color="textSecondary" align="center" variant="subtitle2">
+                              {
+                                typeof row.nowTime !== "undefined"
+                                  ?
+                                  row.nowTime
+                                  :
+                                  <Skeleton />
+                              }
+                            </Typography>
+                          </Grid>
+                          <Hidden only="xs">
+                            <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                              {edit
                                 ?
                                 <TextField
-                                  id="equal"
-                                  select
-                                  label="equal"
-                                  variant="outlined"
-                                  margin="dense"
-                                  value={row.equal}
-                                  style={{ minWidth: '18px' }}
-                                >
-                                  <MenuItem key='>=' value='>='>
-                                    >=
-                                  </MenuItem>
-                                  <MenuItem key='<=' value='<='>
-                                    {"<="}
-                                  </MenuItem>
-                                </TextField>
-                                :
-                                <Typography>{row.equal}</Typography>
-                            }
-
-                          </Grid>
-                          <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" style={{ textAlign: "center" }}>
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  checked={row.alert}
-                                  onChange={() => changeAlertSwitch(index, row._id, row.alert)}
-                                  name="alertCheck"
-                                  color="primary"
-                                  disabled={!edit}
+                                  id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
+                                  InputProps={{
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment>
+                                  }}
+                                  style={{ minWidth: '80px' }}
+                                  onChange={changeAlertInfo}
                                 />
+                                :
+                                <Typography>${row.price}</Typography>
                               }
-                            />
-                          </Grid>
-                        </Hidden>
-                      </Grid>
-                    </Box>
-                    <Divider />
-                  </Fragment>
-                ))
-                :
-                loading === true
+                            </Grid>
+                            <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
+                              {
+                                edit
+                                  ?
+                                  <TextField
+                                    id="equal"
+                                    select
+                                    label="equal"
+                                    variant="outlined"
+                                    margin="dense"
+                                    value={row.equal}
+                                    style={{ minWidth: '18px' }}
+                                    onChange={changeAlertInfo}
+                                  >
+                                    <MenuItem key='>=' value='>='>
+                                      >=
+                                  </MenuItem>
+                                    <MenuItem key='<=' value='<='>
+                                      {"<="}
+                                    </MenuItem>
+                                  </TextField>
+                                  :
+                                  <Typography>{row.equal}</Typography>
+                              }
+
+                            </Grid>
+                            <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" style={{ textAlign: "center" }}>
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={row.alert}
+                                    onChange={() => changeAlertSwitch(index, row._id, row.alert)}
+                                    name="alertCheck"
+                                    color="primary"
+                                    disabled={!edit}
+                                  />
+                                }
+                              />
+                            </Grid>
+                          </Hidden>
+                        </Grid>
+                      </Box>
+                      <Divider />
+                    </Fragment>
+                  ))
+                  :
+                  loading === true
+                    ?
+                    <Fragment>
+                      <Typography color="textSecondary" align="center">
+                        <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                          Loading
+                  </Box>
+                      </Typography>
+                      <Divider />
+                    </Fragment>
+                    :
+                    <Fragment>
+                      <Typography color="textSecondary" align="center">
+                        <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                          None of record
+                  </Box>
+                      </Typography>
+                      <Divider />
+                    </Fragment>
+                }
+                {stockNotify.length < 10 && edit === true
                   ?
                   <Fragment>
                     <Typography color="textSecondary" align="center">
-                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
-                        Loading
-                  </Box>
+                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                        <IconButton color="primary" aria-label="add notify" onClick={fun_addNotify}>
+                          <AddCircleIcon fontSize="large" />
+                        </IconButton>
+                      </Box>
                     </Typography>
                     <Divider />
                   </Fragment>
                   :
-                  <Fragment>
-                    <Typography color="textSecondary" align="center">
-                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
-                        None of record
-                  </Box>
-                    </Typography>
-                    <Divider />
-                  </Fragment>
-              }
-              {stockNotify.length < 10 && edit === true
-                ?
-                <Fragment>
-                  <Typography color="textSecondary" align="center">
-                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
-                      <IconButton color="primary" aria-label="add notify" onClick={fun_addNotify}>
-                        <AddCircleIcon fontSize="large" />
-                      </IconButton>
-                    </Box>
-                  </Typography>
-                  <Divider />
-                </Fragment>
-                :
-                null
-              }
-            </Paper>
+                  null
+                }
+              </Paper>
 
-          </Grid>
-          <Hidden only={['xs', 'sm']}>
-            <Grid item sm={0} md={2} className={classes.margin1}>
             </Grid>
-          </Hidden>
-        </Grid>
-      </Box>{/* <Box margin={2} overflow="auto"> */}
-      {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
-    </Box >
+            <Hidden only={['xs', 'sm']}>
+              <Grid item sm={0} md={2} className={classes.margin1}>
+              </Grid>
+            </Hidden>
+          </Grid>
+        </Box>{/* <Box margin={2} overflow="auto"> */}
+        {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
+      </Box >
+    </HttpsRedirect>
   );
 }
 //chart:https://canvasjs.com/docs/charts/integration/react/
