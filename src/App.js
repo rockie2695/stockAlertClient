@@ -206,6 +206,31 @@ const App = () => {
   }
   const fun_save = () => {
     console.log(oldStockNotify, stockNotify)
+    let updateMessage = []
+    let insertMessage = []
+    for (let i = 0; i < stockNotify.length; i++) {
+      if (typeof stockNotify._id !== "undefined") {//update
+        updateMessage.push({ _id: stockNotify[i]._id, stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
+      } else {//new to add
+        insertMessage.push({ stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
+      }
+    }
+    console.log('send to server', login.email)
+    if (updateMessage.length !== 0 || insertMessage.length !== 0) {
+      fetch(host + '/update/stockNotify', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: login.email,
+          update: updateMessage,
+          insert: insertMessage
+        })
+      }).then(res => res.json())
+        .then((result) => {
+          console.log(result)
+        })
+    }
+
   }
   const fun_edit = () => {
     if (edit === true) {
