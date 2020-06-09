@@ -212,6 +212,7 @@ const App = () => {
       return prevState.map((row, index) => {
         let addObject = {}
         let target = event.target.name.split('_')
+        console.log(target)
         let value = event.target.value
         if (index === target[1]) {
           if (target[0] === 'price') {
@@ -449,8 +450,8 @@ const App = () => {
                                 edit
                                   ?
                                   <TextField
-                                    id={"equal" + index}
-                                    name={"equal" + index}
+                                    id={"equal_" + index}
+                                    name={"equal_" + index}
                                     select
                                     label="equal"
                                     variant="outlined"
