@@ -214,7 +214,7 @@ const App = () => {
         let target = event.target.name.split('_')
         console.log(target)
         let value = event.target.value
-        if (index === target[1]) {
+        if (index === parseInt(target[1])) {
           if (target[0] === 'price') {
             value = parseFloat(event.target.value)
           }
