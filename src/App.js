@@ -207,7 +207,7 @@ const App = () => {
     })
   }
   const changeAlertInfo = (event) => {
-    console.log(event, event.target.value)
+    console.log(event, event.target.value, event.target)
   }
   const fun_save = () => {
     console.log(oldStockNotify, stockNotify)
@@ -387,7 +387,7 @@ const App = () => {
                             {
                               edit === true
                                 ?
-                                <TextField style={{ minWidth: '75px' }} id={"stock" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' onChange={changeAlertInfo} />
+                                <TextField style={{ minWidth: '75px' }} id={"stock_" + index} name={"stock_" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' onChange={changeAlertInfo} />
                                 :
                                 <Typography>{row.stock}</Typography>
                             }
@@ -419,7 +419,7 @@ const App = () => {
                               {edit
                                 ?
                                 <TextField
-                                  id={"price" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
+                                  id={"price_" + index} name={"price_" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
                                   InputProps={{
                                     startAdornment: <InputAdornment position="start">$</InputAdornment>
                                   }}
@@ -435,7 +435,8 @@ const App = () => {
                                 edit
                                   ?
                                   <TextField
-                                    id="equal"
+                                    id={"equal" + index}
+                                    name={"equal" + index}
                                     select
                                     label="equal"
                                     variant="outlined"
