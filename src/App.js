@@ -177,7 +177,7 @@ const App = () => {
           }
         }).catch(err => {
           console.log(err)
-          alert("Can\'t get your notification. Please refresh")
+          alert("Can't get your notification. Please refresh")
         })
     }
   }
@@ -207,7 +207,21 @@ const App = () => {
     })
   }
   const changeAlertInfo = (event) => {
-    console.log(event, event.target.value, event.target)
+    console.log(event, event.target.value, event.target.name)
+    setStockNotify(prevState => {
+      return prevState.map((row, index) => {
+        let addObject = {}
+        let target = event.target.name.split('_')
+        let value = event.target.value
+        if (index === target[1]) {
+          if (target[0] === 'price') {
+            value = parseFloat(event.target.value)
+          }
+          addObject = { [target[0]]: value }
+        }
+        return { ...row, ...addObject }
+      })
+    })
   }
   const fun_save = () => {
     console.log(oldStockNotify, stockNotify)
