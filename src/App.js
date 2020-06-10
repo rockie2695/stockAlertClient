@@ -206,24 +206,36 @@ const App = () => {
     })
   }
   const changeAlertInfo = (event) => {
-    console.log(event, event.target.value, event.target.name)
-    setStockNotify(prevState => {
-      return prevState.map((row, index) => {
-        let addObject = {}
-        let target = event.target.name.split('_')
-        console.log(target)
-        let value = event.target.value
-        if (index === parseInt(target[1])) {
-          if (target[0] === 'price') {
-            value = parseFloat(event.target.value)
-          } else if (target[0] === 'stock') {
-            value = value.padStart(5, "0");
+    if (event.target.name !== null) {
+      setStockNotify(prevState => {
+        return prevState.map((row, index) => {
+          let addObject = {}
+          let target = event.target.name.split('_')
+          console.log(target)
+          let value = event.target.value
+          if (index === parseInt(target[1])) {
+            if (target[0] === 'price') {
+              if (isNaN(parseFloat(event.target.value))) {
+                value = event.target.value
+
+              } else {
+                value = parseFloat(event.target.value)
+              }
+            }/* else if (target[0] === 'stock') {
+              value = value.padStart(5, "0");
+            }*/
+            addObject = { [target[0]]: value }
           }
-          addObject = { [target[0]]: value }
-        }
-        return { ...row, ...addObject }
+          return { ...row, ...addObject }
+        })
       })
-    })
+    }
+  }
+  const loseFocusAlertInfo = (event) => {
+    console.log(event, event.target.value, event.target.name)
+    if (event.target.name !== null) {
+
+    }
   }
   const fun_save = () => {
     console.log(oldStockNotify, stockNotify)
@@ -403,7 +415,7 @@ const App = () => {
                             {
                               edit === true
                                 ?
-                                <TextField style={{ minWidth: '75px' }} id={"stock_" + index} name={"stock_" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' onChange={changeAlertInfo} />
+                                <TextField type="number" style={{ minWidth: '75px' }} id={"stock_" + index} name={"stock_" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' onChange={changeAlertInfo} />
                                 :
                                 <Typography>{row.stock}</Typography>
                             }
@@ -441,6 +453,7 @@ const App = () => {
                                   }}
                                   style={{ minWidth: '80px' }}
                                   onChange={changeAlertInfo}
+                                  type="number"
                                 />
                                 :
                                 <Typography>${row.price}</Typography>
