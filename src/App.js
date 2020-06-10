@@ -15,7 +15,6 @@ import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Fab from '@material-ui/core/Fab';
 import Hidden from '@material-ui/core/Hidden';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -217,6 +216,8 @@ const App = () => {
         if (index === parseInt(target[1])) {
           if (target[0] === 'price') {
             value = parseFloat(event.target.value)
+          } else if (target[0] === 'stock') {
+            value = value.padStart(5, "0");
           }
           addObject = { [target[0]]: value }
         }
