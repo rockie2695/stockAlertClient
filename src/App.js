@@ -327,7 +327,7 @@ const App = () => {
           <AppBar color="default" position="sticky" top={0}>
             <Toolbar>
               <Typography variant="h6" style={{ flexGrow: 1 }}>
-                <Link href="https://rockie-stockalertclient.herokuapp.com/">
+                <Link href="https://rockie-stockalertclient.herokuapp.com/" color="inherit">
                   StockAlertClient
             </Link>
               </Typography>
@@ -427,6 +427,8 @@ const App = () => {
                                   autoComplete='off'
                                   onChange={changeAlertInfo}
                                   onfocusout={loseFocusAlertInfo}
+                                  onFocusOut={loseFocusAlertInfo}
+                                  onFocus={loseFocusAlertInfo}
                                 />
                                 :
                                 <Typography>{row.stock}</Typography>
