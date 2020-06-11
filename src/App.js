@@ -426,9 +426,7 @@ const App = () => {
                                   margin="dense"
                                   autoComplete='off'
                                   onChange={changeAlertInfo}
-                                  onfocusout={loseFocusAlertInfo}
-                                  onFocusOut={loseFocusAlertInfo}
-                                  onFocus={loseFocusAlertInfo}
+                                  onBlur={loseFocusAlertInfo}
                                 />
                                 :
                                 <Typography>{row.stock}</Typography>
