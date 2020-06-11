@@ -415,7 +415,19 @@ const App = () => {
                             {
                               edit === true
                                 ?
-                                <TextField type="number" style={{ minWidth: '75px' }} id={"stock_" + index} name={"stock_" + index} label="stock" variant="outlined" value={row.stock} margin="dense" autoComplete='off' onChange={changeAlertInfo} />
+                                <TextField
+                                  type="number"
+                                  style={{ minWidth: '75px' }}
+                                  id={"stock_" + index}
+                                  name={"stock_" + index}
+                                  label="stock"
+                                  variant="outlined"
+                                  value={row.stock}
+                                  margin="dense"
+                                  autoComplete='off'
+                                  onChange={changeAlertInfo}
+                                  onfocusout={loseFocusAlertInfo}
+                                />
                                 :
                                 <Typography>{row.stock}</Typography>
                             }
