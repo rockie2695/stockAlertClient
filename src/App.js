@@ -234,7 +234,21 @@ const App = () => {
   const loseFocusAlertInfo = (event) => {
     console.log(event, event.target.value, event.target.name)
     if (event.target.name !== null) {
-
+      setStockNotify(prevState => {
+        return prevState.map((row, index) => {
+          let addObject = {}
+          let target = event.target.name.split('_')
+          console.log(target)
+          let value = event.target.value
+          if (index === parseInt(target[1])) {
+            if (target[0] === 'stock') {
+              value = value.padStart(5, "0");
+            }
+            addObject = { [target[0]]: value }
+          }
+          return { ...row, ...addObject }
+        })
+      })
     }
   }
   const fun_save = () => {
