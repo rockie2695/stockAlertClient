@@ -240,13 +240,12 @@ const App = () => {
           let target = event.target.name.split('_')
           console.log(target)
           let value = event.target.value
-          if (value.length > 5) {
-            value = value.substring(value.length - 5, value.length)
-          }
-          if (index === parseInt(target[1])) {
-            if (target[0] === 'stock') {
-              value = value.padStart(5, "0");
+
+          if (index === parseInt(target[1]) && target[0] === 'stock') {
+            if (value.length > 5) {
+              value = value.substring(value.length - 5, value.length)
             }
+            value = value.padStart(5, "0");
             addObject = { [target[0]]: value }
           }
           return { ...row, ...addObject }
@@ -259,7 +258,7 @@ const App = () => {
     let updateMessage = []
     let insertMessage = []
     for (let i = 0; i < stockNotify.length; i++) {
-      if (typeof stockNotify._id !== "undefined") {//update
+      if (typeof stockNotify[i]._id !== "undefined") {//update
         updateMessage.push({ _id: stockNotify[i]._id, stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
       } else {//new to add
         insertMessage.push({ stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
