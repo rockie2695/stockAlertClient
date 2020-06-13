@@ -240,6 +240,9 @@ const App = () => {
           let target = event.target.name.split('_')
           console.log(target)
           let value = event.target.value
+          if (value.length > 5) {
+            value = value.substring(value.length - 5, value.length)
+          }
           if (index === parseInt(target[1])) {
             if (target[0] === 'stock') {
               value = value.padStart(5, "0");
@@ -431,7 +434,7 @@ const App = () => {
                                 ?
                                 <TextField
                                   type="number"
-                                  style={{ minWidth: '75px' }}
+                                  style={{ minWidth: '85px' }}
                                   id={"stock_" + index}
                                   name={"stock_" + index}
                                   label="stock"
@@ -477,7 +480,7 @@ const App = () => {
                                   InputProps={{
                                     startAdornment: <InputAdornment position="start">$</InputAdornment>
                                   }}
-                                  style={{ minWidth: '80px' }}
+                                  style={{ minWidth: '90px' }}
                                   onChange={changeAlertInfo}
                                   type="number"
                                 />
@@ -501,8 +504,8 @@ const App = () => {
                                     onChange={changeAlertInfo}
                                   >
                                     <MenuItem key='>=' value='>='>
-                                      >=
-                                  </MenuItem>
+                                      {">="}
+                                    </MenuItem>
                                     <MenuItem key='<=' value='<='>
                                       {"<="}
                                     </MenuItem>
