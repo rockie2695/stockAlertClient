@@ -41,6 +41,7 @@ const App = () => {
   const [edit, setEdit] = useState(false)
   const [boxShadow, setBoxShadow] = useState(-1)
   const [loading, setLoading] = useState(false)
+  const [addRoomList, setAddRoomList] = useState([])
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -164,7 +165,14 @@ const App = () => {
                     return prevState
                   }
                 })
-                wsRef.current.emit('addRoom', resultArray[i].stock)
+                setAddRoomList(prevState => {
+                  if (!prevState.includes(resultArray[i].stock)) {
+                    wsRef.current.emit('addRoom', resultArray[i].stock)
+                    return [...prevState, resultArray[i].stock]
+                  } else {
+                    return prevState
+                  }
+                })
               }
             }
             setLoading(prevState => {
@@ -172,7 +180,7 @@ const App = () => {
             })
           } else {
             console.log(result)
-            alert('server error')
+            alert('server error. Please refresh')
           }
         }).catch(err => {
           console.log(err)
@@ -221,9 +229,7 @@ const App = () => {
               } else {
                 value = parseFloat(event.target.value)
               }
-            }/* else if (target[0] === 'stock') {
-              value = value.padStart(5, "0");
-            }*/
+            }
             addObject = { [target[0]]: value }
           }
           return { ...row, ...addObject }
@@ -259,12 +265,12 @@ const App = () => {
     let insertMessage = []
     for (let i = 0; i < stockNotify.length; i++) {
       if (typeof stockNotify[i]._id !== "undefined") {//update
-        updateMessage.push({ _id: stockNotify[i]._id, stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
+        updateMessage.push({ _id: stockNotify[i]._id, stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert,oldStock:oldStockNotify[i].stock })
       } else {//new to add
         insertMessage.push({ stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
       }
     }
-    console.log('send to server', login.email)
+    console.log(updateMessage, insertMessage)
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
       fetch(host + '/update/stockNotify', {
         method: 'post',
