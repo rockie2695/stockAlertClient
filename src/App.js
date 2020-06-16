@@ -282,24 +282,27 @@ const App = () => {
         })
       }).then(res => res.json())
         .then((result) => {
-          console.log(result)
+          let resultArray = result.ok
           for (let i = 0; i < addRoomList.length; i++) {
             wsRef.current.emit('leaveRoom', addRoomList[i].stock)
           }
+          setAddRoomList(prevState => {
+            return []
+          })
           setStockNotify(prevState => {
-            return result
+            return resultArray
           })
           setOldStockNotify(prevState => {
-            return result
+            return resultArray
           })
           setEdit(prevState => {
             return false
           })
-          for (let i = 0; i < result.length; i++) {
+          for (let i = 0; i < resultArray.length; i++) {
             setAddRoomList(prevState => {
-              if (!prevState.includes(result[i].stock)) {
-                wsRef.current.emit('addRoom', result[i].stock)
-                return [...prevState, result[i].stock]
+              if (!prevState.includes(resultArray[i].stock)) {
+                wsRef.current.emit('addRoom', resultArray[i].stock)
+                return [...prevState, resultArray[i].stock]
               } else {
                 return prevState
               }
