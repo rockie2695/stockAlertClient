@@ -265,7 +265,7 @@ const App = () => {
     let insertMessage = []
     for (let i = 0; i < stockNotify.length; i++) {
       if (typeof stockNotify[i]._id !== "undefined") {//update
-        updateMessage.push({ _id: stockNotify[i]._id, stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert,oldStock:oldStockNotify[i].stock })
+        updateMessage.push({ _id: stockNotify[i]._id, stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert, oldStock: oldStockNotify[i].stock })
       } else {//new to add
         insertMessage.push({ stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
       }
@@ -283,9 +283,30 @@ const App = () => {
       }).then(res => res.json())
         .then((result) => {
           console.log(result)
+          for (let i = 0; i < addRoomList.length; i++) {
+            wsRef.current.emit('leaveRoom', addRoomList[i].stock)
+          }
+          setStockNotify(prevState => {
+            return result
+          })
+          setOldStockNotify(prevState => {
+            return result
+          })
+          setEdit(prevState => {
+            return false
+          })
+          for (let i = 0; i < result.length; i++) {
+            setAddRoomList(prevState => {
+              if (!prevState.includes(result[i].stock)) {
+                wsRef.current.emit('addRoom', result[i].stock)
+                return [...prevState, result[i].stock]
+              } else {
+                return prevState
+              }
+            })
+          }
         })
     }
-
   }
   const fun_edit = () => {
     if (edit === true) {
