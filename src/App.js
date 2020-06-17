@@ -173,7 +173,7 @@ const App = () => {
                     return prevState
                   }
                 })
-                findStockName(resultArray[i].stock)
+                findStockName(resultArray[i].stock, email)
               }
             }
             setLoading(prevState => {
@@ -307,7 +307,7 @@ const App = () => {
                 return prevState
               }
             })
-            findStockName(resultArray[i].stock)
+            findStockName(resultArray[i].stock, login.email)
           }
         })
     }
@@ -359,7 +359,7 @@ const App = () => {
         })
     }
   }
-  const findStockName = (stock) => {
+  const findStockName = (stock, subEmail) => {//since email object may not contain before login
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
     }
@@ -367,7 +367,7 @@ const App = () => {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: login.email,
+        email: subEmail,
         stock: stock
       })
     })
