@@ -173,6 +173,7 @@ const App = () => {
                     return prevState
                   }
                 })
+                findStockName(resultArray[i].stock)
               }
             }
             setLoading(prevState => {
@@ -270,7 +271,6 @@ const App = () => {
         insertMessage.push({ stock: stockNotify[i].stock, price: stockNotify[i].price, equal: stockNotify[i].equal, alert: stockNotify[i].alert })
       }
     }
-    console.log(updateMessage, insertMessage)
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
       fetch(host + '/update/stockNotify', {
         method: 'post',
@@ -307,6 +307,7 @@ const App = () => {
                 return prevState
               }
             })
+            findStockName(resultArray[i].stock)
           }
         })
     }
@@ -318,7 +319,6 @@ const App = () => {
           return typeof row._id !== "undefined";
         });
       })
-      console.log(stockNotify)
       setStockNotify(prevState => {
         return prevState.map((row, index) => {
           return { ...row, ...{ stock: oldStockNotify[index].stock, price: oldStockNotify[index].price, equal: oldStockNotify[index].equal } }
@@ -358,6 +358,23 @@ const App = () => {
           }
         })
     }
+  }
+  const findStockName = (stock) => {
+    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+      host = 'http://localhost:8080'
+    }
+    fetch(host + '/find/stockName/', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: login.email,
+        stock: stock
+      })
+    })
+      .then(res => res.json())
+      .then((result) => {
+        console.log(result)
+      })
   }
   function ElevationScroll(props) {
     const { children } = props;
