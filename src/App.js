@@ -376,7 +376,7 @@ const App = () => {
         console.log(result)
       })*/
     let [todayHour, todayMinute, todayDay, today, todaySecond] = getDayTime()
-    let url = "http://money18.on.cc/js/daily/hk/quote/" + stock + "_d.js?time=" + todayHour + todayMinute + todaySecond;
+    let url = "https://money18.on.cc/js/daily/hk/quote/" + stock + "_d.js?time=" + todayHour + todayMinute + todaySecond;
     fetch(url, {
       method: 'get'
     })
