@@ -379,7 +379,7 @@ const App = () => {
     let url = "https://money18.on.cc/js/daily/hk/quote/" + stock + "_d.js?time=" + todayHour + todayMinute + todaySecond;
     fetch(url, {
       method: 'get',
-      mode: 'cors'
+      mode: 'no-cors'
     })
       .then(res => res.text())
       //.then(res => res.json())
