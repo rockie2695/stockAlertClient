@@ -360,7 +360,7 @@ const App = () => {
     }
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
-    /*if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
     }
     fetch(host + '/find/stockName/', {
@@ -374,17 +374,9 @@ const App = () => {
       .then(res => res.json())
       .then((result) => {
         console.log(result)
-      })*/
-    let [todayHour, todayMinute, todayDay, today, todaySecond] = getDayTime()
-    let url = "https://money18.on.cc/js/daily/hk/quote/" + stock + "_d.js?time=" + todayHour + todayMinute + todaySecond;
-    fetch(url, {
-      method: 'get',
-      mode: 'no-cors'
-    })
-      //.then(res => console.log(res))
-      //.then(res => res.json())
-      .then((result) => {
-        console.log(result,result.json(),result.body)
+        setStockNotify(prevState => {
+          return [...prevState, { stock: result.nameChi, price: "", equal: ">=", alert: true }]
+        });
       })
   }
   function ElevationScroll(props) {
