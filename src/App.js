@@ -374,8 +374,17 @@ const App = () => {
       .then(res => res.json())
       .then((result) => {
         console.log(result)
+        let name = result.name
+        let stock = result.stock
         setStockNotify(prevState => {
-          return [...prevState, { stock: result.name, price: "", equal: ">=", alert: false }]
+          return prevState.map((row, index) => {
+            let addObject = {}
+
+            if (row.stock === stock) {
+              addObject = { name: name }
+            }
+            return { ...row, ...addObject }
+          })
         });
       })
   }
@@ -504,7 +513,7 @@ const App = () => {
                                   onBlur={loseFocusAlertInfo}
                                 />
                                 :
-                                <Typography>{row.stock}</Typography>
+                                <Typography>{row.stock}{typeof row.name !== "undefined" ? row.name : null}</Typography>
                             }
                           </Grid>
                           <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
