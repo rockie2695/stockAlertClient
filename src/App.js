@@ -378,7 +378,8 @@ const App = () => {
     let [todayHour, todayMinute, todayDay, today, todaySecond] = getDayTime()
     let url = "https://money18.on.cc/js/daily/hk/quote/" + stock + "_d.js?time=" + todayHour + todayMinute + todaySecond;
     fetch(url, {
-      method: 'get'
+      method: 'get',
+      mode: 'cors'
     })
       .then(res => res.text())
       //.then(res => res.json())
