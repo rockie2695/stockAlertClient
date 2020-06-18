@@ -384,7 +384,7 @@ const App = () => {
       //.then(res => console.log(res))
       //.then(res => res.json())
       .then((result) => {
-        console.log(result)
+        console.log(result,result.text(),result.body)
       })
   }
   function ElevationScroll(props) {
