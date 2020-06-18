@@ -360,7 +360,7 @@ const App = () => {
     }
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
-    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+    /*if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
     }
     fetch(host + '/find/stockName/', {
@@ -374,6 +374,16 @@ const App = () => {
       .then(res => res.json())
       .then((result) => {
         console.log(result)
+      })*/
+    let [todayHour, todayMinute, todayDay, today, todaySecond] = getDayTime()
+    let url = "http://money18.on.cc/js/daily/hk/quote/" + stock + "_d.js?time=" + todayHour + todayMinute + todaySecond;
+    fetch(url, {
+      method: 'get'
+    })
+      .then(res => res.text())
+      //.then(res => res.json())
+      .then((result) => {
+        console.log(result)
       })
   }
   function ElevationScroll(props) {
@@ -382,6 +392,15 @@ const App = () => {
     return React.cloneElement(children, {
       elevation: trigger ? 4 : 1,
     });
+  }
+  function getDayTime() {
+    let today = new Date().toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" });
+    today = new Date(today)
+    let todayHour = today.getHours();
+    let todayMinute = today.getMinutes();
+    let todayDay = today.getDay()//todayDay=0(sunday),1,2,3,4,5,6
+    let todaySecond = today.getSeconds();
+    return [todayHour, todayMinute, todayDay, today, todaySecond]
   }
   return (
     <HttpsRedirect>
