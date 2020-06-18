@@ -375,7 +375,7 @@ const App = () => {
       .then((result) => {
         console.log(result)
         setStockNotify(prevState => {
-          return [...prevState, { stock: result.nameChi, price: "", equal: ">=", alert: true }]
+          return [...prevState, { stock: result.name, price: "", equal: ">=", alert: false }]
         });
       })
   }
