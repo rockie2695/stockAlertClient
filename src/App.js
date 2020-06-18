@@ -381,7 +381,7 @@ const App = () => {
       method: 'get',
       mode: 'no-cors'
     })
-      .then(res => res.text())
+      //.then(res => console.log(res))
       //.then(res => res.json())
       .then((result) => {
         console.log(decodeURIComponent(result))
