@@ -376,12 +376,13 @@ const App = () => {
         console.log(result)
         let name = result.name
         let stock = result.stock
+        let open = result.open
         setStockNotify(prevState => {
           return prevState.map((row, index) => {
             let addObject = {}
 
             if (row.stock === stock) {
-              addObject = { name: name }
+              addObject = { name: name, open: open }
             }
             return { ...row, ...addObject }
           })
@@ -521,7 +522,12 @@ const App = () => {
                               {
                                 typeof row.nowPrice !== "undefined"
                                   ?
-                                  '$' + row.nowPrice
+                                  '$' + row.nowPrice +
+                                    typeof row.open !== "undefined" && typeof row.nowPrice !== "undefined"
+                                    ?
+                                    ' (' + (row.open - row.nowPrice) + ')'
+                                    :
+                                    ''
                                   :
                                   <Skeleton />
                               }
