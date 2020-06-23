@@ -522,14 +522,16 @@ const App = () => {
                               {
                                 typeof row.nowPrice !== "undefined"
                                   ?
-                                  '$' + row.nowPrice + '' +
-                                    (typeof row.open !== "undefined" && typeof row.nowPrice !== "undefined")
-                                    ?
-                                    ' (' + parseFloat(Math.round((parseFloat(row.open) - parseFloat(row.nowPrice) + 0.00001) * 1000) / 1000) + ')'
-                                    :
-                                    ''
+                                  '$' + row.nowPrice
                                   :
                                   <Skeleton />
+                              }
+                              {
+                                (typeof row.open !== "undefined" && typeof row.nowPrice !== "undefined")
+                                  ?
+                                  ' (' + parseFloat(Math.round((parseFloat(row.open) - parseFloat(row.nowPrice) + 0.00001) * 1000) / 1000) + ')'
+                                  :
+                                  null
                               }
                             </Typography>
                           </Grid>
