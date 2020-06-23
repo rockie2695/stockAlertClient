@@ -532,7 +532,7 @@ const App = () => {
                                   ' (' +
                                   parseFloat(Math.round((parseFloat(row.open) - parseFloat(row.nowPrice)
                                     + 0.00001
-                                    * (parseFloat(row.open) - parseFloat(row.nowPrice)) > 0 ? 1 : -1
+                                    * ((parseFloat(row.open) - parseFloat(row.nowPrice)) > 0 ? 1 : -1)
                                   ) * 1000) / 1000)
                                   + ')'
                                   :
