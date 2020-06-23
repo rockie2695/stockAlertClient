@@ -530,6 +530,7 @@ const App = () => {
                                 (typeof row.open !== "undefined" && typeof row.nowPrice !== "undefined")
                                   ?
                                   ' (' +
+                                  ((parseFloat(row.open) - parseFloat(row.nowPrice)) > 0 ? '+' : '') +
                                   parseFloat(Math.round((parseFloat(row.open) - parseFloat(row.nowPrice)
                                     + 0.00001
                                     * ((parseFloat(row.open) - parseFloat(row.nowPrice)) > 0 ? 1 : -1)
