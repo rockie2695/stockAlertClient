@@ -523,9 +523,9 @@ const App = () => {
                                 typeof row.nowPrice !== "undefined"
                                   ?
                                   '$' + row.nowPrice +
-                                    typeof row.open !== "undefined" && typeof row.nowPrice !== "undefined"
+                                    typeof row.open !== "undefined"
                                     ?
-                                    ' (' + (row.open - row.nowPrice) + ')'
+                                    ' (' + (parseFloat(row.open) - parseFloat(row.nowPrice)) + ')'
                                     :
                                     ''
                                   :
