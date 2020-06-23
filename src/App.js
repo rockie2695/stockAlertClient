@@ -382,7 +382,7 @@ const App = () => {
             let addObject = {}
 
             if (row.stock === stock) {
-              addObject = { name: name, open: open }
+              addObject = { name: name, open: open, price: 10 }
             }
             return { ...row, ...addObject }
           })
