@@ -376,13 +376,13 @@ const App = () => {
         console.log(result)
         let name = result.name
         let stock = result.stock
-        let open = result.open
+        let past = result.past
         setStockNotify(prevState => {
           return prevState.map((row, index) => {
             let addObject = {}
 
             if (row.stock === stock) {
-              addObject = { name: name, open: open}
+              addObject = { name: name, past: past}
             }
             return { ...row, ...addObject }
           })
@@ -527,13 +527,13 @@ const App = () => {
                                   <Skeleton />
                               }
                               {
-                                (typeof row.open !== "undefined" && typeof row.nowPrice !== "undefined")
+                                (typeof row.past !== "undefined" && typeof row.nowPrice !== "undefined")
                                   ?
                                   ' (' +
-                                  ((parseFloat(row.open) - parseFloat(row.nowPrice)) > 0 ? '+' : '') +
-                                  parseFloat(Math.round((parseFloat(row.open) - parseFloat(row.nowPrice)
+                                  ((parseFloat(row.past) - parseFloat(row.nowPrice)) > 0 ? '+' : '') +
+                                  parseFloat(Math.round((parseFloat(row.past) - parseFloat(row.nowPrice)
                                     + 0.00001
-                                    * ((parseFloat(row.open) - parseFloat(row.nowPrice)) > 0 ? 1 : -1)
+                                    * ((parseFloat(row.past) - parseFloat(row.nowPrice)) > 0 ? 1 : -1)
                                   ) * 1000) / 1000)
                                   + ')'
                                   :
