@@ -85,7 +85,7 @@ const App = () => {
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20") {
-              findStockName(row.stock, email.login)
+              findStockName(row.stock, login.email)
             }
           }
           return { ...row, ...addObject }
