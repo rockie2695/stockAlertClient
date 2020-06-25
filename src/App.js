@@ -41,6 +41,7 @@ const App = () => {
   const [edit, setEdit] = useState(false)
   const [boxShadow, setBoxShadow] = useState(-1)
   const [loading, setLoading] = useState(false)
+  const [sendingForm, setSendingForm] = useState(false)
   const [addRoomList, setAddRoomList] = useState([])
   const connectWebSocket = () => {
     //開啟
@@ -82,7 +83,10 @@ const App = () => {
         return prevState.map((row, index) => {
           let addObject = {}
           if (row.stock === message.stock) {
-            addObject = { nowPrice: message.price, nowTime: message.time, elevation: 0 }
+            addObject = { nowPrice: message.price, nowTime: message.time }
+            if (message.time.split(' ')[1] === "09:20") {
+              findStockName(row.stock, email.login)
+            }
           }
           return { ...row, ...addObject }
         })
@@ -262,6 +266,9 @@ const App = () => {
   }
   const fun_save = () => {
     console.log(oldStockNotify, stockNotify)
+    setSendingForm(prevState => {
+      return true
+    })
     let updateMessage = []
     let insertMessage = []
     for (let i = 0; i < stockNotify.length; i++) {
@@ -282,33 +289,38 @@ const App = () => {
         })
       }).then(res => res.json())
         .then((result) => {
-          let resultArray = result.ok
-          for (let i = 0; i < addRoomList.length; i++) {
-            wsRef.current.emit('leaveRoom', addRoomList[i].stock)
+          if (typeof result.ok !== "undefined") {
+            let resultArray = result.ok
+            for (let i = 0; i < addRoomList.length; i++) {
+              wsRef.current.emit('leaveRoom', addRoomList[i].stock)
+            }
+            setAddRoomList(prevState => {
+              return []
+            })
+            setStockNotify(prevState => {
+              return resultArray
+            })
+            setOldStockNotify(prevState => {
+              return resultArray
+            })
+            setEdit(prevState => {
+              return false
+            })
+            for (let i = 0; i < resultArray.length; i++) {
+              setAddRoomList(prevState => {
+                if (!prevState.includes(resultArray[i].stock)) {
+                  wsRef.current.emit('addRoom', resultArray[i].stock)
+                  return [...prevState, resultArray[i].stock]
+                } else {
+                  return prevState
+                }
+              })
+              findStockName(resultArray[i].stock, login.email)
+            }
           }
-          setAddRoomList(prevState => {
-            return []
-          })
-          setStockNotify(prevState => {
-            return resultArray
-          })
-          setOldStockNotify(prevState => {
-            return resultArray
-          })
-          setEdit(prevState => {
+          setSendingForm(prevState => {
             return false
           })
-          for (let i = 0; i < resultArray.length; i++) {
-            setAddRoomList(prevState => {
-              if (!prevState.includes(resultArray[i].stock)) {
-                wsRef.current.emit('addRoom', resultArray[i].stock)
-                return [...prevState, resultArray[i].stock]
-              } else {
-                return prevState
-              }
-            })
-            findStockName(resultArray[i].stock, login.email)
-          }
         })
     }
   }
@@ -486,8 +498,8 @@ const App = () => {
                     edit === true
                       ?
                       <Fragment>
-                        <Button variant="contained" color="primary" onClick={fun_save}>Save</Button>
-                        <Button variant="contained" color="primary" onClick={fun_edit}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={fun_edit} disabled={sendingForm}>Cancel</Button>
                       </Fragment>
                       :
                       <Button variant="contained" color="primary" onClick={fun_edit}>Edit</Button>
@@ -538,6 +550,7 @@ const App = () => {
                                   autoComplete='off'
                                   onChange={changeAlertInfo}
                                   onBlur={loseFocusAlertInfo}
+                                  disabled={sendingForm}
                                 />
                                 :
                                 <Typography>{row.stock}{typeof row.name !== "undefined" ? row.name : null}</Typography>
@@ -609,6 +622,7 @@ const App = () => {
                                     value={row.equal}
                                     style={{ minWidth: '18px' }}
                                     onChange={changeAlertInfo}
+                                    disabled={sendingForm}
                                   >
                                     <MenuItem key='>=' value='>='>
                                       {">="}
@@ -630,7 +644,7 @@ const App = () => {
                                     onChange={() => changeAlertSwitch(index, row._id, row.alert)}
                                     name="alertCheck"
                                     color="primary"
-                                    disabled={!edit}
+                                    disabled={!edit || sendingForm}
                                   />
                                 }
                               />
