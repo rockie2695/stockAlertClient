@@ -377,12 +377,38 @@ const App = () => {
         let name = result.name
         let stock = result.stock
         let past = result.past
+        let nowPrice = result.nowPrice
+        let nowTime = result.nowTime
+        let tenDayLow = result.tenDayLow
+        let tenDayHigh = result.tenDayHigh
+        let tenDayAvg = result.tenDayAvg
+        let monthLow = result.monthLow
+        let monthHigh = result.monthHigh
+        let twentyDayAvg = result.twentyDayAvg
+        let wk52Low = result.wk52Low
+        let wk52High = result.wk52High
+        let fiftyDayAvg = result.fiftyDayAvg
         setStockNotify(prevState => {
           return prevState.map((row, index) => {
             let addObject = {}
 
             if (row.stock === stock) {
-              addObject = { name: name, past: past}
+              addObject = {
+                name: name,
+                past: past,
+                tenDayHigh: tenDayHigh,
+                tenDayLow: tenDayLow,
+                tenDayAvg: tenDayAvg,
+                monthLow: monthLow,
+                monthHigh: monthHigh,
+                twentyDayAvg: twentyDayAvg,
+                wk52Low: wk52Low,
+                wk52High: wk52High,
+                fiftyDayAvg: fiftyDayAvg
+              }
+              if (typeof row.nowPrice === "undefined") {
+                addObject = { ...addObject, ...{ nowPrice: nowPrice, nowTime: nowTime } }
+              }
             }
             return { ...row, ...addObject }
           })
