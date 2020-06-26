@@ -596,7 +596,7 @@ const App = () => {
                               {edit
                                 ?
                                 <TextField
-                                  id={"price_" + index} name={"price_" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off'
+                                  id={"price_" + index} name={"price_" + index} label="price" variant="outlined" value={row.price} margin="dense" autoComplete='off' disabled={sendingForm}
                                   InputProps={{
                                     startAdornment: <InputAdornment position="start">$</InputAdornment>
                                   }}
