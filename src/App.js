@@ -554,7 +554,7 @@ const App = () => {
                     edit === true
                       ?
                       <Fragment>
-                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save <CircularProgress size={20} style={{"color:white"}}/></Button>
+                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save <CircularProgress size={20} style={{color:"white"}}/></Button>
                         <Button variant="contained" color="primary" onClick={fun_edit} disabled={sendingForm}>Cancel</Button>
                       </Fragment>
                       :
