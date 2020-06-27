@@ -86,7 +86,7 @@ const App = () => {
 
   const classes = useStyles();
 
-  const DialogTitle = withStyles((theme))((props) => {
+  const DialogTitle = ((props) => {
     const { children, classes, onClose, ...other } = props;
     return (
       <MuiDialogTitle disableTypography className={classes.padding2} {...other}>
