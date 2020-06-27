@@ -71,12 +71,7 @@ const App = () => {
       '& > *': {
         margin: theme.spacing(2),
       }
-    }
-  }))
-
-  const classes = useStyles();
-
-  const styles = (theme) => ({
+    },
     padding2: {
       margin: 0,
       padding: theme.spacing(2),
@@ -87,7 +82,10 @@ const App = () => {
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     }
-  });
+  }))
+
+  const classes = useStyles();
+
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
     return (
