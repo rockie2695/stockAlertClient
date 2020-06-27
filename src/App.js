@@ -51,67 +51,7 @@ const App = () => {
   const [loading, setLoading] = useState(false)
   const [sendingForm, setSendingForm] = useState(false)
   const [addRoomList, setAddRoomList] = useState([])
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const useStyles = makeStyles((theme) => ({
-    margin1: {
-      '& > *': {
-        margin: theme.spacing(1),
-      }
-    },
-    margin2: {
-      '& > *': {
-        margin: theme.spacing(2),
-      }
-    },
-    padding2: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    }
-  }))
-
-  const classes = useStyles();
-
-  const DialogTitle = ((props) => {
-    return (
-      <MuiDialogTitle disableTypography>
-        <Typography variant="h6">{props.children}</Typography>
-        {handleClose ? (
-          <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </MuiDialogTitle>
-    );
-  });
-
-  const DialogContent = withStyles((theme) => ({
-    root: {
-      padding: theme.spacing(2),
-    },
-  }))(MuiDialogContent);
-
-  const DialogActions = withStyles((theme) => ({
-    root: {
-      margin: 0,
-      padding: theme.spacing(1),
-    },
-  }))(MuiDialogActions);
-
+  const [open, setOpen] = useState(false);
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -183,7 +123,63 @@ const App = () => {
       });
     })
   }
+  const useStyles = makeStyles((theme) => ({
+    margin1: {
+      '& > *': {
+        margin: theme.spacing(1),
+      }
+    },
+    margin2: {
+      '& > *': {
+        margin: theme.spacing(2),
+      }
+    },
+    padding2: {
+      margin: 0,
+      padding: theme.spacing(2),
+    },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
+  }))
 
+  const classes = useStyles();
+
+  const DialogTitle = withStyles(useStyles)((props) => {
+    return (
+      <MuiDialogTitle disableTypography className={classes.padding2} {...props.other}>
+        <Typography variant="h6">{props.children}</Typography>
+        {props.onClose ? (
+          <IconButton aria-label="close" className={classes.closeButton} onClick={props.onClose}>
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  });
+
+  const DialogContent = withStyles((theme) => ({
+    root: {
+      padding: theme.spacing(2),
+    },
+  }))(MuiDialogContent);
+
+  const DialogActions = withStyles((theme) => ({
+    root: {
+      margin: 0,
+      padding: theme.spacing(1),
+    },
+  }))(MuiDialogActions);
+
+  const openDialog = () => {
+    setOpen(prevState => true);
+  };
+  const closeDialog = () => {
+    setOpen(prevState => false);
+  };
 
   const fun_login = (response) => {
     if (response.hasOwnProperty('tokenId')) {
@@ -529,9 +525,10 @@ const App = () => {
                   onLogoutSuccess={fun_logout}
                 ></GoogleLogout>
               }
+
             </Toolbar>
+            <LinearProgress />
           </AppBar>
-          <LinearProgress />
         </ElevationScroll>
 
         <Box position="relative">
@@ -547,7 +544,7 @@ const App = () => {
         <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
           <Grid container alignItems="center">
             <Hidden only={['xs', 'sm']}>
-              <Grid item sm={0} md={2} className={classes.margin1}>
+              <Grid item sm={false} md={2} className={classes.margin1}>
               </Grid>
             </Hidden>
             <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
@@ -557,7 +554,7 @@ const App = () => {
                     edit === true
                       ?
                       <Fragment>
-                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save<CircularProgress size={20} /></Button>
+                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save</Button>
                         <Button variant="contained" color="primary" onClick={fun_edit} disabled={sendingForm}>Cancel</Button>
                       </Fragment>
                       :
@@ -575,9 +572,9 @@ const App = () => {
                       <Typography>Price</Typography>
                     </Grid>
                     <Hidden only="xs">
-                      <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                      <Grid item xs={false} sm={2} md={2} className={classes.margin1}>
                       </Grid>
-                      <Grid item xs={0} sm={5} md={5} className={classes.margin1}>
+                      <Grid item xs={false} sm={5} md={5} className={classes.margin1}>
                         <Typography>Alert</Typography>
                       </Grid>
                     </Hidden>
@@ -588,7 +585,7 @@ const App = () => {
                   ?
                   stockNotify.map((row, index) => (
                     <Fragment>
-                      <Box display="flex" alignItems="center" padding={2} onClick={handleClickOpen} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                      <Box display="flex" alignItems="center" padding={2} onClick={openDialog} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                         <Grid container spacing={3} alignItems="center">
                           <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                             <Avatar>{index + 1}</Avatar>
@@ -651,7 +648,7 @@ const App = () => {
                             </Typography>
                           </Grid>
                           <Hidden only="xs">
-                            <Grid item xs={0} sm={2} md={2} className={classes.margin1}>
+                            <Grid item xs={false} sm={2} md={2} className={classes.margin1}>
                               {edit
                                 ?
                                 <TextField
@@ -667,7 +664,7 @@ const App = () => {
                                 <Typography>${row.price}</Typography>
                               }
                             </Grid>
-                            <Grid item xs={0} sm={1} md={1} className={classes.margin1}>
+                            <Grid item xs={false} sm={1} md={1} className={classes.margin1}>
                               {
                                 edit
                                   ?
@@ -695,7 +692,7 @@ const App = () => {
                               }
 
                             </Grid>
-                            <Grid item xs={0} sm={2} md={2} className={classes.margin1} alignItems="center" style={{ textAlign: "center" }}>
+                            <Grid item xs={false} sm={2} md={2} className={classes.margin1} alignItems="center" style={{ textAlign: "center" }}>
                               <FormControlLabel
                                 control={
                                   <Switch
@@ -718,33 +715,33 @@ const App = () => {
                   loading === true
                     ?
                     <Fragment>
-                      <Typography color="textSecondary" align="center">
-                        <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                        <Typography color="textSecondary" align="center">
                           Loading
-                  </Box>
                       </Typography>
+                      </Box>
                       <Divider />
                     </Fragment>
                     :
                     <Fragment>
-                      <Typography color="textSecondary" align="center">
-                        <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                        <Typography color="textSecondary" align="center">
                           None of record
-                  </Box>
                       </Typography>
+                      </Box>
                       <Divider />
                     </Fragment>
                 }
                 {stockNotify.length < 10 && edit === true
                   ?
                   <Fragment>
-                    <Typography color="textSecondary" align="center">
-                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                    <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2} onMouseLeave={test2}>
+                      <Typography color="textSecondary" align="center">
                         <IconButton color="primary" aria-label="add notify" onClick={fun_addNotify}>
                           <AddCircleIcon fontSize="large" />
                         </IconButton>
-                      </Box>
-                    </Typography>
+                      </Typography>
+                    </Box>
                     <Divider />
                   </Fragment>
                   :
@@ -754,38 +751,38 @@ const App = () => {
 
             </Grid>
             <Hidden only={['xs', 'sm']}>
-              <Grid item sm={0} md={2} className={classes.margin1}>
+              <Grid item sm={false} md={2} className={classes.margin1}>
               </Grid>
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        {/*<Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-          <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-            Modal title
-        </DialogTitle>
-          <DialogContent dividers>
-            <Typography gutterBottom>
-              Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-              in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-          </Typography>
-            <Typography gutterBottom>
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-              lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-            <Typography gutterBottom>
-              Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-              scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-              auctor fringilla.
-          </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus onClick={handleClose} color="primary">
-              Save changes
-          </Button>
-          </DialogActions>
-              </Dialog>*/}
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
+      <Dialog onClose={closeDialog} aria-labelledby="customized-dialog-title" open={open}>
+        <DialogTitle id="customized-dialog-title" onClose={closeDialog}>
+          Modal title
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography gutterBottom>
+            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+          </Typography>
+          <Typography gutterBottom>
+            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
+            lacus vel augue laoreet rutrum faucibus dolor auctor.
+          </Typography>
+          <Typography gutterBottom>
+            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+            scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+            auctor fringilla.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={closeDialog} color="primary">
+            Save changes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </HttpsRedirect>
   );
 }
