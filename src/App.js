@@ -12,7 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
@@ -25,6 +25,14 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
 import Link from '@material-ui/core/Link';
 import HttpsRedirect from 'react-https-redirect';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import './App.css';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
@@ -43,6 +51,42 @@ const App = () => {
   const [loading, setLoading] = useState(false)
   const [sendingForm, setSendingForm] = useState(false)
   const [addRoomList, setAddRoomList] = useState([])
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const DialogTitle = withStyles(styles)((props) => {
+    const { children, classes, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography variant="h6">{children}</Typography>
+        {onClose ? (
+          <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  });
+
+  const DialogContent = withStyles((theme) => ({
+    root: {
+      padding: theme.spacing(2),
+    },
+  }))(MuiDialogContent);
+
+  const DialogActions = withStyles((theme) => ({
+    root: {
+      margin: 0,
+      padding: theme.spacing(1),
+    },
+  }))(MuiDialogActions);
+
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -126,7 +170,16 @@ const App = () => {
       }
     }
   }))
+  const styles = (theme) => ({
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    }
+  });
   const classes = useStyles();
+
   const fun_login = (response) => {
     if (response.hasOwnProperty('tokenId')) {
       let email = response.profileObj.email
@@ -473,6 +526,7 @@ const App = () => {
               }
             </Toolbar>
           </AppBar>
+          <LinearProgress />
         </ElevationScroll>
 
         <Box position="relative">
@@ -498,7 +552,7 @@ const App = () => {
                     edit === true
                       ?
                       <Fragment>
-                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={fun_save} disabled={sendingForm}>Save<CircularProgress size={20} /></Button>
                         <Button variant="contained" color="primary" onClick={fun_edit} disabled={sendingForm}>Cancel</Button>
                       </Fragment>
                       :
@@ -529,7 +583,7 @@ const App = () => {
                   ?
                   stockNotify.map((row, index) => (
                     <Fragment>
-                      <Box display="flex" alignItems="center" padding={2} onClick={test2} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                      <Box display="flex" alignItems="center" padding={2} onClick={handleClickOpen} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                         <Grid container spacing={3} alignItems="center">
                           <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                             <Avatar>{index + 1}</Avatar>
@@ -700,6 +754,31 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
+        <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+          <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            Modal title
+        </DialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+              in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+          </Typography>
+            <Typography gutterBottom>
+              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
+              lacus vel augue laoreet rutrum faucibus dolor auctor.
+          </Typography>
+            <Typography gutterBottom>
+              Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+              scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+              auctor fringilla.
+          </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleClose} color="primary">
+              Save changes
+          </Button>
+          </DialogActions>
+        </Dialog>
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
     </HttpsRedirect>
