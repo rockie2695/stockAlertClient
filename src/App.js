@@ -89,9 +89,9 @@ const App = () => {
   const DialogTitle = ((props) => {
     return (
       <MuiDialogTitle disableTypography>
-        <Typography variant="h6">{children}</Typography>
-        {onClose ? (
-          <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+        <Typography variant="h6">{props.children}</Typography>
+        {handleClose ? (
+          <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         ) : null}
