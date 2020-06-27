@@ -87,9 +87,8 @@ const App = () => {
   const classes = useStyles();
 
   const DialogTitle = ((props) => {
-    const { children, classes, onClose, ...other } = props;
     return (
-      <MuiDialogTitle disableTypography className={classes.padding2} {...other}>
+      <MuiDialogTitle disableTypography>
         <Typography variant="h6">{children}</Typography>
         {onClose ? (
           <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
