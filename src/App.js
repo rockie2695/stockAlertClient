@@ -60,6 +60,22 @@ const App = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const useStyles = makeStyles((theme) => ({
+    margin1: {
+      '& > *': {
+        margin: theme.spacing(1),
+      }
+    },
+    margin2: {
+      '& > *': {
+        margin: theme.spacing(2),
+      }
+    }
+  }))
+
+  const classes = useStyles();
+  
   const styles = (theme) => ({
     closeButton: {
       position: 'absolute',
@@ -166,20 +182,7 @@ const App = () => {
       });
     })
   }
-  const useStyles = makeStyles((theme) => ({
-    margin1: {
-      '& > *': {
-        margin: theme.spacing(1),
-      }
-    },
-    margin2: {
-      '& > *': {
-        margin: theme.spacing(2),
-      }
-    }
-  }))
 
-  const classes = useStyles();
 
   const fun_login = (response) => {
     if (response.hasOwnProperty('tokenId')) {
