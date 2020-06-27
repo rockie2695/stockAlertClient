@@ -60,6 +60,14 @@ const App = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const styles = (theme) => ({
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    }
+  });
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
     return (
@@ -170,14 +178,7 @@ const App = () => {
       }
     }
   }))
-  const styles = (theme) => ({
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    }
-  });
+
   const classes = useStyles();
 
   const fun_login = (response) => {
