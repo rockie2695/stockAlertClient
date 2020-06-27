@@ -755,7 +755,7 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+        {/*<Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
           <DialogTitle id="customized-dialog-title" onClose={handleClose}>
             Modal title
         </DialogTitle>
@@ -779,7 +779,7 @@ const App = () => {
               Save changes
           </Button>
           </DialogActions>
-        </Dialog>
+              </Dialog>*/}
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
     </HttpsRedirect>
