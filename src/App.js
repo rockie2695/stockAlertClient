@@ -175,7 +175,9 @@ const App = () => {
   }))(MuiDialogActions);
 
   const openDialog = () => {
-    setOpen(prevState => true);
+    if (!edit) {
+      setOpen(prevState => true);
+    }
   };
   const closeDialog = () => {
     setOpen(prevState => false);
@@ -525,7 +527,6 @@ const App = () => {
                   onLogoutSuccess={fun_logout}
                 ></GoogleLogout>
               }
-
             </Toolbar>
             {sendingForm ? <LinearProgress /> : null}
           </AppBar>
@@ -590,7 +591,7 @@ const App = () => {
                       <Box display="flex" alignItems="center" padding={2} onClick={openDialog} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                         <Grid container spacing={3} alignItems="center">
                           <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
-                            <Avatar>{index + 1}</Avatar>
+                            <Avatar onClick={test2}>{edit && boxShadow === index ? 'X' : (index + 1)}</Avatar>
                           </Grid>
                           <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
                             {
