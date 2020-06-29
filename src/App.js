@@ -576,10 +576,14 @@ const App = () => {
                     </Grid>
                     <Hidden only="xs">
                       <Grid item xs={false} sm={2} md={2} className={classes.margin1}>
+                      </Grid>
+                      <Grid item xs={false} sm={2} md={2} className={classes.margin1}>
+                        <Typography>Alert</Typography>
+                      </Grid>
+                      <Grid item xs={false} sm={2} md={2} className={classes.margin1}>
                         <Typography>now$ to alert$</Typography>
                       </Grid>
-                      <Grid item xs={false} sm={5} md={5} className={classes.margin1}>
-                        <Typography>Alert</Typography>
+                      <Grid item xs={false} sm={1} md={1} className={classes.margin1}>
                       </Grid>
                     </Hidden>
                   </Grid>
