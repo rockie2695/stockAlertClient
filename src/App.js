@@ -398,7 +398,7 @@ const App = () => {
     });
   }
   const changeAlertSwitch = (rowIndex, _id, alert) => {
-    if (edit === true) {
+    if (edit === true && typeof stockNotify[rowIndex]._id !== "undefined") {
       if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
         host = 'http://localhost:8080'
       }
@@ -582,8 +582,6 @@ const App = () => {
                       </Grid>
                       <Grid item xs={false} sm={2} md={2} className={classes.margin1}>
                         <Typography>now$ to alert$</Typography>
-                      </Grid>
-                      <Grid item xs={false} sm={1} md={1} className={classes.margin1}>
                       </Grid>
                     </Hidden>
                   </Grid>
