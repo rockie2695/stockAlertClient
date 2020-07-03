@@ -499,6 +499,14 @@ const App = () => {
     let todaySecond = today.getSeconds();
     return [todayHour, todayMinute, todayDay, today, todaySecond]
   }
+
+  /*
+  you can make style like this
+  const boxStyle={
+    height: '100%', minHeight: '100vh'
+  }
+  */
+
   return (
     <HttpsRedirect>
       <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
@@ -627,19 +635,40 @@ const App = () => {
                                   :
                                   <Skeleton />
                               }
-                              {
-                                (typeof row.past !== "undefined" && typeof row.nowPrice !== "undefined")
-                                  ?
-                                  ' (' +
-                                  ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? '+' : '') +
-                                  parseFloat(Math.round((parseFloat(row.nowPrice) - parseFloat(row.past)
-                                    + 0.00001
-                                    * ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? 1 : -1)
-                                  ) * 1000) / 1000)
-                                  + ')'
-                                  :
-                                  null
-                              }
+                              <span style={
+                                (
+                                  ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0)
+                                    ?
+                                    { color: 'green' }
+                                    :
+                                    ((parseFloat(row.nowPrice) - parseFloat(row.past)) < 0)
+                                      ?
+                                      { color: 'red' }
+                                      :
+                                      {}
+                                )
+                              }>
+                                {
+                                  (typeof row.past !== "undefined" && typeof row.nowPrice !== "undefined")
+
+                                    ?
+                                    ' ('
+                                    +
+                                    ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? '+' : '')
+                                    +
+                                    parseFloat(
+                                      Math.round((parseFloat(row.nowPrice) - parseFloat(row.past)
+                                        + 0.00001
+                                        * ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? 1 : -1)
+                                      )
+                                        * 1000)
+                                      / 1000
+                                    )
+                                    + ')'
+                                    :
+                                    null
+                                }
+                              </span>
                             </Typography>
                           </Grid>
                           <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
@@ -721,16 +750,16 @@ const App = () => {
                   loading === true
                     ?
                     <Fragment>
-                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                      <Box textAlign="center" alignItems="center" margin={2} onMouseEnter={test2()} onMouseLeave={test2()}>
                         <Typography color="textSecondary" align="center">
-                          Loading
-                      </Typography>
+                          <CircularProgress />
+                        </Typography>
                       </Box>
                       <Divider />
                     </Fragment>
                     :
                     <Fragment>
-                      <Box textAlign="center" alignItems="center" margin={2} onClick={test2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                      <Box textAlign="center" alignItems="center" margin={2} onMouseEnter={test2()} onMouseLeave={test2()}>
                         <Typography color="textSecondary" align="center">
                           None of record
                       </Typography>
