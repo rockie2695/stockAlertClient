@@ -635,40 +635,45 @@ const App = () => {
                                   :
                                   <Skeleton />
                               }
-                              <span style={
-                                (
-                                  ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0)
-                                    ?
-                                    { color: 'green' }
-                                    :
-                                    ((parseFloat(row.nowPrice) - parseFloat(row.past)) < 0)
-                                      ?
-                                      { color: 'red' }
-                                      :
-                                      {}
-                                )
-                              }>
-                                {
-                                  (typeof row.past !== "undefined" && typeof row.nowPrice !== "undefined")
 
-                                    ?
-                                    ' ('
-                                    +
-                                    ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? '+' : '')
-                                    +
-                                    parseFloat(
-                                      Math.round((parseFloat(row.nowPrice) - parseFloat(row.past)
-                                        + 0.00001
-                                        * ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? 1 : -1)
+                              {
+                                (typeof row.past !== "undefined" && typeof row.nowPrice !== "undefined")
+
+                                  ?
+                                  <Fragment>
+                                    <span>{" ("}</span>
+                                    <span style={
+                                      (
+                                        ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0)
+                                          ?
+                                          { color: 'green' }
+                                          :
+                                          ((parseFloat(row.nowPrice) - parseFloat(row.past)) < 0)
+                                            ?
+                                            { color: 'red' }
+                                            :
+                                            {}
                                       )
-                                        * 1000)
-                                      / 1000
-                                    )
-                                    + ')'
-                                    :
-                                    null
-                                }
-                              </span>
+                                    }>
+                                      {
+                                        ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? '+' : '')
+                                        +
+                                        parseFloat(
+                                          Math.round((parseFloat(row.nowPrice) - parseFloat(row.past)
+                                            + 0.00001
+                                            * ((parseFloat(row.nowPrice) - parseFloat(row.past)) > 0 ? 1 : -1)
+                                          )
+                                            * 1000)
+                                          / 1000
+                                        )
+                                      }
+
+                                    </span>
+                                    <span>{")"}</span>
+                                  </Fragment>
+                                  :
+                                  null
+                              }
                             </Typography>
                           </Grid>
                           <Grid item xs={12} sm={2} md={2} className={classes.margin1}>
