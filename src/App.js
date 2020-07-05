@@ -52,6 +52,7 @@ const App = () => {
   const [sendingForm, setSendingForm] = useState(false)
   const [addRoomList, setAddRoomList] = useState([])
   const [open, setOpen] = useState(false);
+  const [dialogIndex, setDialogIndex] = useState(-1)
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -59,6 +60,10 @@ const App = () => {
 
   const wsRef = useRef(ws);
   wsRef.current = ws;
+
+  useEffect(() => {
+    console.log('dialogIndex', dialogIndex)
+  }, [dialogIndex])
 
   useEffect(() => {
     if (ws) {
@@ -174,13 +179,15 @@ const App = () => {
     },
   }))(MuiDialogActions);
 
-  const openDialog = () => {
+  const openDialog = (index) => {
     if (!edit) {
       setOpen(prevState => true);
+      setDialogIndex(prevState => index);
     }
   };
   const closeDialog = () => {
     setOpen(prevState => false);
+    setDialogIndex(prevState => -1);
   };
 
   const fun_login = (response) => {
@@ -599,7 +606,7 @@ const App = () => {
                   ?
                   stockNotify.map((row, index) => (
                     <Fragment>
-                      <Box display="flex" alignItems="center" padding={2} onClick={openDialog} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
+                      <Box display="flex" alignItems="center" padding={2} onClick={() => openDialog(index)} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                         <Grid container spacing={3} alignItems="center">
                           <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
                             <Avatar onClick={test2}>{edit && boxShadow === index ? 'X' : (index + 1)}</Avatar>
