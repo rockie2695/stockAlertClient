@@ -62,8 +62,8 @@ const App = () => {
   wsRef.current = ws;
 
   useEffect(() => {
-    console.log('dialogIndex', dialogIndex)
-  }, [dialogIndex])
+    console.log('dialogIndex', dialogIndex, stockHistory)
+  }, [dialogIndex, stockHistory])
 
   useEffect(() => {
     if (ws) {
@@ -488,6 +488,15 @@ const App = () => {
             return { ...row, ...addObject }
           })
         });
+        setStockHistory(prevState => {
+          return prevState.map((row, index) => {
+            if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime)) {
+              return { ...prevState, priceWithTime: [...row.priceWithTime, { time: nowTime, price: nowPrice }] }
+            } else {
+              return prevState
+            }
+          })
+        })
       })
   }
   function ElevationScroll(props) {
