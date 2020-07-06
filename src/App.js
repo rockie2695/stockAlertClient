@@ -62,7 +62,11 @@ const App = () => {
   wsRef.current = ws;
 
   useEffect(() => {
-    console.log('dialogIndex', dialogIndex, stockHistory)
+    if (dialogIndex > -1) {
+      console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
+    } else {
+      console.log('dialogIndex', dialogIndex)
+    }
   }, [dialogIndex, stockHistory])
 
   useEffect(() => {
@@ -835,7 +839,7 @@ const App = () => {
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
-            Save changes
+            Close
           </Button>
         </DialogActions>
       </Dialog>
