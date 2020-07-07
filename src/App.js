@@ -112,7 +112,7 @@ const App = () => {
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
           if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time)) {
-            return { ...prevState, priceWithTime: [...row.priceWithTime, { time: message.time, price: message.price }] }
+            return { ...row, priceWithTime: [...row.priceWithTime, { time: message.time, price: message.price }] }
           } else {
             return prevState
           }
@@ -495,7 +495,7 @@ const App = () => {
         setStockHistory(prevState => {
           return prevState.map((row, index) => {
             if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime)) {
-              return { ...prevState, priceWithTime: [...row.priceWithTime, { time: nowTime, price: nowPrice }] }
+              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime, price: nowPrice }] }
             } else {
               return prevState
             }
