@@ -438,6 +438,9 @@ const App = () => {
         })
     }
   }
+  const clickAvatar = (index) => {
+    console.log(index)
+  }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
@@ -622,7 +625,7 @@ const App = () => {
                       <Box display="flex" alignItems="center" padding={2} onClick={() => openDialog(index)} boxShadow={boxShadow === index ? 1 : 0} onMouseEnter={() => fun_boxShadow(index)} onMouseLeave={() => fun_boxShadow(index)}>
                         <Grid container spacing={3} alignItems="center">
                           <Grid item xs={3} sm={1} md={1} className={classes.margin1}>
-                            <Avatar onClick={test2}>{edit && boxShadow === index ? 'X' : (index + 1)}</Avatar>
+                            <Avatar onClick={clickAvatar(index)}>{edit && boxShadow === index ? 'X' : (index + 1)}</Avatar>
                           </Grid>
                           <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
                             {
