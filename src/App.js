@@ -443,24 +443,24 @@ const App = () => {
     }
   }
   const clickAvatar = (index) => {
-    console.log(index)
-
-    fetch(host + '/delete/stockNotify/', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: login.email,
-        stock: stockNotify[index].stock
-      })
-    }).then(res => res.json())
-      .then((result) => {
-        console.log(result)
-        if (typeof result.ok !== "undefined") {
-          //delete stockNotify , stockHistory && leave room
-        } else if (typeof result.error !== "undefined") {
-          alert(result.error)
-        }
-      })
+    if (edit) {
+      fetch(host + '/delete/stockNotify/', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: login.email,
+          stock: stockNotify[index].stock
+        })
+      }).then(res => res.json())
+        .then((result) => {
+          console.log(result)
+          if (typeof result.ok !== "undefined") {
+            //delete stockNotify , stockHistory && leave room
+          } else if (typeof result.error !== "undefined") {
+            alert(result.error)
+          }
+        })
+    }
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
