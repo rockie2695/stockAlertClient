@@ -443,19 +443,20 @@ const App = () => {
     }
   }
   const clickAvatar = (index) => {
-    if (edit) {
+    if (edit && typeof stockNotify[index]._id !== "undefined") {
       fetch(host + '/delete/stockNotify/', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: login.email,
-          stock: stockNotify[index].stock
+          id: stockNotify[index]._id
         })
       }).then(res => res.json())
         .then((result) => {
           console.log(result)
           if (typeof result.ok !== "undefined") {
             //delete stockNotify , stockHistory && leave room
+            
           } else if (typeof result.error !== "undefined") {
             alert(result.error)
           }
