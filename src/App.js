@@ -444,19 +444,54 @@ const App = () => {
   }
   const clickAvatar = (index) => {
     if (edit && typeof stockNotify[index]._id !== "undefined") {
+      let id = stockNotify[index]._id
+      let this_index = index
       fetch(host + '/delete/stockNotify/', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: login.email,
-          id: stockNotify[index]._id
+          id: id
         })
       }).then(res => res.json())
         .then((result) => {
           console.log(result)
           if (typeof result.ok !== "undefined") {
             //delete stockNotify , stockHistory && leave room
-            
+            setStockNotify(prevState => {
+              return prevState.map((row, index) => {
+                if (row._id === id) {
+                } else {
+                  return row
+                }
+              })
+            })
+            setStockNotify(prevState => {
+              return prevState.map((row, index) => {
+                if (index == this_index) {
+                } else {
+                  return row
+                }
+              })
+            })
+
+            for (let i = 0; i < addRoomList.length; i++) {
+              wsRef.current.emit('leaveRoom', addRoomList[i].stock)
+            }
+            setAddRoomList(prevState => {
+              return []
+            })
+            for (let i = 0; i < stockHistory.length; i++) {
+              setAddRoomList(prevState => {
+                if (!prevState.includes(stockHistory[i].stock)) {
+                  wsRef.current.emit('addRoom', stockHistory[i].stock)
+                  return [...prevState, stockHistory[i].stock]
+                } else {
+                  return prevState
+                }
+              })
+            }
+
           } else if (typeof result.error !== "undefined") {
             alert(result.error)
           }
