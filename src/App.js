@@ -445,7 +445,8 @@ const App = () => {
   const clickAvatar = (index) => {
     if (edit && typeof stockNotify[index]._id !== "undefined") {
       let id = stockNotify[index]._id
-      let this_index = index
+      let stock = stockNotify[index].stock
+      let count = stockNotify.filter(row => row.stock === stock).length
       fetch(host + '/delete/stockNotify/', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -466,15 +467,16 @@ const App = () => {
                 }
               })
             })
-            setStockNotify(prevState => {
-              return prevState.map((row, index) => {
-                if (index == this_index) {
-                } else {
-                  return row
-                }
+            if (count === 1) {
+              setStockHistory(prevState => {
+                return prevState.map((row, index) => {
+                  if (row.stock == this_index) {
+                  } else {
+                    return row
+                  }
+                })
               })
-            })
-
+            }
             for (let i = 0; i < addRoomList.length; i++) {
               wsRef.current.emit('leaveRoom', addRoomList[i].stock)
             }
