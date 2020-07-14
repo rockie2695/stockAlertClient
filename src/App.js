@@ -474,7 +474,7 @@ const App = () => {
             if (count === 1) {
               setStockHistory(prevState => {
                 return prevState.map((row, index) => {
-                  if (row.stock == this_index) {
+                  if (row.stock == stock) {
                   } else {
                     return row
                   }
