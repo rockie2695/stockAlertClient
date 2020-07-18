@@ -935,10 +935,9 @@ const App = () => {
           <Typography gutterBottom>
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-            <CanvasJSChart options={options} />
 
             <ResponsiveContainer width='100%' height={400}>
-              <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+              <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                 <XAxis dataKey="name" />
