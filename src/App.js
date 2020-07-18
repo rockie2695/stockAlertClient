@@ -948,7 +948,7 @@ const App = () => {
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
             <CanvasJSChart options={options} />
 
-            <ResponsiveContainer width={468} height='100%'>
+            <ResponsiveContainer width='100%' height={400}>
               <LineChart data={data} margin={{ top: 5, right: 0, bottom: 5, left: 0 }}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
