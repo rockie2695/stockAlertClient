@@ -469,20 +469,14 @@ const App = () => {
           if (typeof result.ok !== "undefined") {
             //delete stockNotify , stockHistory && leave room
             setStockNotify(prevState => {
-              return prevState.map((row, index) => {
-                if (row._id === id) {
-                } else {
-                  return row
-                }
+              return prevState.filter((row, index) => {
+                return row._id !== id
               })
             })
             if (count === 1) {
               setStockHistory(prevState => {
-                return prevState.map((row, index) => {
-                  if (row.stock == stock) {
-                  } else {
-                    return row
-                  }
+                return prevState.filter((row, index) => {
+                  return row.stock !== stock
                 })
               })
             }
@@ -949,7 +943,7 @@ const App = () => {
             <CanvasJSChart options={options} />
 
             <ResponsiveContainer width='100%' height={400}>
-              <LineChart data={data} margin={{ top: 5, right: 0, bottom: 5, left: 0 }}>
+              <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                 <XAxis dataKey="name" />
