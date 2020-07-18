@@ -447,56 +447,65 @@ const App = () => {
     }
   }
   const clickAvatar = (index) => {
-    if (edit && typeof stockNotify[index]._id !== "undefined") {
-      let id = stockNotify[index]._id
-      let stock = stockNotify[index].stock
-      let count = stockNotify.filter(row => row.stock === stock).length
-      fetch(host + '/delete/stockNotify/', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: login.email,
-          id: id
-        })
-      }).then(res => res.json())
-        .then((result) => {
-          console.log(result)
-          if (typeof result.ok !== "undefined") {
-            //delete stockNotify , stockHistory && leave room
-            setStockNotify(prevState => {
-              return prevState.filter((row, index) => {
-                return row._id !== id
-              })
-            })
-            if (count === 1) {
-              setStockHistory(prevState => {
+    if (edit) {
+      if (typeof stockNotify[index]._id !== "undefined") {
+        let id = stockNotify[index]._id
+        let stock = stockNotify[index].stock
+        let count = stockNotify.filter(row => row.stock === stock).length
+        fetch(host + '/delete/stockNotify/', {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: login.email,
+            id: id
+          })
+        }).then(res => res.json())
+          .then((result) => {
+            console.log(result)
+            if (typeof result.ok !== "undefined") {
+              //delete stockNotify , stockHistory && leave room
+              setStockNotify(prevState => {
                 return prevState.filter((row, index) => {
-                  return row.stock !== stock
+                  return row._id !== id
                 })
               })
-            }
-            for (let i = 0; i < addRoomList.length; i++) {
-              wsRef.current.emit('leaveRoom', addRoomList[i].stock)
-            }
-            setAddRoomList(prevState => {
-              return []
-            })
-            for (let i = 0; i < stockHistory.length; i++) {
+              if (count === 1) {
+                setStockHistory(prevState => {
+                  return prevState.filter((row, index) => {
+                    return row.stock !== stock
+                  })
+                })
+              }
+              for (let i = 0; i < addRoomList.length; i++) {
+                wsRef.current.emit('leaveRoom', addRoomList[i].stock)
+              }
               setAddRoomList(prevState => {
-                if (!prevState.includes(stockHistory[i].stock)) {
-                  wsRef.current.emit('addRoom', stockHistory[i].stock)
-                  return [...prevState, stockHistory[i].stock]
-                } else {
-                  return prevState
-                }
+                return []
               })
-            }
+              for (let i = 0; i < stockHistory.length; i++) {
+                setAddRoomList(prevState => {
+                  if (!prevState.includes(stockHistory[i].stock)) {
+                    wsRef.current.emit('addRoom', stockHistory[i].stock)
+                    return [...prevState, stockHistory[i].stock]
+                  } else {
+                    return prevState
+                  }
+                })
+              }
 
-          } else if (typeof result.error !== "undefined") {
-            alert(result.error)
-          }
+            } else if (typeof result.error !== "undefined") {
+              alert(result.error)
+            }
+          })
+      } else {
+        setStockNotify(prevState => {
+          return prevState.filter((row, row_index) => {
+            return row_index !== index
+          })
         })
+      }
     }
+
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
@@ -937,7 +946,7 @@ const App = () => {
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
 
             <ResponsiveContainer width='100%' height={400}>
-              <LineChart data={data} margin={{ top: 5, right: 0, bottom: 5, left: -20 }}>
+              <LineChart data={data} margin={{ top: 5, right: 0, bottom: 5, left: -30 }}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                 <XAxis dataKey="name" />
