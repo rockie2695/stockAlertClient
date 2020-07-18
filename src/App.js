@@ -38,7 +38,7 @@ import './App.css';
 
 import CanvasJSReact from './canvasjs.react';
 
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -948,14 +948,15 @@ const App = () => {
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
             <CanvasJSChart options={options} />
 
-
-            <LineChart width={600} height={300} data={data} margin={{ top: 5, right: 0, bottom: 5, left: 0 }}>
-              <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
+            <ResponsiveContainer width={468} height='100%'>
+              <LineChart data={data} margin={{ top: 5, right: 0, bottom: 5, left: 0 }}>
+                <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+              </LineChart>
+            </ResponsiveContainer>
 
           </Typography>
           <Typography gutterBottom>
