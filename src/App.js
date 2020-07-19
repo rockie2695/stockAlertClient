@@ -70,7 +70,9 @@ const App = () => {
   useEffect(() => {
     if (dialogIndex > -1) {
       console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
-      selectedHistory(stockHistory[dialogIndex].priceWithTime)
+      if (typeof stockHistory[dialogIndex] !== "undefined") {
+        selectedHistory(stockHistory[dialogIndex].priceWithTime)
+      }
     } else {
       console.log('dialogIndex', dialogIndex)
       setSelectHistory([])
