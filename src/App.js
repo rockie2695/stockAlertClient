@@ -58,7 +58,7 @@ const App = () => {
   const [addRoomList, setAddRoomList] = useState([])
   const [open, setOpen] = useState(false);
   const [dialogIndex, setDialogIndex] = useState(-1)
-  const [selectedHistory, setSelectHistory] = useState([])
+  const [selectHistory, setSelectHistory] = useState([])
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
@@ -71,7 +71,7 @@ const App = () => {
     if (dialogIndex > -1) {
       console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
       if (typeof stockHistory[dialogIndex] !== "undefined") {
-        selectedHistory(stockHistory[dialogIndex].priceWithTime)
+        setSelectHistory(stockHistory[dialogIndex].priceWithTime)
       }
     } else {
       console.log('dialogIndex', dialogIndex)
@@ -902,10 +902,10 @@ const App = () => {
           <Typography gutterBottom>
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-            {selectedHistory.length !== 0
+            {selectHistory.length !== 0
               ?
               <ResponsiveContainer width='100%' height={400}>
-                <LineChart data={selectedHistory} margin={{ top: 10, right: 25, bottom: 10, left: -25 }}>
+                <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: -25 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="time" />
