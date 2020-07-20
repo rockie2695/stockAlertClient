@@ -38,8 +38,6 @@ import './App.css';
 
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = [{ name: 'Page A', uv: 400, pv: 2400, amt: 2400 }, { name: 'Page B', uv: 300, pv: 2400, amt: 2400 }, { name: 'Page C', uv: 200, pv: 2400, amt: 2400 }];
-
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
 
 const App = () => {
@@ -67,7 +65,7 @@ const App = () => {
   const wsRef = useRef(ws);
   wsRef.current = ws;
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (dialogIndex > -1) {
       console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
       if (typeof stockHistory[dialogIndex] !== "undefined") {
@@ -77,7 +75,7 @@ const App = () => {
       console.log('dialogIndex', dialogIndex)
       setSelectHistory([])
     }
-  }, [dialogIndex, stockHistory])
+  }, [dialogIndex, stockHistory])*/
 
   useEffect(() => {
     if (ws) {
@@ -115,19 +113,26 @@ const App = () => {
             if (message.time.split(' ')[1] === "09:20") {
               findStockName(row.stock, login.email)
             }
+            //for selectHistory
+            if (index === dialogIndex) {
+              setSelectHistory(prevState => {
+                return [...prevState, ...{ time: message.time.split(' ')[1], price: message.price }]
+              })
+            }
           }
           return { ...row, ...addObject }
         })
       });
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
-          if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time)) {
-            return { ...row, priceWithTime: [...row.priceWithTime, { time: message.time, price: message.price }] }
+          if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time.split(' ')[1])) {
+            return { ...row, priceWithTime: [...row.priceWithTime, { time: message.time.split(' ')[1], price: message.price }] }
           } else {
             return prevState
           }
         })
       })
+
     })
     ws.on('changeAlert', message => {
       console.log(message)
@@ -197,11 +202,19 @@ const App = () => {
     if (!edit) {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
+      for (let i = 0; i < stockHistory.length; i++) {
+        if (stockHistory[i].stock === stockNotify[index].stock) {
+          setSelectHistory(stockHistory[i].priceWithTime)
+          break
+        }
+      }
+
     }
   };
   const closeDialog = () => {
     setOpen(prevState => false);
     setDialogIndex(prevState => -1);
+    setSelectHistory([])
   };
 
   const fun_login = (response) => {
@@ -569,8 +582,8 @@ const App = () => {
         });
         setStockHistory(prevState => {
           return prevState.map((row, index) => {
-            if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime)) {
-              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime, price: nowPrice }] }
+            if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime.split(' ')[1])) {
+              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime.split(' ')[1], price: nowPrice }] }
             } else {
               return prevState
             }
@@ -909,7 +922,7 @@ const App = () => {
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="time" />
-                  <YAxis />
+                  <YAxis domain={['auto', 'auto']} />
                   <Tooltip />
                 </LineChart>
               </ResponsiveContainer>
