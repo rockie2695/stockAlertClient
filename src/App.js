@@ -204,7 +204,7 @@ const App = () => {
     if (!edit) {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
-      console.log(index)
+      console.log(index,'openDialog')
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           console.log(i)
@@ -216,6 +216,7 @@ const App = () => {
     }
   };
   const closeDialog = () => {
+    console.log('closeDialog')
     setOpen(prevState => false);
     setDialogIndex(prevState => -1);
     setSelectHistory([])
