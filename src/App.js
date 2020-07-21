@@ -211,6 +211,7 @@ const App = () => {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           console.log(i)
           setSelectHistory(stockHistory[i].priceWithTime)
+          console.log(stockHistory[i].priceWithTime)
           break
         }
       }
