@@ -216,7 +216,7 @@ const App = () => {
     }
   };
   const closeDialog = () => {
-    console.log('closeDialog')
+    console.log('closeDialog',dialogIndex)
     setOpen(prevState => false);
     setDialogIndex(prevState => -1);
     setSelectHistory([])
