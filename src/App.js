@@ -204,6 +204,7 @@ const App = () => {
     if (!edit) {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
+      console.log(index)
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           console.log(i)
