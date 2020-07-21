@@ -64,6 +64,8 @@ const App = () => {
 
   const wsRef = useRef(ws);
   wsRef.current = ws;
+  const dialogIndexRef = useRef(dialogIndex);
+  dialogIndexRef.current = dialogIndex;
 
   /*useEffect(() => {
     if (dialogIndex > -1) {
@@ -114,7 +116,7 @@ const App = () => {
               findStockName(row.stock, login.email)
             }
             //for selectHistory
-            console.log(index,dialogIndex)
+            console.log(index,dialogIndex,dialogIndexRef)
             if (index === dialogIndex) {
               console.log(selectHistory)
               setSelectHistory(prevState => {
