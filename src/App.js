@@ -114,6 +114,7 @@ const App = () => {
               findStockName(row.stock, login.email)
             }
             //for selectHistory
+            console.log(index,dialogIndex)
             if (index === dialogIndex) {
               console.log(selectHistory)
               setSelectHistory(prevState => {
