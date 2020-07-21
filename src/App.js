@@ -64,8 +64,6 @@ const App = () => {
 
   const wsRef = useRef(ws);
   wsRef.current = ws;
-  const dialogIndexRef = useRef(dialogIndex);
-  dialogIndexRef.current = dialogIndex;
 
   /*useEffect(() => {
     if (dialogIndex > -1) {
@@ -115,14 +113,7 @@ const App = () => {
             if (message.time.split(' ')[1] === "09:20") {
               findStockName(row.stock, login.email)
             }
-            //for selectHistory
-            console.log(index,dialogIndex,dialogIndexRef)
-            if (index === dialogIndexRef.current) {
-              console.log(selectHistory)
-              setSelectHistory(prevState => {
-                return [...prevState, ...{ time: message.time.split(' ')[1], price: message.price }]
-              })
-            }
+            changeSelectHistory(index, message, 'end')
           }
           return { ...row, ...addObject }
         })
@@ -202,16 +193,30 @@ const App = () => {
     },
   }))(MuiDialogActions);
 
+  const changeSelectHistory = (index, message, side) => {
+    if (index === dialogIndex) {
+      let time = message.time.split(' ')[1]
+      if (side === 'end') {
+        if (!selectHistory.some(e => e.time === time)) {
+          setSelectHistory(prevState => {
+            return [...prevState, ...{ time: time, price: message.price }]
+          })
+        }
+      } else if (side === 'front') {
+        setSelectHistory(prevState => {
+          return [{ time: time, price: message.price }]
+        })
+      }
+    }
+  }
+
   const openDialog = (index) => {
     if (!edit) {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
-      console.log(index,'openDialog')
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
-          console.log(i)
           setSelectHistory(stockHistory[i].priceWithTime)
-          console.log(stockHistory[i].priceWithTime)
           break
         }
       }
@@ -219,7 +224,6 @@ const App = () => {
     }
   };
   const closeDialog = () => {
-    console.log('closeDialog',dialogIndex)
     setOpen(prevState => false);
     setDialogIndex(prevState => -1);
     setSelectHistory([])
@@ -563,11 +567,13 @@ const App = () => {
         let wk52Low = result.wk52Low
         let wk52High = result.wk52High
         let fiftyDayAvg = result.fiftyDayAvg
+        let row_index = -2
         setStockNotify(prevState => {
           return prevState.map((row, index) => {
             let addObject = {}
 
             if (row.stock === stock) {
+              row_index = index
               addObject = {
                 name: name,
                 past: past,
@@ -597,6 +603,7 @@ const App = () => {
             }
           })
         })
+        changeSelectHistory(row_index, { time: nowTime.split(' ')[1], price: nowPrice }, 'front')
       })
   }
   function ElevationScroll(props) {
