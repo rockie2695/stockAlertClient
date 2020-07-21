@@ -115,6 +115,7 @@ const App = () => {
             }
             //for selectHistory
             if (index === dialogIndex) {
+              console.log(selectHistory)
               setSelectHistory(prevState => {
                 return [...prevState, ...{ time: message.time.split(' ')[1], price: message.price }]
               })
@@ -204,6 +205,7 @@ const App = () => {
       setDialogIndex(prevState => index);
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
+          console.log(i)
           setSelectHistory(stockHistory[i].priceWithTime)
           break
         }
