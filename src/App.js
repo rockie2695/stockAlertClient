@@ -117,7 +117,7 @@ const App = () => {
             }
             //for selectHistory
             console.log(index,dialogIndex,dialogIndexRef)
-            if (index === dialogIndex) {
+            if (index === dialogIndexRef.current) {
               console.log(selectHistory)
               setSelectHistory(prevState => {
                 return [...prevState, ...{ time: message.time.split(' ')[1], price: message.price }]
