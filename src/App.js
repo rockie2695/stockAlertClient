@@ -199,7 +199,7 @@ const App = () => {
       if (side === 'end') {
         if (!selectHistory.some(e => e.time === time)) {
           setSelectHistory(prevState => {
-            return [...prevState, ...{ time: time, price: message.price }]
+            return [...prevState, ...[{ time: time, price: message.price }]]
           })
         }
       } else if (side === 'front') {
