@@ -105,16 +105,17 @@ const App = () => {
       window.location.reload()
     });
     ws.on('stockPrice', message => {
-      console.log(message)
+      console.log('receive stockPrice message', message)
       setStockNotify(prevState => {
         return prevState.map((row, index) => {
+          console.log('in setStockNotify run how many times')
           let addObject = {}
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20") {
               findStockName(row.stock, login.email)
             }
-            console.log(prevState)
+            console.log('in each stock', prevState)
             changeSelectHistory(index, message, 'end')
           }
           return { ...row, ...addObject }
@@ -196,15 +197,15 @@ const App = () => {
   }))(MuiDialogActions);
 
   const changeSelectHistory = (index, message, side) => {
-    console.log(index,dialogIndex,dialogIndexRef.current,message,side,selectHistory)
+    console.log(index, dialogIndex, dialogIndexRef.current, message, side, selectHistory)
     if (index === dialogIndexRef.current) {
       let time = message.time.split(' ')[1]
       if (side === 'end') {
         if (!selectHistory.some(e => e.time === time)) {
           setSelectHistory(prevState => {
-            let addArray=[]
+            let addArray = []
             if (!prevState.some(e => e.time === time)) {
-              addArray=[{ time: time, price: message.price }]
+              addArray = [{ time: time, price: message.price }]
               console.log(time)
             }
             return [...prevState, ...addArray]
@@ -942,7 +943,7 @@ const App = () => {
             {selectHistory.length !== 0
               ?
               <ResponsiveContainer width='100%' height={400}>
-                <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: -25 }}>
+                <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: -45 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="time" />
