@@ -113,6 +113,7 @@ const App = () => {
             if (message.time.split(' ')[1] === "09:20") {
               findStockName(row.stock, login.email)
             }
+            console.log(typeof changeSelectHistory,changeSelectHistory)
             changeSelectHistory(index, message, 'end')
           }
           return { ...row, ...addObject }
