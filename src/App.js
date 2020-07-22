@@ -203,7 +203,7 @@ const App = () => {
         if (!selectHistory.some(e => e.time === time)) {
           setSelectHistory(prevState => {
             let addArray=[]
-            if (!selectHistory.some(e => e.time === time)) {
+            if (!prevState.some(e => e.time === time)) {
               addArray=[{ time: time, price: message.price }]
             }
             return [...prevState, ...addArray]
