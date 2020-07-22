@@ -205,6 +205,7 @@ const App = () => {
             let addArray=[]
             if (!prevState.some(e => e.time === time)) {
               addArray=[{ time: time, price: message.price }]
+              console.log(time)
             }
             return [...prevState, ...addArray]
           })
