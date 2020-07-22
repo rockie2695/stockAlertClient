@@ -195,11 +195,12 @@ const App = () => {
 
   const changeSelectHistory = (index, message, side) => {
     if (index === dialogIndex) {
+      console.log(index,message,side)
       let time = message.time.split(' ')[1]
       if (side === 'end') {
         if (!selectHistory.some(e => e.time === time)) {
           setSelectHistory(prevState => {
-            return [...prevState, ...[{ time: time, price: message.price }]]
+            return [...prevState, { time: time, price: message.price }]
           })
         }
       } else if (side === 'front') {
