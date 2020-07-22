@@ -202,7 +202,11 @@ const App = () => {
       if (side === 'end') {
         if (!selectHistory.some(e => e.time === time)) {
           setSelectHistory(prevState => {
-            return [...prevState, { time: time, price: message.price }]
+            let addArray=[]
+            if (!selectHistory.some(e => e.time === time)) {
+              addArray=[{ time: time, price: message.price }]
+            }
+            return [...prevState, ...addArray]
           })
         }
       } else if (side === 'front') {
