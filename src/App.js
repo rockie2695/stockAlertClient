@@ -64,7 +64,8 @@ const App = () => {
 
   const wsRef = useRef(ws);
   wsRef.current = ws;
-
+  const dialogIndexRef = useRef(dialogIndex);
+  dialogIndexRef.current = dialogIndex;
   /*useEffect(() => {
     if (dialogIndex > -1) {
       console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
@@ -195,8 +196,8 @@ const App = () => {
   }))(MuiDialogActions);
 
   const changeSelectHistory = (index, message, side) => {
-    console.log(index,dialogIndex,message,side)
-    if (index === dialogIndex) {
+    console.log(index,dialogIndex,dialogIndexRef.current,message,side,selectHistory)
+    if (index === dialogIndexRef.current) {
       let time = message.time.split(' ')[1]
       if (side === 'end') {
         if (!selectHistory.some(e => e.time === time)) {
@@ -216,6 +217,7 @@ const App = () => {
     if (!edit) {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
+      console.log(index)
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           setSelectHistory(stockHistory[i].priceWithTime)
