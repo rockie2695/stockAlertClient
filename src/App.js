@@ -107,6 +107,7 @@ const App = () => {
     ws.on('stockPrice', message => {
       console.log('receive stockPrice message', message)
       setStockNotify(prevState => {
+        conosle.log(prevState)
         return prevState.map((row, index) => {
           console.log('in setStockNotify run how many times')
           let addObject = {}
