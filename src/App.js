@@ -124,6 +124,7 @@ const App = () => {
       });
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
+          console.log('seesetStockHistory run how many times')
           if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time.split(' ')[1])) {
             return { ...row, priceWithTime: [...row.priceWithTime, { time: message.time.split(' ')[1], price: message.price }] }
           } else {
