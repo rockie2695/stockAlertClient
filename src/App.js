@@ -117,7 +117,7 @@ const App = () => {
               findStockName(row.stock, login.email)
             }
             console.log('in each stock', prevState)
-            //changeSelectHistory(index, message, 'end')
+            changeSelectHistory(index, message, 'end')
           }
           return { ...row, ...addObject }
         })
