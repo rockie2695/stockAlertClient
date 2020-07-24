@@ -114,7 +114,7 @@ const App = () => {
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20") {
-              //findStockName(row.stock, login.email)
+              findStockName(row.stock, login.email)
             }
             console.log('in each stock', prevState)
             //changeSelectHistory(index, message, 'end')
