@@ -106,6 +106,8 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log('receive stockPrice message', message)
+      let findStockNameArray = []
+      let changeSelectHistoryArray = []
       setStockNotify(prevState => {
         console.log(prevState)
         return prevState.map((row, index) => {
@@ -115,13 +117,21 @@ const App = () => {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20") {
               //findStockName(row.stock, login.email)
+              findStockNameArray = [{ stock: row.stock, email: login.emil }]
             }
             console.log('in each stock', prevState)
             //changeSelectHistory(index, message, 'end')
+            changeSelectHistoryArray = [{ index: index, message: message, side: 'end' }]
           }
           return { ...row, ...addObject }
         })
       });
+      if (findStockNameArray.length !== 0) {
+        findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
+      }
+      if (changeSelectHistoryArray.length !== 0) {
+        changeSelectHistory(changeSelectHistoryArray[0].index, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
+      }
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
           console.log('seesetStockHistory run how many times')
