@@ -945,12 +945,10 @@ const App = () => {
       </Box >
       <Dialog onClose={closeDialog} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={closeDialog}>
-          Modal title
+          Stock:{dialogIndex > -1 ? stockNotify[dialogIndex].stock + ' (' + stockNotify[dialogIndex].name + ')' : ''}
         </DialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
             {selectHistory.length !== 0
               ?
               <ResponsiveContainer width='100%' height={400}>
@@ -967,13 +965,111 @@ const App = () => {
             }
           </Typography>
           <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-            lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-            scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-            auctor fringilla.
+            {dialogIndex > -1
+              ?
+              <table>
+                <tr>
+                  <td>
+                    price
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].price}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    past
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].past}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    tenDayHigh
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].tenDayHigh}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    tenDayLow
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].tenDayLow}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    tenDayAvg
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].tenDayAvg}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    monthLow
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].monthLow}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    monthHigh
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].monthHigh}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    twentyDayAvg
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].twentyDayAvg}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    wk52Low
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].wk52Low}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    wk52High
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].wk52High}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    fiftyDayAvg
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].fiftyDayAvg}
+                  </td>
+                </tr>
+              </table>
+              :
+              ''
+            }
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -982,8 +1078,7 @@ const App = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </HttpsRedirect>
+    </HttpsRedirect >
   );
 }
-//chart:https://canvasjs.com/docs/charts/integration/react/
 export default App;
