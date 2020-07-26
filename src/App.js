@@ -15,7 +15,6 @@ import Avatar from '@material-ui/core/Avatar';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Fab from '@material-ui/core/Fab';
 import Hidden from '@material-ui/core/Hidden';
 import Skeleton from '@material-ui/lab/Skeleton';
 import IconButton from '@material-ui/core/IconButton';
@@ -132,17 +131,17 @@ const App = () => {
       if (changeSelectHistoryArray.length !== 0) {
         changeSelectHistory(changeSelectHistoryArray[0].index, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
       }
+      let time = message.time.split(' ')[1]
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
           console.log('seesetStockHistory run how many times')
-          if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === message.time.split(' ')[1])) {
-            return { ...row, priceWithTime: [...row.priceWithTime, { time: message.time.split(' ')[1], price: message.price }] }
+          if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === time)) {
+            return { ...row, priceWithTime: [...row.priceWithTime, { time: time, price: message.price }] }
           } else {
             return prevState
           }
         })
       })
-
     })
     ws.on('changeAlert', message => {
       console.log(message)
@@ -955,7 +954,7 @@ const App = () => {
             {selectHistory.length !== 0
               ?
               <ResponsiveContainer width='100%' height={400}>
-                <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: -45 }}>
+                <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="time" />
