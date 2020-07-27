@@ -943,7 +943,7 @@ const App = () => {
         </Box>{/* <Box margin={2} overflow="auto"> */}
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
-      <Dialog onClose={closeDialog} aria-labelledby="customized-dialog-title" open={open}>
+      <Dialog fullWidth={true} onClose={closeDialog} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={closeDialog}>
           Stock:{dialogIndex > -1 ? stockNotify[dialogIndex].stock + ' (' + stockNotify[dialogIndex].name + ')' : ''}
         </DialogTitle>
@@ -967,7 +967,7 @@ const App = () => {
           <Typography gutterBottom>
             {dialogIndex > -1
               ?
-              <table>
+              <table style={{ width: '100%' }}>
                 <tr>
                   <td>
                     price
