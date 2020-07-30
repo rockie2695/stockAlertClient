@@ -126,6 +126,7 @@ const App = () => {
         })
       });
       if (findStockNameArray.length !== 0) {
+        console.log(findStockNameArray[0].stock, findStockNameArray[0].email)
         findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
       }
       if (changeSelectHistoryArray.length !== 0) {
@@ -563,6 +564,7 @@ const App = () => {
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
     }
+    console.log(subemail,stock)
     fetch(host + '/find/stockName/', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
