@@ -126,7 +126,6 @@ const App = () => {
         })
       });
       if (findStockNameArray.length !== 0) {
-        console.log(findStockNameArray[0].stock, findStockNameArray[0].email)
         findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
       }
       if (changeSelectHistoryArray.length !== 0) {
@@ -302,6 +301,7 @@ const App = () => {
                   }
                 })
                 findStockName(resultArray[i].stock, email)
+                findStockHistory(resultArray[i].stock, email)
               }
             }
             setLoading(prevState => {
@@ -560,11 +560,27 @@ const App = () => {
     }
 
   }
+  const findStockHistory = (stock, subEmail) => {
+    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+      host = 'http://localhost:8080'
+    }
+    fetch(host + '/select/stockPrice/', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: subEmail,
+        stock: stock
+      })
+    })
+      .then(res => res.json())
+      .then((result) => {
+        console.log(result)
+      })
+  }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
     }
-    console.log(subemail,stock)
     fetch(host + '/find/stockName/', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -970,6 +986,10 @@ const App = () => {
             {dialogIndex > -1
               ?
               <table style={{ width: '100%' }}>
+                <colgroup>
+                  <col style={{ width: '50%' }} />
+                  <col style={{ width: '50%' }} />
+                </colgroup>
                 <tr>
                   <td>
                     price
