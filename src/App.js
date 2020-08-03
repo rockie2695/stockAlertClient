@@ -207,9 +207,9 @@ const App = () => {
     },
   }))(MuiDialogActions);
 
-  const changeSelectHistory = (index, message, side) => {
-    console.log(index, dialogIndex, dialogIndexRef.current, message, side, selectHistory)
-    if (index === dialogIndexRef.current) {
+  const changeSelectHistory = (stock, message, side) => {
+    console.log(stock, dialogIndex, dialogIndexRef.current, message, side, selectHistory)
+    if (stock === stockNotify[dialogIndexRef.current].stock) {
       let time = message.time.split(' ')[1]
       if (side === 'end') {
         if (!selectHistory.some(e => e.time === time)) {
@@ -222,10 +222,21 @@ const App = () => {
             return [...prevState, ...addArray]
           })
         }
-      } else if (side === 'front') {
+      } else if (side === 'new') {
         setSelectHistory(prevState => {
           return [{ time: time, price: message.price }]
         })
+      } else if (side === 'front') {
+        if (!selectHistory.some(e => e.time === time)) {
+          setSelectHistory(prevState => {
+            let addArray = []
+            if (!prevState.some(e => e.time === time)) {
+              addArray = [{ time: time, price: message.price }]
+              console.log(time)
+            }
+            return [...addArray, ...prevState]
+          })
+        }
       }
     }
   }
@@ -576,6 +587,18 @@ const App = () => {
       .then(res => res.json())
       .then((result) => {
         console.log(result)
+        for (let i = result.ok.length - 1; i > -1; i--) {
+          setStockHistory(prevState => {
+            return prevState.map((row, index) => {
+              if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].time.split(' ')[1])) {
+                return { ...row, priceWithTime: [{ time: result.ok[i].time.split(' ')[1], price: result.ok[i].price }, ...row.priceWithTime] }
+              } else {
+                return prevState
+              }
+            })
+          })
+          changeSelectHistory(stock, { time: result.ok[i].time.split(' ')[1], price: result.ok[i].price }, 'front')
+        }
       })
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
@@ -608,13 +631,13 @@ const App = () => {
         let wk52Low = result.wk52Low
         let wk52High = result.wk52High
         let fiftyDayAvg = result.fiftyDayAvg
-        let row_index = -2
+        //let row_index = -2
         setStockNotify(prevState => {
           return prevState.map((row, index) => {
             let addObject = {}
 
             if (row.stock === stock) {
-              row_index = index
+              //row_index = index
               addObject = {
                 name: name,
                 past: past,
@@ -644,7 +667,7 @@ const App = () => {
             }
           })
         })
-        changeSelectHistory(row_index, { time: nowTime.split(' ')[1], price: nowPrice }, 'front')
+        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice }, 'new')
       })
   }
   function ElevationScroll(props) {
@@ -997,7 +1020,7 @@ const App = () => {
                     price
                   </td>
                   <td>
-                    {stockNotify[dialogIndex].price}
+                    {stockNotify[dialogIndex].nowPrice}
                   </td>
                 </tr>
 
