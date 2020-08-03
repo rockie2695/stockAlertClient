@@ -592,14 +592,14 @@ const App = () => {
         for (let i = result.ok.length - 1; i > -1; i--) {
           setStockHistory(prevState => {
             return prevState.map((row, index) => {
-              if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].time.split(' ')[1])) {
-                return { ...row, priceWithTime: [{ time: result.ok[i].time.split(' ')[1], price: result.ok[i].price }, ...row.priceWithTime] }
+              if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].stringTime.split(' ')[1])) {
+                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price }, ...row.priceWithTime] }
               } else {
                 return prevState
               }
             })
           })
-          changeSelectHistory(stock, { time: result.ok[i].time.split(' ')[1], price: result.ok[i].price }, 'front')
+          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price }, 'front')
         }
       })
   }
