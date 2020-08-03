@@ -564,6 +564,7 @@ const App = () => {
     if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
       host = 'http://localhost:8080'
     }
+    console.log(stock, subEmail)
     fetch(host + '/select/stockPrice/', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
