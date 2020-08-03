@@ -209,33 +209,35 @@ const App = () => {
 
   const changeSelectHistory = (stock, message, side) => {
     console.log(stock, dialogIndex, dialogIndexRef.current, message, side, selectHistory)
-    if (stock === stockNotify[dialogIndexRef.current].stock) {
-      let time = message.time.split(' ')[1]
-      if (side === 'end') {
-        if (!selectHistory.some(e => e.time === time)) {
+    if (dialogIndexRef.current > -1) {
+      if (stock === stockNotify[dialogIndexRef.current].stock) {
+        let time = message.time.split(' ')[1]
+        if (side === 'end') {
+          if (!selectHistory.some(e => e.time === time)) {
+            setSelectHistory(prevState => {
+              let addArray = []
+              if (!prevState.some(e => e.time === time)) {
+                addArray = [{ time: time, price: message.price }]
+                console.log(time)
+              }
+              return [...prevState, ...addArray]
+            })
+          }
+        } else if (side === 'new') {
           setSelectHistory(prevState => {
-            let addArray = []
-            if (!prevState.some(e => e.time === time)) {
-              addArray = [{ time: time, price: message.price }]
-              console.log(time)
-            }
-            return [...prevState, ...addArray]
+            return [{ time: time, price: message.price }]
           })
-        }
-      } else if (side === 'new') {
-        setSelectHistory(prevState => {
-          return [{ time: time, price: message.price }]
-        })
-      } else if (side === 'front') {
-        if (!selectHistory.some(e => e.time === time)) {
-          setSelectHistory(prevState => {
-            let addArray = []
-            if (!prevState.some(e => e.time === time)) {
-              addArray = [{ time: time, price: message.price }]
-              console.log(time)
-            }
-            return [...addArray, ...prevState]
-          })
+        } else if (side === 'front') {
+          if (!selectHistory.some(e => e.time === time)) {
+            setSelectHistory(prevState => {
+              let addArray = []
+              if (!prevState.some(e => e.time === time)) {
+                addArray = [{ time: time, price: message.price }]
+                console.log(time)
+              }
+              return [...addArray, ...prevState]
+            })
+          }
         }
       }
     }
