@@ -120,7 +120,7 @@ const App = () => {
             }
             console.log('in each stock', prevState)
             //changeSelectHistory(index, message, 'end')
-            changeSelectHistoryArray = [{ index: index, message: message, side: 'end' }]
+            changeSelectHistoryArray = [{ stock: row.stock, index: index, message: message, side: 'end' }]
           }
           return { ...row, ...addObject }
         })
@@ -129,7 +129,7 @@ const App = () => {
         findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
       }
       if (changeSelectHistoryArray.length !== 0) {
-        changeSelectHistory(changeSelectHistoryArray[0].index, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
+        changeSelectHistory(changeSelectHistoryArray[0].stock, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
       }
       let time = message.time.split(' ')[1]
       setStockHistory(prevState => {
