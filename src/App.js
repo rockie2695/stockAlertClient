@@ -998,7 +998,7 @@ const App = () => {
               ?
               <ResponsiveContainer width='100%' height={400}>
                 <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
-                  <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
+                  <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="time" />
                   <YAxis domain={['auto', 'auto']} />
