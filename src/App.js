@@ -669,7 +669,7 @@ const App = () => {
             }
           })
         })
-        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice }, 'new')
+        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice }, 'end')
       })
   }
   function ElevationScroll(props) {
