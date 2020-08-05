@@ -130,7 +130,7 @@ const App = () => {
       if (findStockNameArray.length !== 0) {
         findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
       }
-      if (changeSelectHistoryArray.length !== 0) {
+      if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current>-1) {
         changeSelectHistory(changeSelectHistoryArray[0].stock, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
       }
       let time = message.time.split(' ')[1]
