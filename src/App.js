@@ -208,7 +208,7 @@ const App = () => {
   }))(MuiDialogActions);
 
   const changeSelectHistory = (stock, message, side) => {
-    console.log(stock, dialogIndex, dialogIndexRef.current, message, side, selectHistory)
+    console.log(stock, dialogIndex, dialogIndexRef.current, message, side, selectHistory,stockNotify)
     if (dialogIndexRef.current > -1) {
       if (stock === stockNotify[dialogIndexRef.current].stock) {
         let time = message.time.split(' ')[1]
