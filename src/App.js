@@ -598,7 +598,7 @@ const App = () => {
               if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].stringTime.split(' ')[1])) {
                 return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price }, ...row.priceWithTime] }
               } else {
-                return prevState
+                return row
               }
             })
           })
@@ -668,7 +668,7 @@ const App = () => {
             if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime.split(' ')[1])) {
               return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime.split(' ')[1], price: nowPrice }] }
             } else {
-              return prevState
+              return row
             }
           })
         })
