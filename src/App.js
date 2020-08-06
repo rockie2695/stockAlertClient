@@ -140,7 +140,7 @@ const App = () => {
           if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === time)) {
             return { ...row, priceWithTime: [...row.priceWithTime, { time: time, price: message.price }] }
           } else {
-            return prevState
+            return row
           }
         })
       })
