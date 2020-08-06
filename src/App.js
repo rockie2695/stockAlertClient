@@ -250,7 +250,7 @@ const App = () => {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
       console.log(index)
-      console.log(stockHistory,stockNotify,selectHistory)
+      console.log(stockHistory,stockNotify,selectHistory,stockHistoryRef.current)
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           setSelectHistory(stockHistory[i].priceWithTime)
