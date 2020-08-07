@@ -66,7 +66,9 @@ const App = () => {
   const dialogIndexRef = useRef(dialogIndex);
   dialogIndexRef.current = dialogIndex;
   const stockNotifyRef = useRef(stockNotify);
-  stockNotifyRef.current=stockNotify;
+  stockNotifyRef.current = stockNotify;
+  const loginRef = useRef(login)
+  loginRef.current = login;
   /*useEffect(() => {
     if (dialogIndex > -1) {
       console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
@@ -118,7 +120,7 @@ const App = () => {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20") {
               //findStockName(row.stock, login.email)
-              findStockNameArray = [{ stock: row.stock, email: login.emil }]
+              findStockNameArray = [{ stock: row.stock, email: loginRef.emil }]
             }
             console.log('in each stock', prevState)
             //changeSelectHistory(index, message, 'end')
@@ -130,7 +132,7 @@ const App = () => {
       if (findStockNameArray.length !== 0) {
         findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
       }
-      if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current>-1) {
+      if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current > -1) {
         changeSelectHistory(changeSelectHistoryArray[0].stock, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
       }
       let time = message.time.split(' ')[1]
@@ -210,7 +212,6 @@ const App = () => {
   }))(MuiDialogActions);
 
   const changeSelectHistory = (stock, message, side) => {
-    console.log(stock, dialogIndex, dialogIndexRef.current, message, side, selectHistory,stockNotifyRef.current)
     if (dialogIndexRef.current > -1) {
       if (stock === stockNotifyRef.current[dialogIndexRef.current].stock) {
         let time = message.time.split(' ')[1]
@@ -250,7 +251,7 @@ const App = () => {
       setOpen(prevState => true);
       setDialogIndex(prevState => index);
       console.log(index)
-      console.log(stockHistory,stockNotify,selectHistory)
+      console.log(stockHistory, stockNotify, selectHistory)
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           setSelectHistory(stockHistory[i].priceWithTime)
