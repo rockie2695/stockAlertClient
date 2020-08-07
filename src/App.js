@@ -120,7 +120,7 @@ const App = () => {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20") {
               //findStockName(row.stock, login.email)
-              findStockNameArray = [{ stock: row.stock, email: loginRef.emil }]
+              findStockNameArray = [{ stock: row.stock, email: loginRef.current.emil }]
             }
             console.log('in each stock', prevState)
             //changeSelectHistory(index, message, 'end')
