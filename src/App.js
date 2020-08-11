@@ -38,12 +38,16 @@ import './App.css';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 var host = 'https://rockie-stockAlertServer.herokuapp.com'
-
+if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
+  host = 'http://localhost:3001'
+}
 const App = () => {
   const cookies = new Cookies();
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
 
-  const [login, setLogin] = useState({})
+  const [login, setLogin] = useState({
+    email: (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') ? 'rockie2695@gmail.com' : ''
+  })
   const [stockHistory, setStockHistory] = useState([])
   const [ws, setWs] = useState(null)
   const [stockNotify, setStockNotify] = useState([])
@@ -56,11 +60,11 @@ const App = () => {
   const [open, setOpen] = useState(false);
   const [dialogIndex, setDialogIndex] = useState(-1)
   const [selectHistory, setSelectHistory] = useState([])
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host))
   }
-
   const wsRef = useRef(ws);
   wsRef.current = ws;
   const dialogIndexRef = useRef(dialogIndex);
@@ -69,17 +73,8 @@ const App = () => {
   stockNotifyRef.current = stockNotify;
   const loginRef = useRef(login)
   loginRef.current = login;
-  /*useEffect(() => {
-    if (dialogIndex > -1) {
-      console.log('dialogIndex', dialogIndex, stockHistory[dialogIndex])
-      if (typeof stockHistory[dialogIndex] !== "undefined") {
-        setSelectHistory(stockHistory[dialogIndex].priceWithTime)
-      }
-    } else {
-      console.log('dialogIndex', dialogIndex)
-      setSelectHistory([])
-    }
-  }, [dialogIndex, stockHistory])*/
+
+
 
   useEffect(() => {
     if (ws) {
@@ -97,6 +92,40 @@ const App = () => {
     }
   }, [login]);
 
+  const handleConnectionChange = () => {
+    const condition = navigator.onLine ? 'online' : 'offline';
+    if (condition === 'online') {
+
+    } else {
+
+    }
+  }
+
+  const showA2HS = (e) => {
+    console.log('call this medhod showA2HS')
+    // Show the prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice
+      .then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        setDeferredPrompt(prevState => null)
+      });
+  }
+
+  window.addEventListener('online', handleConnectionChange);
+  window.addEventListener('offline', handleConnectionChange);
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Stash the event so it can be triggered later.
+    console.log('beforeinstallprompt', e)
+    setDeferredPrompt(prevState => e)
+  });
+
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
     ws.on('disConnection', () => {
@@ -104,8 +133,8 @@ const App = () => {
     })
     ws.on('connect_error', function () {
       console.log('Failed to connect to server');
-      alert('websocket is fail to connect. Now refresh!')
-      window.location.reload()
+      alert('websocket is fail to connect. Please refresh!')
+      //window.location.reload()
     });
     ws.on('stockPrice', message => {
       console.log('receive stockPrice message', message)
@@ -279,9 +308,6 @@ const App = () => {
         return true
       })
       //getstockNotify
-      if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
-        host = 'http://localhost:8080'
-      }
       fetch(host + '/select/stockNotify', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -487,9 +513,6 @@ const App = () => {
   }
   const changeAlertSwitch = (rowIndex, _id, alert) => {
     if (edit === true && typeof stockNotify[rowIndex]._id !== "undefined") {
-      if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
-        host = 'http://localhost:8080'
-      }
       fetch(host + '/update/stockNotify/alert', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -578,9 +601,6 @@ const App = () => {
 
   }
   const findStockHistory = (stock, subEmail) => {
-    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
-      host = 'http://localhost:8080'
-    }
     console.log(stock, subEmail)
     fetch(host + '/select/stockPrice/', {
       method: 'post',
@@ -608,9 +628,6 @@ const App = () => {
       })
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
-    if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
-      host = 'http://localhost:8080'
-    }
     console.log(subEmail)
     fetch(host + '/find/stockName/', {
       method: 'post',
@@ -701,7 +718,7 @@ const App = () => {
   */
 
   return (
-    <HttpsRedirect>
+    <HttpsRedirect disabled={(window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') ? true : false}>
       <CssBaseline />
       <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
         <ElevationScroll {...App.props}>
@@ -1018,12 +1035,16 @@ const App = () => {
               ?
               <table style={{ width: '100%' }}>
                 <colgroup>
-                  <col style={{ width: '50%' }} />
-                  <col style={{ width: '50%' }} />
+                  <col style={{ width: '33.33%' }} />
+                  <col style={{ width: '33.33%' }} />
+                  <col style={{ width: '33.33%' }} />
                 </colgroup>
                 <tr>
                   <td>
                     price
+                  </td>
+                  <td>
+                    現價
                   </td>
                   <td>
                     {stockNotify[dialogIndex].nowPrice}
@@ -1035,6 +1056,9 @@ const App = () => {
                     past
                   </td>
                   <td>
+                    前收市價
+                  </td>
+                  <td>
                     {stockNotify[dialogIndex].past}
                   </td>
                 </tr>
@@ -1042,6 +1066,9 @@ const App = () => {
                 <tr>
                   <td>
                     tenDayHigh
+                  </td>
+                  <td>
+                    10日高
                   </td>
                   <td>
                     {stockNotify[dialogIndex].tenDayHigh}
@@ -1053,6 +1080,9 @@ const App = () => {
                     tenDayLow
                   </td>
                   <td>
+                    10日低
+                  </td>
+                  <td>
                     {stockNotify[dialogIndex].tenDayLow}
                   </td>
                 </tr>
@@ -1060,6 +1090,9 @@ const App = () => {
                 <tr>
                   <td>
                     tenDayAvg
+                  </td>
+                  <td>
+                    10日平均價
                   </td>
                   <td>
                     {stockNotify[dialogIndex].tenDayAvg}
@@ -1071,6 +1104,9 @@ const App = () => {
                     monthLow
                   </td>
                   <td>
+                    1個月低
+                  </td>
+                  <td>
                     {stockNotify[dialogIndex].monthLow}
                   </td>
                 </tr>
@@ -1078,6 +1114,9 @@ const App = () => {
                 <tr>
                   <td>
                     monthHigh
+                  </td>
+                  <td>
+                    1個月高
                   </td>
                   <td>
                     {stockNotify[dialogIndex].monthHigh}
@@ -1089,6 +1128,9 @@ const App = () => {
                     twentyDayAvg
                   </td>
                   <td>
+                    20日平均價
+                  </td>
+                  <td>
                     {stockNotify[dialogIndex].twentyDayAvg}
                   </td>
                 </tr>
@@ -1096,6 +1138,9 @@ const App = () => {
                 <tr>
                   <td>
                     wk52Low
+                  </td>
+                  <td>
+                    52周低
                   </td>
                   <td>
                     {stockNotify[dialogIndex].wk52Low}
@@ -1107,6 +1152,9 @@ const App = () => {
                     wk52High
                   </td>
                   <td>
+                    52周高
+                  </td>
+                  <td>
                     {stockNotify[dialogIndex].wk52High}
                   </td>
                 </tr>
@@ -1114,6 +1162,9 @@ const App = () => {
                 <tr>
                   <td>
                     fiftyDayAvg
+                  </td>
+                  <td>
+                    50日平均價
                   </td>
                   <td>
                     {stockNotify[dialogIndex].fiftyDayAvg}
