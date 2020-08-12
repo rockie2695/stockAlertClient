@@ -41,6 +41,7 @@ var host = 'https://rockie-stockAlertServer.herokuapp.com'
 if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
   host = 'http://localhost:3001'
 }
+console.log(window.location.host)
 const App = () => {
   const cookies = new Cookies();
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
@@ -297,6 +298,7 @@ const App = () => {
   };
 
   const fun_login = (response) => {
+    console.log(response)
     if (response.hasOwnProperty('tokenId')) {
       let email = response.profileObj.email
       let newLoginObj = { id: response.tokenId, username: response.profileObj.name, photo: response.profileObj.imageUrl, email: email }
@@ -729,7 +731,7 @@ const App = () => {
                   StockAlertClient
             </Link>
               </Typography>
-              {Object.keys(login).length === 0
+              {login.email === ''
                 ?
                 <GoogleLogin
                   clientId={clientId}
