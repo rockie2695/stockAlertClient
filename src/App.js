@@ -74,7 +74,7 @@ const App = () => {
   const loginRef = useRef(login)
   loginRef.current = login;
 
-
+  useEffect(() => console.log('mounted'), []);
 
   useEffect(() => {
     if (ws) {
@@ -86,7 +86,7 @@ const App = () => {
   }, [ws]);
 
   useEffect(() => {
-    if (Object.keys(login).length !== 0) {
+    if (login.email === '') {
       console.log('do test')
       test()
     }
