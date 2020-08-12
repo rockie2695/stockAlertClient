@@ -1042,7 +1042,7 @@ const App = () => {
                   <col style={{ width: '33.33%' }} />
                 </colgroup>
                 <tr>
-                  <td>
+                  <td class="test">
                     price
                   </td>
                   <td>
