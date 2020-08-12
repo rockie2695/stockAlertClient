@@ -1035,7 +1035,7 @@ const App = () => {
           <Typography gutterBottom>
             {dialogIndex > -1
               ?
-              <table style={{ width: '100%' }}>
+              <table class="dialog" style={{ width: '100%' }}>
                 <colgroup>
                   <col style={{ width: '33.33%' }} />
                   <col style={{ width: '33.33%' }} />
@@ -1067,18 +1067,6 @@ const App = () => {
 
                 <tr>
                   <td>
-                    tenDayHigh
-                  </td>
-                  <td>
-                    10日高
-                  </td>
-                  <td>
-                    {stockNotify[dialogIndex].tenDayHigh}
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
                     tenDayLow
                   </td>
                   <td>
@@ -1086,6 +1074,18 @@ const App = () => {
                   </td>
                   <td>
                     {stockNotify[dialogIndex].tenDayLow}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    tenDayHigh
+                  </td>
+                  <td>
+                    10日高
+                  </td>
+                  <td>
+                    {stockNotify[dialogIndex].tenDayHigh}
                   </td>
                 </tr>
 
