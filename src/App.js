@@ -86,7 +86,7 @@ const App = () => {
   }, [ws]);
 
   useEffect(() => {
-    if (login.email === '') {
+    if (login.email !== '') {
       console.log('do test')
       test()
     }
@@ -361,7 +361,7 @@ const App = () => {
     }
   }
   const fun_logout = () => {
-    setLogin(prevState => { });
+    setLogin(prevState => { return { email: '' } });
     cookies.remove('id', { secure: true, sameSite: true, maxAge: 3600, domain: window.location.host })
   }
   const fun_addNotify = () => {
