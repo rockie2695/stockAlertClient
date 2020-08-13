@@ -75,7 +75,17 @@ const App = () => {
   const loginRef = useRef(login)
   loginRef.current = login;
 
-  useEffect(() => console.log('mounted'), []);
+  useEffect(() => {
+    console.log('mounted')
+    window.addEventListener('online', handleConnectionChange)
+    window.addEventListener('offline', handleConnectionChange)
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Stash the event so it can be triggered later.
+      console.log('beforeinstallprompt', e)
+      setDeferredPrompt(prevState => e)
+    })
+  }, []);
 
   useEffect(() => {
     if (ws) {
@@ -117,15 +127,6 @@ const App = () => {
         setDeferredPrompt(prevState => null)
       });
   }
-
-  window.addEventListener('online', handleConnectionChange);
-  window.addEventListener('offline', handleConnectionChange);
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Stash the event so it can be triggered later.
-    console.log('beforeinstallprompt', e)
-    setDeferredPrompt(prevState => e)
-  });
 
   const initWebSocket = () => {
     // Server 通知完後再傳送 disConnection 通知關閉連線
@@ -170,7 +171,7 @@ const App = () => {
         return prevState.map((row, index) => {
           console.log('seesetStockHistory run how many times')
           if (row.stock === message.stock && !row.priceWithTime.some(e => e.time === time)) {
-            return { ...row, priceWithTime: [...row.priceWithTime, { time: time, price: message.price }] }
+            return { ...row, priceWithTime: [...row.priceWithTime, { time: time, price: message.price, jsTime: message.jsTime }] }
           } else {
             return row
           }
@@ -250,8 +251,8 @@ const App = () => {
             setSelectHistory(prevState => {
               let addArray = []
               if (!prevState.some(e => e.time === time)) {
-                addArray = [{ time: time, price: message.price }]
-                console.log(time)
+                addArray = [{ time: time, price: message.price, jsTime: message.jsTime }]
+                console.log(time, message.jsTime)
               }
               return [...prevState, ...addArray]
             })
@@ -265,7 +266,7 @@ const App = () => {
             setSelectHistory(prevState => {
               let addArray = []
               if (!prevState.some(e => e.time === time)) {
-                addArray = [{ time: time, price: message.price }]
+                addArray = [{ time: time, price: message.price, jsTime: message.jsTime }]
                 console.log(time)
               }
               return [...addArray, ...prevState]
@@ -619,7 +620,7 @@ const App = () => {
           setStockHistory(prevState => {
             return prevState.map((row, index) => {
               if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].stringTime.split(' ')[1])) {
-                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price }, ...row.priceWithTime] }
+                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time) }, ...row.priceWithTime] }
               } else {
                 return row
               }
@@ -1011,8 +1012,8 @@ const App = () => {
         </Box>{/* <Box margin={2} overflow="auto"> */}
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
-      <Dialog fullWidth={true} onClose={closeDialog} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title" onClose={closeDialog}>
+      <Dialog fullWidth={true} onClose={closeDialog} aria-labelledby="dialog-title" open={open}>
+        <DialogTitle id="dialog-title" onClose={closeDialog}>
           Stock:{dialogIndex > -1 ? stockNotify[dialogIndex].stock + ' (' + stockNotify[dialogIndex].name + ')' : ''}
         </DialogTitle>
         <DialogContent dividers>
@@ -1023,7 +1024,7 @@ const App = () => {
                 <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="time" />
+                  <XAxis dataKey="jsTime" scale={'time'} />
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip />
                 </LineChart>
@@ -1042,7 +1043,7 @@ const App = () => {
                   <col style={{ width: '33.33%' }} />
                 </colgroup>
                 <tr>
-                  <td class="test">
+                  <td>
                     price
                   </td>
                   <td>
