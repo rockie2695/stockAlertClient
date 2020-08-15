@@ -441,6 +441,7 @@ const App = () => {
     }
   }
   const fun_save = () => {
+    setBoxShadow(prevState => -1)
     console.log(oldStockNotify, stockNotify)
     setSendingForm(prevState => {
       return true
@@ -504,6 +505,7 @@ const App = () => {
     }
   }
   const fun_edit = () => {
+    setBoxShadow(prevState => -1)
     if (edit === true) {
       setStockNotify(prevState => {
         return prevState.filter((row, index) => {
@@ -1032,9 +1034,9 @@ const App = () => {
                 <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' domain={['auto', 'auto']} />
+                  <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' />
                   <YAxis domain={['auto', 'auto']} />
-                  <Tooltip />
+                  <Tooltip formatter={(value, name, props) => [value, moment(name).format('HH:mm')]} />
                 </LineChart>
               </ResponsiveContainer>
               :
