@@ -623,13 +623,13 @@ const App = () => {
           setStockHistory(prevState => {
             return prevState.map((row, index) => {
               if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].stringTime.split(' ')[1])) {
-                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time) }, ...row.priceWithTime] }
+                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time).getTime() }, ...row.priceWithTime] }
               } else {
                 return row
               }
             })
           })
-          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time) }, 'front')
+          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time).getTime() }, 'front')
         }
       })
   }
@@ -690,13 +690,13 @@ const App = () => {
         setStockHistory(prevState => {
           return prevState.map((row, index) => {
             if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime.split(' ')[1])) {
-              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime.split(' ')[1], price: nowPrice ,jsTime:new Date(nowTime)}] }
+              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime.split(' ')[1], price: nowPrice, jsTime: new Date(nowTime).getTime() }] }
             } else {
               return row
             }
           })
         })
-        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice ,jsTime:new Date(nowTime)}, 'end')
+        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice, jsTime: new Date(nowTime).getTime() }, 'end')
       })
   }
   function ElevationScroll(props) {
@@ -1027,7 +1027,7 @@ const App = () => {
                 <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="jsTime" scale={'time'} />
+                  <XAxis dataKey="jsTime" />
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip />
                 </LineChart>
@@ -1035,6 +1035,7 @@ const App = () => {
               :
               null
             }
+            {/*scale={'time'} */}
           </Typography>
           <Typography gutterBottom>
             {dialogIndex > -1
