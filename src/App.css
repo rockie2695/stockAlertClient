@@ -36,6 +36,10 @@
     transform: rotate(360deg);
   }
 }
+table.dialog {
+  width: '100%';
+  border-collapse: collapse;
+}
 
 table.dialog td {
   padding: 8px;

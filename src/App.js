@@ -84,6 +84,7 @@ const App = () => {
       // Stash the event so it can be triggered later.
       console.log('beforeinstallprompt', e)
       setDeferredPrompt(prevState => e)
+      showA2HS()
     })
   }, []);
 
@@ -294,6 +295,7 @@ const App = () => {
     }
   };
   const closeDialog = () => {
+    console.log(selectHistory)
     setOpen(prevState => false);
     setDialogIndex(prevState => -1);
     setSelectHistory([])
@@ -1037,7 +1039,7 @@ const App = () => {
           <Typography gutterBottom>
             {dialogIndex > -1
               ?
-              <table class="dialog" style={{ width: '100%' }}>
+              <table class="dialog">
                 <colgroup>
                   <col style={{ width: '33.33%' }} />
                   <col style={{ width: '33.33%' }} />
