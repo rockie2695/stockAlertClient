@@ -623,16 +623,18 @@ const App = () => {
       .then((result) => {
         console.log(result)
         for (let i = result.ok.length - 1; i > -1; i--) {
+          let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" });
+          rowTime = new Date(rowTime).getTime()
           setStockHistory(prevState => {
             return prevState.map((row, index) => {
               if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].stringTime.split(' ')[1])) {
-                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time).getTime() }, ...row.priceWithTime] }
+                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: rowTime }, ...row.priceWithTime] }
               } else {
                 return row
               }
             })
           })
-          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time).getTime() }, 'front')
+          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: rowTime }, 'front')
         }
       })
   }
