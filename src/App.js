@@ -84,7 +84,7 @@ const App = () => {
       // Stash the event so it can be triggered later.
       console.log('beforeinstallprompt', e)
       setDeferredPrompt(prevState => e)
-      showA2HS()
+      showA2HS(e)
     })
   }, []);
 
@@ -116,9 +116,9 @@ const App = () => {
   const showA2HS = (e) => {
     console.log('call this medhod showA2HS')
     // Show the prompt
-    deferredPrompt.prompt();
+    e.prompt();
     // Wait for the user to respond to the prompt
-    deferredPrompt.userChoice
+    e.userChoice
       .then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the A2HS prompt');
@@ -690,13 +690,13 @@ const App = () => {
         setStockHistory(prevState => {
           return prevState.map((row, index) => {
             if (row.stock === stock && !row.priceWithTime.some(e => e.time === nowTime.split(' ')[1])) {
-              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime.split(' ')[1], price: nowPrice }] }
+              return { ...row, priceWithTime: [...row.priceWithTime, { time: nowTime.split(' ')[1], price: nowPrice ,jsTime:new Date(nowTime)}] }
             } else {
               return row
             }
           })
         })
-        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice }, 'end')
+        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice ,jsTime:new Date(nowTime)}, 'end')
       })
   }
   function ElevationScroll(props) {
