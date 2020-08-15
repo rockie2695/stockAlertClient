@@ -623,7 +623,7 @@ const App = () => {
       .then((result) => {
         console.log(result)
         for (let i = result.ok.length - 1; i > -1; i--) {
-          let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" });
+          let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", { timeZone: "UTC" });
           rowTime = new Date(rowTime).getTime()
           setStockHistory(prevState => {
             return prevState.map((row, index) => {
