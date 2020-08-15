@@ -161,7 +161,8 @@ const App = () => {
         })
       });
       if (findStockNameArray.length !== 0) {
-        findStockName(findStockNameArray[0].stock, findStockNameArray[0].email)
+        console.log(findStockNameArray[0].email, loginRef.current.email)
+        findStockName(findStockNameArray[0].stock, loginRef.current.email)
       }
       if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current > -1) {
         changeSelectHistory(changeSelectHistoryArray[0].stock, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
@@ -626,7 +627,7 @@ const App = () => {
               }
             })
           })
-          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price }, 'front')
+          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: new Date(result.ok[i].time) }, 'front')
         }
       })
   }
