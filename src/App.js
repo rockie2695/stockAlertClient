@@ -768,7 +768,7 @@ const App = () => {
           <Box position="fixed" zIndex="0" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
             <Typography align="center" variant="h2">
               For Stock Price Showing And Notification
-        </Typography>
+            </Typography>
           </Box>
           <Box height="50%" minHeight="50vh">
 
@@ -979,7 +979,7 @@ const App = () => {
                   loading === true
                     ?
                     <Fragment>
-                      <Box textAlign="center" alignItems="center" margin={2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                      <Box textAlign="center" alignItems="center" margin={2} onMouseEnter={test2} onMouseLeave={test2}>
                         <Typography color="textSecondary" align="center">
                           <CircularProgress />
                         </Typography>
@@ -988,7 +988,7 @@ const App = () => {
                     </Fragment>
                     :
                     <Fragment>
-                      <Box textAlign="center" alignItems="center" margin={2} onMouseEnter={test2()} onMouseLeave={test2()}>
+                      <Box textAlign="center" alignItems="center" margin={2} onMouseEnter={test2} onMouseLeave={test2}>
                         <Typography color="textSecondary" align="center">
                           None of record
                       </Typography>
@@ -1020,6 +1020,11 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
+        <Box position="relative" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
+          <Typography align="center" variant="h2">
+            test end
+            </Typography>
+        </Box>
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
       <Dialog fullWidth={true} onClose={closeDialog} aria-labelledby="dialog-title" open={open}>
@@ -1042,7 +1047,6 @@ const App = () => {
               :
               null
             }
-            {/* scale={'time'}*/}
           </Typography>
           <Typography gutterBottom>
             {dialogIndex > -1
