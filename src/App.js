@@ -119,9 +119,9 @@ const App = () => {
   const showA2HS = (e) => {
     console.log('call this medhod showA2HS')
     // Show the prompt
-    e.prompt();
+    deferredPrompt.prompt();
     // Wait for the user to respond to the prompt
-    e.userChoice
+    deferredPrompt.userChoice
       .then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the A2HS prompt');
@@ -1020,7 +1020,7 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        <Box position="relative" width="100%" height="50%" minHeight="200px" bgcolor="text.primary" color="background.paper" display="flex" alignItems="center" justifyContent="center">
+        <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="center" justifyContent="center">
           <Typography align="center" variant="h2">
             test end
             </Typography>
@@ -1041,7 +1041,7 @@ const App = () => {
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' scale='time' domain={['dataMin', 'dataMax']} />
                   <YAxis domain={['auto', 'auto']} />
-                  <Tooltip formatter={(value, name, props) => [value, moment(new Date(name)).format('HH:mm')]} />
+                  <Tooltip labelFormatter={(unixTime) => moment(unixTime).format('HH:mm')} />
                 </LineChart>
               </ResponsiveContainer>
               :
