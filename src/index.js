@@ -6,7 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import { subscribeUser } from './subscription';
 
 require('dotenv').config();
-console.log(process.env.REACT_APP_PUBLIC_VAPID_KEY)
 
 ReactDOM.render(
   <React.StrictMode>

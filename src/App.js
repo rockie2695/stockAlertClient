@@ -165,7 +165,7 @@ const App = () => {
         })
       });
       if (findStockNameArray.length !== 0) {
-        console.log(findStockNameArray[0].email, loginRef.current.email)
+        console.log('please chech email', findStockNameArray[0].email, loginRef.current.email)
         findStockName(findStockNameArray[0].stock, loginRef.current.email)
       }
       if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current > -1) {
@@ -1021,9 +1021,12 @@ const App = () => {
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
         <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="center" justifyContent="center">
-          <Typography align="center" variant="h2">
-            test end
-            </Typography>
+          <Typography align="center" variant="h6">
+            make by
+            <Link href="mailto:rockie2695@gmail.com">
+              rockie2695@gmail.com
+            </Link>
+          </Typography>
         </Box>
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
