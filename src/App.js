@@ -84,10 +84,19 @@ const App = () => {
 
     window.addEventListener('beforeinstallprompt', (e) => {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
+      //e.preventDefault();
       // Stash the event so it can be triggered later.
       console.log('beforeinstallprompt', e)
       setDeferredPrompt(prevState => e)
+       e.userChoice.then(function(choiceResult) {
+        console.log(choiceResult.outcome);
+        if(choiceResult.outcome == 'dismissed') {
+          console.log('User cancelled home screen install');
+        }
+        else {
+          console.log('User added to home screen');
+        }
+      });
     })
   }, []);
 
