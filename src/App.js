@@ -144,6 +144,8 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log('receive stockPrice message', message)
+      
+      message.jsTime=new Date(message.time).toLocaleString("en-US", { timeZone: "UTC" });
       let findStockNameArray = []
       let changeSelectHistoryArray = []
       setStockNotify(prevState => {
