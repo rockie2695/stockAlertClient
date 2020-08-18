@@ -1024,7 +1024,7 @@ const App = () => {
         </Box>{/* <Box margin={2} overflow="auto"> */}
         <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="center" justifyContent="center">
           <Typography align="center" variant="h6">
-            make by
+            make by&nbsp;
             <Link href="mailto:rockie2695@gmail.com">
               rockie2695@gmail.com
             </Link>
