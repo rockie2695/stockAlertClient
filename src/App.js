@@ -1053,7 +1053,7 @@ const App = () => {
                 <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' scale='time' domain={['dataMin', 'dataMax']} tickCount={10}/>
+                  <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' scale='time' domain={['dataMin', 'dataMax']} tickCount={20}/>
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip labelFormatter={(unixTime) => moment(unixTime).format('HH:mm')} />
                 </LineChart>
