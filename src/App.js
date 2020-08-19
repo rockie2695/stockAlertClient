@@ -88,9 +88,9 @@ const App = () => {
       // Stash the event so it can be triggered later.
       console.log('beforeinstallprompt', e)
       setDeferredPrompt(prevState => e)
-       e.userChoice.then(function(choiceResult) {
+      e.userChoice.then(function (choiceResult) {
         console.log(choiceResult.outcome);
-        if(choiceResult.outcome == 'dismissed') {
+        if (choiceResult.outcome == 'dismissed') {
           console.log('User cancelled home screen install');
         }
         else {
@@ -111,8 +111,8 @@ const App = () => {
 
   useEffect(() => {
     if (login.email !== '') {
-      console.log('do test')
-      test()
+      console.log('do startConnectWS')
+      startConnectWS()
     }
   }, [login]);
 
@@ -153,8 +153,7 @@ const App = () => {
     });
     ws.on('stockPrice', message => {
       console.log('receive stockPrice message', message)
-      //new Date(message.time).toLocaleString("en-US", { timeZone: "UTC" });
-      message.jsTime=new Date(message.time).getTime()
+      message.jsTime = new Date(message.time).getTime()
       let findStockNameArray = []
       let changeSelectHistoryArray = []
       setStockNotify(prevState => {
@@ -164,7 +163,7 @@ const App = () => {
           let addObject = {}
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time }
-            if (message.time.split(' ')[1] === "09:20") {
+            if (message.time.split(' ')[1] === "09:20" || message.time.split(' ')[0] !== row.nowTime.split(' ')[0]) {
               //findStockName(row.stock, login.email)
               findStockNameArray = [{ stock: row.stock, email: loginRef.current.email }]
             }
@@ -389,8 +388,8 @@ const App = () => {
       return [...prevState, { stock: "", price: "", equal: ">=", alert: true }]
     });
   }
-  const test = () => {//run when have login object
-    console.log('test')
+  const startConnectWS = () => {//run when have login object
+    console.log('startConnectWS')
     connectWebSocket()
   }
   const test2 = () => {
@@ -507,6 +506,7 @@ const App = () => {
                 }
               })
               findStockName(resultArray[i].stock, login.email)
+              findStockHistory(resultArray[i].stock, login.email)
             }
           }
           setSendingForm(prevState => {
@@ -1053,7 +1053,7 @@ const App = () => {
                 <LineChart data={selectHistory} margin={{ top: 10, right: 25, bottom: 10, left: 0 }}>
                   <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' scale='time' domain={['dataMin', 'dataMax']}  interval={parseInt(selectHistory.length/5)}/>
+                  <XAxis dataKey="jsTime" tickFormatter={(unixTime) => moment(unixTime).format('HH:mm')} type='number' scale='time' domain={['dataMin', 'dataMax']} interval={selectHistory.length > 5 ? parseInt(selectHistory.length / 5) : 1} />
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip labelFormatter={(unixTime) => moment(unixTime).format('HH:mm')} />
                 </LineChart>
