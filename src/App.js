@@ -166,7 +166,6 @@ const App = () => {
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time }
             if (message.time.split(' ')[1] === "09:20" || message.time.split(' ')[0] !== row.nowTime.split(' ')[0]) {
-              //findStockName(row.stock, login.email)
               findStockNameArray = [{ stock: row.stock, email: loginRef.current.email }]
               changeSelectHistoryArray = [{ stock: row.stock, index: index, message: message, side: 'new' }]
               needEmptySelectHistory = true
@@ -500,8 +499,12 @@ const App = () => {
             setStockNotify(prevState => {
               return resultArray
             })
+            let addStockHistory = []
+            for (let i = 0; i < resultArray.length; i++) {
+              addStockHistory.push({ stock: resultArray[i].stock, priceWithTime: [] })
+            }
             setStockHistory(prevState => {
-              return []
+              return addStockHistory
             })
             setOldStockNotify(prevState => {
               return resultArray
