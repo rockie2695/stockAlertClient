@@ -28,7 +28,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import moment from 'moment'
-
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -156,6 +157,7 @@ const App = () => {
       message.jsTime = new Date(message.time).getTime()
       let findStockNameArray = []
       let changeSelectHistoryArray = []
+      let needEmptySelectHistory = false
       setStockNotify(prevState => {
         console.log(prevState)
         return prevState.map((row, index) => {
@@ -166,14 +168,24 @@ const App = () => {
             if (message.time.split(' ')[1] === "09:20" || message.time.split(' ')[0] !== row.nowTime.split(' ')[0]) {
               //findStockName(row.stock, login.email)
               findStockNameArray = [{ stock: row.stock, email: loginRef.current.email }]
+              changeSelectHistoryArray = [{ stock: row.stock, index: index, message: message, side: 'new' }]
+              needEmptySelectHistory = true
+            } else {
+              changeSelectHistoryArray = [{ stock: row.stock, index: index, message: message, side: 'end' }]
             }
-            console.log('in each stock', prevState)
-            //changeSelectHistory(index, message, 'end')
-            changeSelectHistoryArray = [{ stock: row.stock, index: index, message: message, side: 'end' }]
           }
           return { ...row, ...addObject }
         })
       });
+      if (needEmptySelectHistory) {
+        setStockHistory(prevState => {
+          return prevState.map((row, index) => {
+            if (row.stock === message.stock) {
+              return { ...row, priceWithTime: [] }
+            }
+          })
+        })
+      }
       if (findStockNameArray.length !== 0) {
         console.log('please chech email', findStockNameArray[0].email, loginRef.current.email)
         findStockName(findStockNameArray[0].stock, loginRef.current.email)
@@ -182,6 +194,7 @@ const App = () => {
         changeSelectHistory(changeSelectHistoryArray[0].stock, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
       }
       let time = message.time.split(' ')[1]
+
       setStockHistory(prevState => {
         return prevState.map((row, index) => {
           console.log('seesetStockHistory run how many times')
@@ -1038,6 +1051,10 @@ const App = () => {
               rockie2695@gmail.com
             </Link>
           </Typography>
+          <Fab color="primary" aria-label="pwa" onClick={showA2HS}>
+            <AddIcon />
+          </Fab>
+          pwa
         </Box>
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
@@ -1067,9 +1084,10 @@ const App = () => {
               ?
               <table class="dialog">
                 <colgroup>
-                  <col style={{ width: '33.33%' }} />
-                  <col style={{ width: '33.33%' }} />
-                  <col style={{ width: '33.33%' }} />
+                  <col style={{ width: '32%' }} />
+                  <col style={{ width: '32%' }} />
+                  <col style={{ width: '32%' }} />
+                  <col style={{ width: '6%' }} />
                 </colgroup>
                 <tr>
                   <td>
