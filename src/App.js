@@ -186,10 +186,9 @@ const App = () => {
         })
       }
       if (findStockNameArray.length !== 0) {
-        console.log('please chech email', findStockNameArray[0].email, loginRef.current.email)
+        console.log('please chech email ', findStockNameArray[0].email, loginRef.current.email)
         findStockName(findStockNameArray[0].stock, loginRef.current.email)
-      }
-      if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current > -1) {
+      } else if (changeSelectHistoryArray.length !== 0 && dialogIndexRef.current > -1) {
         changeSelectHistory(changeSelectHistoryArray[0].stock, changeSelectHistoryArray[0].message, changeSelectHistoryArray[0].side)
       }
       let time = message.time.split(' ')[1]
@@ -730,7 +729,7 @@ const App = () => {
             }
           })
         })
-        changeSelectHistory(stock, { time: nowTime.split(' ')[1], price: nowPrice, jsTime: new Date(nowTime).getTime() }, 'end')
+        changeSelectHistory(stock, { time: nowTime, price: nowPrice, jsTime: new Date(nowTime).getTime() }, 'end')
       })
   }
   function ElevationScroll(props) {
