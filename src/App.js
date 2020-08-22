@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react';
+import * as brain from 'brain.js';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
@@ -756,6 +757,26 @@ const App = () => {
         changeSelectHistory(stock, { time: nowTime, price: nowPrice, jsTime: new Date(nowTime).getTime() }, 'end')
       })
   }
+  const preditPrice = () => {
+    const net = new brain.recurrent.LSTMTimeStep({
+      inputSize: 2,
+      hiddenLayers: [10],
+      outputSize: 2,
+    });
+
+    net.train([
+      [1, 3],
+      [2, 2],
+      [3, 1],
+    ]);
+
+    const output = net.run([
+      [1, 3],
+      [2, 2],
+    ]); // [3, 1]
+
+    console.log(output)
+  }
   function ElevationScroll(props) {
     const { children } = props;
     const trigger = useScrollTrigger();
@@ -1070,9 +1091,9 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="end" justifyContent="center">
+        <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="flex-end" justifyContent="center">
           <Grid container alignItems="center">
-            <Grid item xs={6} sm={12} md={12}>
+            <Grid item xs={12} sm={12} md={6}>
               <Typography align="left" variant="h6">
                 make by&nbsp;
                 <Link href="mailto:rockie2695@gmail.com">
@@ -1080,7 +1101,7 @@ const App = () => {
                 </Link>
               </Typography>
             </Grid>
-            <Grid item xs={6} sm={12} md={12}>
+            <Grid item xs={12} sm={12} md={6}>
               <Box textAlign="right">
                 <Fab color="primary" aria-label="pwa" onClick={showA2HS}>
                   <AddIcon />
@@ -1261,6 +1282,7 @@ const App = () => {
               ''
             }
           </Typography>
+          <Button variant="contained" color="primary" onClick={preditPrice}>Predit</Button>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
