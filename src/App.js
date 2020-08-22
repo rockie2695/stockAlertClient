@@ -268,11 +268,11 @@ const App = () => {
     },
   }))(MuiDialogActions);
 
-  const changeSelectHistory = (stock, message, side) => {
+  const changeSelectHistory = (stock, message, side = 'new') => {
     if (dialogIndexRef.current > -1) {
       if (stock === stockNotifyRef.current[dialogIndexRef.current].stock) {
-        let time = message.time.split(' ')[1]
         if (side === 'end') {
+          let time = message.time.split(' ')[1]
           if (!selectHistory.some(e => e.time === time)) {
             setSelectHistory(prevState => {
               let addArray = []
@@ -284,10 +284,13 @@ const App = () => {
             })
           }
         } else if (side === 'new') {
+          let time = message.time.split(' ')[1]
           setSelectHistory(prevState => {
             return [{ time: time, price: message.price }]
           })
         } else if (side === 'front') {
+          //todo
+          /*
           if (!selectHistory.some(e => e.time === time)) {
             setSelectHistory(prevState => {
               let addArray = []
@@ -298,6 +301,24 @@ const App = () => {
               return [...addArray, ...prevState]
             })
           }
+          */
+          if (message.length >= 2 && selectHistory.length >= 1) {
+            //check second last
+            if (message[message.length - 2].time === selectHistory[selectHistory.length - 1].time) {
+              message.splice(message.length - 2, 2)
+            }
+          }
+          if (message.length >= 1 && selectHistory.length >= 1) {
+            //check last one
+            if (message[message.length - 1].time === selectHistory[selectHistory.length - 1].time) {
+              message.splice(message.length - 1, 1)
+            } else if (selectHistory.length >= 2 && message[message.length - 1].time === selectHistory[selectHistory.length - 2].time) {
+              message.splice(message.length - 1, 1)
+            }
+          }
+          setSelectHistory(prevState => {
+            return [...message, ...prevState]
+          })
         }
       }
     }
@@ -652,18 +673,21 @@ const App = () => {
         console.log(result)
         for (let i = result.ok.length - 1; i > -1; i--) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", { timeZone: "UTC" });
-          rowTime = new Date(rowTime).getTime()
+          result.ok[i].jsTime = new Date(rowTime).getTime()
+          result.ok[i].time = result.ok[i].stringTime.split(' ')[1]
           setStockHistory(prevState => {
             return prevState.map((row, index) => {
-              if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].stringTime.split(' ')[1])) {
-                return { ...row, priceWithTime: [{ time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: rowTime }, ...row.priceWithTime] }
+              if (row.stock === stock && !row.priceWithTime.some(e => e.time === result.ok[i].time)) {
+                return { ...row, priceWithTime: [{ time: result.ok[i].time, price: result.ok[i].price, jsTime: result.ok[i].jsTime }, ...row.priceWithTime] }
               } else {
                 return row
               }
             })
           })
-          changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: rowTime }, 'front')
         }
+        //todo
+        //changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: rowTime }, 'front')
+        changeSelectHistory(stock, result.ok, 'front')
       })
   }
   const findStockName = (stock, subEmail) => {//since email object may not contain before login
@@ -1046,17 +1070,27 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="center" justifyContent="center">
-          <Typography align="center" variant="h6">
-            make by&nbsp;
-            <Link href="mailto:rockie2695@gmail.com">
-              rockie2695@gmail.com
-            </Link>
-          </Typography>
-          <Fab color="primary" aria-label="pwa" onClick={showA2HS}>
-            <AddIcon />
-          </Fab>
-          pwa
+        <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="end" justifyContent="center">
+          <Grid container alignItems="center">
+            <Grid item xs={6} sm={12} md={12}>
+              <Typography align="left" variant="h6">
+                make by&nbsp;
+                <Link href="mailto:rockie2695@gmail.com">
+                  rockie2695@gmail.com
+                </Link>
+              </Typography>
+            </Grid>
+            <Grid item xs={6} sm={12} md={12}>
+              <Box textAlign="right">
+                <Fab color="primary" aria-label="pwa" onClick={showA2HS}>
+                  <AddIcon />
+                </Fab>
+                <Typography variant="h6">
+                  pwa
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box >
