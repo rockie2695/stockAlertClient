@@ -1113,7 +1113,7 @@ const App = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
               <Box textAlign="right">
-                <Fab color="primary" aria-label="pwa" onClick={showA2HS} class="marginRight12">
+                <Fab color="primary" aria-label="pwa" onClick={showA2HS} className={classes.marginRight12}>
                   <GetAppIcon />
                 </Fab>
                 <Typography variant="h6">
