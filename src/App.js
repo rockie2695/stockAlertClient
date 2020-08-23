@@ -30,7 +30,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import moment from 'moment'
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -239,6 +239,9 @@ const App = () => {
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
+    marginRight12: {
+      marginRight: 12
+    }
   }))
 
   const classes = useStyles();
@@ -1098,7 +1101,7 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        <Box position="relative" paddingX={24} width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="flex-end" justifyContent="center">
+        <Box position="relative" paddingX={2} width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="flex-end" justifyContent="center">
           <Grid container alignItems="center">
             <Grid item xs={12} sm={12} md={6}>
               <Typography align="left" variant="h6">
@@ -1110,8 +1113,8 @@ const App = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
               <Box textAlign="right">
-                <Fab color="primary" aria-label="pwa" onClick={showA2HS}>
-                  <AddIcon />
+                <Fab color="primary" aria-label="pwa" onClick={showA2HS} class="marginRight12">
+                  <GetAppIcon />
                 </Fab>
                 <Typography variant="h6">
                   Web App
