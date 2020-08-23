@@ -240,7 +240,7 @@ const App = () => {
       color: theme.palette.grey[500],
     },
     marginRight12: {
-      marginRight: 12
+      marginRight: '12px'
     }
   }))
 
