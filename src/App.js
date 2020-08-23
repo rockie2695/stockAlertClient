@@ -775,7 +775,14 @@ const App = () => {
       [2, 2],
     ]); // [3, 1]
 
-    console.log(output)
+    console.log(net, output)
+
+    const output2 = net.forecast([
+      [1, 3],
+      [2, 2],
+    ], 3);
+
+    console.log(net, output2)
   }
   function ElevationScroll(props) {
     const { children } = props;
@@ -811,7 +818,7 @@ const App = () => {
               <Typography variant="h6" style={{ flexGrow: 1 }}>
                 <Link href="https://rockie-stockalertclient.herokuapp.com/" color="inherit">
                   StockAlertClient
-            </Link>
+                </Link>
               </Typography>
               {login.email === ''
                 ?
@@ -1091,7 +1098,7 @@ const App = () => {
             </Hidden>
           </Grid>
         </Box>{/* <Box margin={2} overflow="auto"> */}
-        <Box position="relative" width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="flex-end" justifyContent="center">
+        <Box position="relative" paddingX={24} width="100%" height="50%" minHeight="200px" color="background.paper" display="flex" alignItems="flex-end" justifyContent="center">
           <Grid container alignItems="center">
             <Grid item xs={12} sm={12} md={6}>
               <Typography align="left" variant="h6">
@@ -1107,7 +1114,7 @@ const App = () => {
                   <AddIcon />
                 </Fab>
                 <Typography variant="h6">
-                  pwa
+                  Web App
                 </Typography>
               </Box>
             </Grid>
