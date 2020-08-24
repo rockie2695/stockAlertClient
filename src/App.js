@@ -760,7 +760,7 @@ const App = () => {
         changeSelectHistory(stock, { time: nowTime, price: nowPrice, jsTime: new Date(nowTime).getTime() }, 'end')
       })
   }
-  const preditPrice = () => {
+  const preditPrice = (stock) => {
     const net = new brain.recurrent.LSTMTimeStep({
       inputSize: 2,
       hiddenLayers: [10],
@@ -786,6 +786,21 @@ const App = () => {
     ], 3);
 
     console.log(net, output2)
+
+    fetch(host + '/select/allStockPrice', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        stock: '00001',
+        email: login.email
+      })
+    })
+      .then(res => res.json())
+      .then((result) => {
+        if (typeof result.ok !== 'undefined') {
+          console.log(result.ok)
+        }
+      })
   }
   function ElevationScroll(props) {
     const { children } = props;
