@@ -791,7 +791,7 @@ const App = () => {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        stock: '00001',
+        stock: stock,
         email: login.email
       })
     })
@@ -1307,7 +1307,7 @@ const App = () => {
               ''
             }
           </Typography>
-          <Button variant="contained" color="primary" onClick={preditPrice}>Predit</Button>
+          <Button variant="contained" color="primary" onClick={() => preditPrice(stockNotify[dialogIndex].stock)}>Predit</Button>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
