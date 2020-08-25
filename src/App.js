@@ -779,7 +779,7 @@ const App = () => {
           let net3 = new brain.recurrent.GRUTimeStep();
 
           let historyPrice = []
-          for (let i = 0; i > result.ok.length; i++) {
+          for (let i = 0; i < result.ok.length; i++) {
             historyPrice.push(result.ok[i].price)
           }
 
@@ -787,17 +787,20 @@ const App = () => {
           const normalisedHP = historyPrice.map((x) => x / max);
           const denormalise = (x) => x * max;
           console.log(historyPrice, max, normalisedHP)
-          net1.train([normalisedHP], { log: false });
-          net2.train([normalisedHP], { log: false });
-          net3.train([normalisedHP], { log: false });
 
-          const output1 = net1.forecast(normalisedHP, 3);
-          const output2 = net2.forecast(normalisedHP, 3);
-          const output3 = net3.forecast(normalisedHP, 3);
+          if (historyPrice.length > 100) {
+            net1.train([normalisedHP], { log: false });
+            net2.train([normalisedHP], { log: false });
+            net3.train([normalisedHP], { log: false });
 
-          console.log('1) Forecast: ', output1.map(denormalise));
-          console.log('2) Forecast: ', output2.map(denormalise));
-          console.log('3) Forecast: ', output3.map(denormalise));
+            const output1 = net1.forecast(normalisedHP, 3);
+            const output2 = net2.forecast(normalisedHP, 3);
+            const output3 = net3.forecast(normalisedHP, 3);
+
+            console.log('1) Forecast: ', output1.map(denormalise));
+            console.log('2) Forecast: ', output2.map(denormalise));
+            console.log('3) Forecast: ', output3.map(denormalise));
+          }
         }
       })
   }
