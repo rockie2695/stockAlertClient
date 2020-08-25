@@ -1306,7 +1306,7 @@ const App = () => {
               ''
             }
           </Typography>
-          <Button variant="contained" color="primary" onClick={() => preditPrice(stockNotify[dialogIndex].stock), dialogIndex}>Predit</Button>
+          <Button variant="contained" color="primary" onClick={() => preditPrice(stockNotify[dialogIndex].stock, dialogIndex)}>Predit</Button>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
