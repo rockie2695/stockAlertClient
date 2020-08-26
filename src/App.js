@@ -790,7 +790,7 @@ const App = () => {
             const denormalise = (x) => x * max + min;
             console.log(historyPrice, max, normalisedHP1, normalisedHP2)
 
-            net1.train([normalisedHP2], { log: true, iterations: 2000 });//default iterations: 20000
+            net1.train([normalisedHP2], { log: true });//default iterations: 20000
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
