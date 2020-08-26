@@ -777,32 +777,35 @@ const App = () => {
           let net1 = new brain.recurrent.RNNTimeStep();
           //let net2 = new brain.recurrent.LSTMTimeStep();
           //let net3 = new brain.recurrent.GRUTimeStep();
+          if (result.ok.length > 100) {
+            let historyPrice = []
+            for (let i = 0; i < result.ok.length; i++) {
+              historyPrice.push(result.ok[i].price)
+            }
 
-          let historyPrice = []
-          for (let i = 0; i < result.ok.length; i++) {
-            historyPrice.push(result.ok[i].price)
-          }
+            let min = Math.min(...historyPrice)
+            const normalisedHP1 = historyPrice.map((x) => x - min);
+            let max = Math.max(...normalisedHP1)
+            const normalisedHP2 = historyPrice.map((x) => x / max);
+            const denormalise = (x) => x * max + min;
+            console.log(historyPrice, max, normalisedHP1, normalisedHP2)
 
-          let min = Math.min(...historyPrice)
-          const normalisedHP1 = historyPrice.map((x) => x - min);
-          let max = Math.max(...normalisedHP1)
-          const normalisedHP2 = historyPrice.map((x) => x / max);
-          const denormalise = (x) => x * max + min;
-          console.log(historyPrice, max, normalisedHP)
-
-          if (historyPrice.length > 100) {
             net1.train([normalisedHP2], { log: true, iterations: 2000 });//default iterations: 20000
             //net2.train([normalisedHP], { log: false });
             //net3.train([normalisedHP], { log: false });
 
-            const output1 = net1.forecast(normalisedHP, 3);
+            const output1 = net1.forecast(normalisedHP2, 3);
             //const output2 = net2.forecast(normalisedHP, 3);
             //const output3 = net3.forecast(normalisedHP, 3);
 
             console.log('1) Forecast: ', output1.map(denormalise));
             //console.log('2) Forecast: ', output2.map(denormalise));
             //console.log('3) Forecast: ', output3.map(denormalise));
+
+          } else {
+            alert('too less history price to predict')
           }
+
         }
       })
   }
