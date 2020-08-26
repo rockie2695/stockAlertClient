@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react';
-import * as brain from 'brain.js';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
@@ -31,6 +30,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import moment from 'moment'
 import Fab from '@material-ui/core/Fab';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import * as brain from 'brain.js';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
