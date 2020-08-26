@@ -786,7 +786,7 @@ const App = () => {
             let min = Math.min(...historyPrice)
             const normalisedHP1 = historyPrice.map((x) => x - min);
             let max = Math.max(...normalisedHP1)
-            const normalisedHP2 = historyPrice.map((x) => x / max);
+            const normalisedHP2 = normalisedHP1.map((x) => x / max);
             const denormalise = (x) => x * max + min;
             console.log(historyPrice, max, normalisedHP1, normalisedHP2)
 
