@@ -774,7 +774,13 @@ const App = () => {
       .then((result) => {
         if (typeof result.ok !== 'undefined') {
           console.log(result.ok)
-          let net1 = new brain.recurrent.RNNTimeStep();
+          let net1 = new brain.recurrent.RNNTimeStep(
+            {
+              inputSize: 1,
+              hiddenLayers: [10],
+              outputSize: 1,
+            }
+          );
           //let net2 = new brain.recurrent.LSTMTimeStep();
           //let net3 = new brain.recurrent.GRUTimeStep();
           if (result.ok.length > 100) {
