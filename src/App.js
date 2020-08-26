@@ -790,15 +790,15 @@ const App = () => {
             const denormalise = (x) => x * max + min;
             console.log(historyPrice, max, normalisedHP1, normalisedHP2)
 
-            net1.train(normalisedHP2, { log: true, iterations: 2000 });//default iterations: 20000
+            net1.train([normalisedHP2], { log: true, iterations: 2000 });//default iterations: 20000
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
-            const output1 = net1.forecast(normalisedHP2, 3);
+            //const output1 = net1.forecast(normalisedHP2, 3);
             //const output2 = net2.forecast(normalisedHP, 3);
             //const output3 = net3.forecast(normalisedHP, 3);
 
-            console.log('1) Forecast: ', output1.map(denormalise));
+            //console.log('1) Forecast: ', output1.map(denormalise));
             //console.log('2) Forecast: ', output2.map(denormalise));
             //console.log('3) Forecast: ', output3.map(denormalise));
 
