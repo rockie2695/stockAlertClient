@@ -817,6 +817,10 @@ const App = () => {
 
               console.log(net1, output1)
 
+             
+            }, 2000);
+
+            setTimeout(() => {
               net4.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.2, activation: 'relu', });
 
               const output4 = net4.forecast(
@@ -825,6 +829,10 @@ const App = () => {
 
               console.log(net4, output4)
 
+              
+            }, 20000);
+
+            setTimeout(() => {
               net5.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.1, activation: 'relu', });
 
               const output5 = net5.forecast(
@@ -832,7 +840,7 @@ const App = () => {
                 , 300);
 
               console.log(net5, output5)
-            }, 2000);
+            }, 40000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
