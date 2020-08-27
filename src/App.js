@@ -774,11 +774,15 @@ const App = () => {
       .then((result) => {
         if (typeof result.ok !== 'undefined') {
           console.log(result.ok)
-          
+          let net2 = new brain.recurrent.RNNTimeStep({
+            hiddenLayers: [10],
+            activation: 'relu',
+            learningRate: 0.0006,
+          });
           let net3 = new brain.recurrent.RNNTimeStep({
             hiddenLayers: [10],
             activation: 'relu',
-            learningRate: 0.0007,
+            learningRate: 0.0006,
           });
           /*
           default:
@@ -805,7 +809,17 @@ const App = () => {
               console.log(output3)
             }, 2000);
 
+            const max = Math.max(...historyPrice)
+            const normalisedHP1 = historyPrice.map((x) => x / max);//0.000X(4sigfig)
+            const denormalise = (x) => x * max;
 
+            setTimeout(() => {
+              net2.train([normalisedHP1], { log: true, logPeriod: 500 });//default iterations: 20000,logPeriod:10
+              const output2 = net2.forecast(
+                historyPrice
+                , 10);
+              console.log(output2.map(denormalise))
+            }, 50000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
@@ -819,7 +833,6 @@ const App = () => {
           } else {
             alert('too less history price to predict')
           }
-
         }
       })
   }
