@@ -775,7 +775,13 @@ const App = () => {
         if (typeof result.ok !== 'undefined') {
           console.log(result.ok)
 
-          let net3 = new brain.recurrent.RNNTimeStep({
+          let net1 = new brain.recurrent.RNNTimeStep({
+            hiddenLayers: [10],
+            activation: 'relu',
+            learningRate: 0.0001,
+          });
+
+          let net2 = new brain.recurrent.RNNTimeStep({
             hiddenLayers: [10],
             activation: 'relu',
             learningRate: 0.0001,
@@ -796,20 +802,26 @@ const App = () => {
             }
 
             setTimeout(() => {
-              console.log('third start')
-              net3.train([historyPrice], { log: true, logPeriod: 500, iterations: 30000 });
+              console.log('one start')
+              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 50000 });
 
-              const output3 = net3.forecast(
-                historyPrice
-                , 300);
-              console.log(output3)
-              const output4 = net3.forecast(
+              const output1 = net1.forecast(
                 [historyPrice[historyPrice.length - 1]]
                 , 10);
 
-              console.log(output4)
+              console.log(output1)
             }, 2000);
 
+            setTimeout(() => {
+              console.log('second start')
+              net2.train([historyPrice], { log: true, logPeriod: 100, iterations: 100000 });
+
+              const output2 = net2.forecast(
+                [historyPrice[historyPrice.length - 1]]
+                , 10);
+
+              console.log(output2)
+            }, 70000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
