@@ -786,13 +786,13 @@ const App = () => {
           //let net3 = new brain.recurrent.GRUTimeStep();
           if (result.ok.length > 300) {
             let net1 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10],
+              hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
             });
             let net4 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10],
+              hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
             });
             let net5 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10],
+              hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
             });
             let net2 = new brain.recurrent.LSTMTimeStep({
               hiddenLayers: [10],
@@ -817,7 +817,7 @@ const App = () => {
 
               console.log(net1, output1)
 
-             
+
             }, 2000);
 
             setTimeout(() => {
@@ -829,8 +829,8 @@ const App = () => {
 
               console.log(net4, output4)
 
-              
-            }, 20000);
+
+            }, 30000);
 
             setTimeout(() => {
               net5.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.1, activation: 'relu', });
@@ -840,7 +840,7 @@ const App = () => {
                 , 300);
 
               console.log(net5, output5)
-            }, 40000);
+            }, 60000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
