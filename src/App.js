@@ -807,13 +807,13 @@ const App = () => {
 
             setTimeout(() => {
               console.log('one start')
-              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000 ,learningRate: 0.3});
+              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3 });
 
               const output1 = net1.forecast(
                 [historyPrice[historyPrice.length - 1]]
                 , 300);
 
-              console.log(output1)
+              console.log(net1, output1)
             }, 2000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
