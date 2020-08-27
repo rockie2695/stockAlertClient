@@ -786,10 +786,10 @@ const App = () => {
           //let net3 = new brain.recurrent.GRUTimeStep();
           if (result.ok.length > 300) {
             let net1 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
+              hiddenLayers: [10], learningRate: 0.3, activation: 'relu',
             });
             let net4 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
+              hiddenLayers: [10], learningRate: 0.2, activation: 'relu',
             });
             let net5 = new brain.recurrent.RNNTimeStep({
               hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
@@ -802,13 +802,14 @@ const App = () => {
               hiddenLayers: [10],
             });
 
-            let historyPrice = []
-            for (let i = 0; i < result.ok.length; i++) {
-              historyPrice.push(result.ok[i].price)
-            }
+
 
             setTimeout(() => {
               console.log('one start')
+              let historyPrice = []
+              for (let i = 0; i < result.ok.length; i++) {
+                historyPrice.push(result.ok[i].price)
+              }
               net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3, activation: 'relu', });
 
               const output1 = net1.forecast(
@@ -821,6 +822,11 @@ const App = () => {
             }, 2000);
 
             setTimeout(() => {
+              console.log('second start')
+              let historyPrice = []
+              for (let i = 0; i < result.ok.length; i++) {
+                historyPrice.push(result.ok[i].price)
+              }
               net4.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.2, activation: 'relu', });
 
               const output4 = net4.forecast(
@@ -833,6 +839,11 @@ const App = () => {
             }, 30000);
 
             setTimeout(() => {
+              console.log('third start')
+              let historyPrice = []
+              for (let i = 0; i < result.ok.length; i++) {
+                historyPrice.push(result.ok[i].price)
+              }
               net5.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.1, activation: 'relu', });
 
               const output5 = net5.forecast(
