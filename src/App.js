@@ -803,7 +803,7 @@ const App = () => {
                 historyPrice
                 , 300);
               console.log(output3)
-              const output4 = net2.forecast(
+              const output4 = net3.forecast(
                 [historyPrice[historyPrice.length - 1]]
                 , 10);
 
