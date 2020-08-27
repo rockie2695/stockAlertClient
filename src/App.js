@@ -806,7 +806,11 @@ const App = () => {
               const output3 = net3.forecast(
                 historyPrice
                 , 300);
+              const output4 = net2.forecast(
+                [historyPrice[historyPrice.length - 1]]
+                , 10);
               console.log(output3)
+              console.log(output4)
             }, 2000);
 
             const max = Math.max(...historyPrice)
@@ -816,9 +820,13 @@ const App = () => {
             setTimeout(() => {
               net2.train([normalisedHP1], { log: true, logPeriod: 500 });//default iterations: 20000,logPeriod:10
               const output2 = net2.forecast(
-                historyPrice
+                normalisedHP1
+                , 10);
+              const output5 = net2.forecast(
+                [normalisedHP1[normalisedHP1.length - 1]]
                 , 10);
               console.log(output2.map(denormalise))
+              console.log(output5.map(denormalise))
             }, 50000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
