@@ -804,7 +804,7 @@ const App = () => {
             }
 
             let min = Math.min(...historyPrice)
-            const normalisedHP1 = historyPrice.map((x) => Math.round((x - min) * 1000) / 1000);//0.000X(3sigfig)
+            const normalisedHP1 = historyPrice.map((x) => Math.round((x - min) * 1000) / 1000);//0.00X(3sigfig)
             let max = Math.max(...normalisedHP1)
             const normalisedHP2 = normalisedHP1.map((x) => Math.round(x / max * 10000) / 10000);//0.000X(4sigfig)
             const denormalise = (x) => x * max + min;
@@ -812,11 +812,11 @@ const App = () => {
             console.log(normalisedHP2.length)
             setTimeout(() => {
               net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 30000 });//default iterations: 20000,logPeriod:10
-            }, 3000);
+            }, 5000);
             setTimeout(() => {
               console.log('third start')
               net3.train([historyPrice], { log: true, logPeriod: 500, iterations: 30000 });
-            }, 30000);
+            }, 50000);
 
 
             //net2.train(normalisedHP, { log: false });
