@@ -781,15 +781,20 @@ const App = () => {
               outputSize: 1,
             }
           );
-          let net2 = new brain.recurrent.RNNTimeStep(
-          );
-          let net3 = new brain.recurrent.RNNTimeStep(
-            {
-              inputSize: 2,
-              hiddenLayers: [10],
-              outputSize: 2,
-            }
-          );
+          let net2 = new brain.recurrent.RNNTimeStep({
+            hiddenLayers: [10],
+            activation: 'leaky-relu'
+          });
+          let net3 = new brain.recurrent.RNNTimeStep({
+            hiddenLayers: [10],
+            activation: 'leaky-relu'
+          });
+          /*
+          default:
+          hiddenLayers: [3], // array of ints for the sizes of the hidden layers in the network
+          activation: 'sigmoid', // supported activation types: ['sigmoid', 'relu', 'leaky-relu', 'tanh']
+          */
+
           //let net2 = new brain.recurrent.LSTMTimeStep();
           //let net3 = new brain.recurrent.GRUTimeStep();
           if (result.ok.length > 100) {
@@ -806,19 +811,13 @@ const App = () => {
             console.log(historyPrice, max, normalisedHP1, normalisedHP2)
             console.log(normalisedHP2.length)
             setTimeout(() => {
-              net1.train([/*normalisedHP2*/[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]], { log: true });//default iterations: 20000
-            }, 2000);
-            /*setTimeout(() => {
-              net2.train([normalisedHP2], { log: true ,logPeriod: 500});//default iterations: 20000
-            }, 3000);*/
+              net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 30000 });//default iterations: 20000,logPeriod:10
+            }, 3000);
+            setTimeout(() => {
+              console.log('third start')
+              net3.train([historyPrice], { log: true, logPeriod: 500, iterations: 30000 });
+            }, 30000);
 
-            net3.train([
-              [1, 5],
-              [2, 4],
-              [3, 3],
-              [4, 2],
-              [5, 1],
-            ], { log: true });//default iterations: 20000
 
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
