@@ -781,6 +781,13 @@ const App = () => {
               outputSize: 1,
             }
           );
+          let net2 = new brain.recurrent.RNNTimeStep(
+            {
+              inputSize: 1,
+              hiddenLayers: [10],
+              outputSize: 1,
+            }
+          );
           //let net2 = new brain.recurrent.LSTMTimeStep();
           //let net3 = new brain.recurrent.GRUTimeStep();
           if (result.ok.length > 100) {
@@ -799,7 +806,9 @@ const App = () => {
             setTimeout(() => {
               net1.train([/*normalisedHP2*/[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]], { log: true });//default iterations: 20000
             }, 2000);
-
+            setTimeout(() => {
+              net2.train([normalisedHP2], { log: true });//default iterations: 20000
+            }, 2000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
