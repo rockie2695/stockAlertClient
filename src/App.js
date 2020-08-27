@@ -777,20 +777,21 @@ const App = () => {
           let net1 = new brain.recurrent.RNNTimeStep(
             {
               inputSize: 1,
-              hiddenLayers: [10],
+              hiddenLayers: [15],
               outputSize: 1,
             }
           );
           let net2 = new brain.recurrent.RNNTimeStep({
-            hiddenLayers: [10],
+            hiddenLayers: [15],
             activation: 'leaky-relu',
-            learningRate: 0.001,
+            learningRate: 0.0005,
           });
           let net3 = new brain.recurrent.RNNTimeStep({
-            hiddenLayers: [10],
+            hiddenLayers: [15],
             activation: 'leaky-relu',
             learningRate: 0.001,
-          });//0.342 in LR0.005,IT30000
+          });//0.342 in LR0.005,IT30000,hL10
+          //0.385 in 0.001,30000,hL10
           /*
           default:
           hiddenLayers: [3], // array of ints for the sizes of the hidden layers in the network
