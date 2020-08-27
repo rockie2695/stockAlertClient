@@ -811,7 +811,7 @@ const App = () => {
             console.log(historyPrice, max, normalisedHP1, normalisedHP2)
             console.log(normalisedHP2.length)
             setTimeout(() => {
-              net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 30000 });//default iterations: 20000,logPeriod:10
+              net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 20000 });//default iterations: 20000,logPeriod:10
             }, 5000);
             const output2 = net2.forecast(
               [historyPrice]
