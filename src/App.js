@@ -787,17 +787,14 @@ const App = () => {
           if (result.ok.length > 300) {
             let net1 = new brain.recurrent.RNNTimeStep({
               hiddenLayers: [10],
-              activation: 'relu',
             });
 
             let net2 = new brain.recurrent.LSTMTimeStep({
               hiddenLayers: [10],
-              activation: 'relu',
             });
 
             let net3 = new brain.recurrent.GRUTimeStep({
               hiddenLayers: [10],
-              activation: 'relu',
             });
 
             let historyPrice = []
@@ -807,7 +804,7 @@ const App = () => {
 
             setTimeout(() => {
               console.log('one start')
-              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3 });
+              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3 ,activation: 'relu',});
 
               const output1 = net1.forecast(
                 [historyPrice[historyPrice.length - 1]]
