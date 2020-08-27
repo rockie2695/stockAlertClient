@@ -778,7 +778,7 @@ const App = () => {
           let net3 = new brain.recurrent.RNNTimeStep({
             hiddenLayers: [10],
             activation: 'relu',
-            learningRate: 0.0005,
+            learningRate: 0.0007,
           });
           /*
           default:
@@ -801,7 +801,7 @@ const App = () => {
 
               const output3 = net3.forecast(
                 historyPrice
-                , 100);
+                , 300);
               console.log(output3)
             }, 2000);
 
