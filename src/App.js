@@ -812,11 +812,12 @@ const App = () => {
             console.log(normalisedHP2.length)
             setTimeout(() => {
               net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 20000 });//default iterations: 20000,logPeriod:10
+              const output2 = net2.forecast(
+                [historyPrice]
+                , 10);
+              console.log(output2.map(denormalise))
             }, 5000);
-            const output2 = net2.forecast(
-              [historyPrice]
-              , 10);
-            console.log(output2.map(denormalise))
+
             setTimeout(() => {
               console.log('third start')
               net3.train([historyPrice], { log: true, logPeriod: 500, iterations: 40000 });
