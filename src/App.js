@@ -808,9 +808,9 @@ const App = () => {
             setTimeout(() => {
               net1.train([/*normalisedHP2*/[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]], { log: true });//default iterations: 20000
             }, 2000);
-            setTimeout(() => {
-              net2.train([normalisedHP2], { log: true });//default iterations: 20000
-            }, 2000);
+            /*setTimeout(() => {
+              net2.train([normalisedHP2], { log: true ,logPeriod: 500});//default iterations: 20000
+            }, 3000);*/
 
             net3.train([
               [1, 5],
