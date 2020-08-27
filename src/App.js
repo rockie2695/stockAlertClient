@@ -797,7 +797,7 @@ const App = () => {
             console.log(historyPrice, max, normalisedHP1, normalisedHP2)
             console.log(normalisedHP2.length)
             setTimeout(() => {
-              net1.train([/*normalisedHP2*/0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7], { log: true });//default iterations: 20000
+              net1.train([/*normalisedHP2*/[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]], { log: true });//default iterations: 20000
             }, 2000);
 
             //net2.train(normalisedHP, { log: false });
