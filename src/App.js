@@ -788,6 +788,13 @@ const App = () => {
               outputSize: 1,
             }
           );
+          let net3 = new brain.recurrent.RNNTimeStep(
+            {
+              inputSize: 1,
+              hiddenLayers: [10],
+              outputSize: 1,
+            }
+          );
           //let net2 = new brain.recurrent.LSTMTimeStep();
           //let net3 = new brain.recurrent.GRUTimeStep();
           if (result.ok.length > 100) {
@@ -809,17 +816,31 @@ const App = () => {
             setTimeout(() => {
               net2.train([normalisedHP2], { log: true });//default iterations: 20000
             }, 2000);
+
+            net3.train([
+              [1, 5],
+              [2, 4],
+              [3, 3],
+              [4, 2],
+              [5, 1],
+            ], { log: true });//default iterations: 20000
+
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
             //const output1 = net1.forecast(normalisedHP2, 3);
             //const output2 = net2.forecast(normalisedHP, 3);
             //const output3 = net3.forecast(normalisedHP, 3);
-
+            const output3 = net3.forecast(
+              [
+                [1, 5],
+                [2, 4],
+              ]
+              , 3);
             //console.log('1) Forecast: ', output1.map(denormalise));
             //console.log('2) Forecast: ', output2.map(denormalise));
             //console.log('3) Forecast: ', output3.map(denormalise));
-
+            console.log(output3)
           } else {
             alert('too less history price to predict')
           }
