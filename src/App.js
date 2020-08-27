@@ -813,9 +813,18 @@ const App = () => {
             setTimeout(() => {
               net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 30000 });//default iterations: 20000,logPeriod:10
             }, 5000);
+            const output2 = net2.forecast(
+              [historyPrice]
+              , 10);
+            console.log(output2.map(denormalise))
             setTimeout(() => {
               console.log('third start')
-              net3.train([historyPrice], { log: true, logPeriod: 500, iterations: 30000 });
+              net3.train([historyPrice], { log: true, logPeriod: 500, iterations: 40000 });
+
+              const output3 = net3.forecast(
+                [historyPrice]
+                , 10);
+              console.log(output3)
             }, 50000);
 
 
@@ -825,16 +834,10 @@ const App = () => {
             //const output1 = net1.forecast(normalisedHP2, 3);
             //const output2 = net2.forecast(normalisedHP, 3);
             //const output3 = net3.forecast(normalisedHP, 3);
-            const output3 = net3.forecast(
-              [
-                [1, 5],
-                [2, 4],
-              ]
-              , 3);
             //console.log('1) Forecast: ', output1.map(denormalise));
             //console.log('2) Forecast: ', output2.map(denormalise));
             //console.log('3) Forecast: ', output3.map(denormalise));
-            console.log(output3)
+
           } else {
             alert('too less history price to predict')
           }
