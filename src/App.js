@@ -788,7 +788,12 @@ const App = () => {
             let net1 = new brain.recurrent.RNNTimeStep({
               hiddenLayers: [10],
             });
-
+            let net4 = new brain.recurrent.RNNTimeStep({
+              hiddenLayers: [10],
+            });
+            let net5 = new brain.recurrent.RNNTimeStep({
+              hiddenLayers: [10],
+            });
             let net2 = new brain.recurrent.LSTMTimeStep({
               hiddenLayers: [10],
             });
@@ -804,13 +809,29 @@ const App = () => {
 
             setTimeout(() => {
               console.log('one start')
-              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3 ,activation: 'relu',});
+              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3, activation: 'relu', });
 
               const output1 = net1.forecast(
                 [historyPrice[historyPrice.length - 1]]
                 , 300);
 
               console.log(net1, output1)
+
+              net4.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.2, activation: 'relu', });
+
+              const output4 = net4.forecast(
+                [historyPrice[historyPrice.length - 1]]
+                , 300);
+
+              console.log(net4, output4)
+
+              net5.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.1, activation: 'relu', });
+
+              const output5 = net5.forecast(
+                [historyPrice[historyPrice.length - 1]]
+                , 300);
+
+              console.log(net5, output5)
             }, 2000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
