@@ -774,22 +774,11 @@ const App = () => {
       .then((result) => {
         if (typeof result.ok !== 'undefined') {
           console.log(result.ok)
-          let net1 = new brain.recurrent.RNNTimeStep(
-            {
-              inputSize: 1,
-              hiddenLayers: [15],
-              outputSize: 1,
-            }
-          );
-          let net2 = new brain.recurrent.RNNTimeStep({
-            hiddenLayers: [10],
-            activation: 'leaky-relu',
-            learningRate: 0.0005,
-          });
+          
           let net3 = new brain.recurrent.RNNTimeStep({
             hiddenLayers: [10],
-            activation: 'leaky-relu',
-            learningRate: 0.002,
+            activation: 'relu',
+            learningRate: 0.0005,
           });
           /*
           default:
@@ -806,27 +795,15 @@ const App = () => {
               historyPrice.push(result.ok[i].price)
             }
 
-
-            const normalisedHP1 = historyPrice.map((x) => x / 100);//0.000X(4sigfig)
-            const denormalise = (x) => x * 100;
-
-            setTimeout(() => {
-              net2.train([normalisedHP1], { log: true, logPeriod: 500 });//default iterations: 20000,logPeriod:10
-              const output2 = net2.forecast(
-                historyPrice
-                , 10);
-              console.log(output2.map(denormalise))
-            }, 6000);
-
             setTimeout(() => {
               console.log('third start')
               net3.train([historyPrice], { log: true, logPeriod: 500 });
 
               const output3 = net3.forecast(
                 historyPrice
-                , 10);
+                , 100);
               console.log(output3)
-            }, 50000);
+            }, 2000);
 
 
             //net2.train(normalisedHP, { log: false });
