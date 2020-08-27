@@ -775,27 +775,31 @@ const App = () => {
         if (typeof result.ok !== 'undefined') {
           console.log(result.ok)
 
-          let net1 = new brain.recurrent.RNNTimeStep({
-            hiddenLayers: [10],
-            activation: 'relu',
-            learningRate: 0.0001,
-          });
 
-          let net2 = new brain.recurrent.RNNTimeStep({
-            hiddenLayers: [10],
-            activation: 'relu',
-            learningRate: 0.0001,
-          });
           /*
           default:
           hiddenLayers: [3], // array of ints for the sizes of the hidden layers in the network
           activation: 'sigmoid', // supported activation types: ['sigmoid', 'relu', 'leaky-relu', 'tanh']
-          learningRate: 0.01,
           */
 
           //let net2 = new brain.recurrent.LSTMTimeStep();
           //let net3 = new brain.recurrent.GRUTimeStep();
-          if (result.ok.length > 100) {
+          if (result.ok.length > 300) {
+            let net1 = new brain.recurrent.RNNTimeStep({
+              hiddenLayers: [10],
+              activation: 'relu',
+            });
+
+            let net2 = new brain.recurrent.LSTMTimeStep({
+              hiddenLayers: [10],
+              activation: 'relu',
+            });
+
+            let net3 = new brain.recurrent.GRUTimeStep({
+              hiddenLayers: [10],
+              activation: 'relu',
+            });
+
             let historyPrice = []
             for (let i = 0; i < result.ok.length; i++) {
               historyPrice.push(result.ok[i].price)
@@ -803,25 +807,14 @@ const App = () => {
 
             setTimeout(() => {
               console.log('one start')
-              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 50000 });
+              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000 ,learningRate: 0.3});
 
               const output1 = net1.forecast(
                 [historyPrice[historyPrice.length - 1]]
-                , 10);
+                , 300);
 
               console.log(output1)
             }, 2000);
-
-            setTimeout(() => {
-              console.log('second start')
-              net2.train([historyPrice], { log: true, logPeriod: 100, iterations: 100000 });
-
-              const output2 = net2.forecast(
-                [historyPrice[historyPrice.length - 1]]
-                , 10);
-
-              console.log(output2)
-            }, 70000);
             //net2.train(normalisedHP, { log: false });
             //net3.train(normalisedHP, { log: false });
 
