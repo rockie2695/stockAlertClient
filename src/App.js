@@ -789,9 +789,8 @@ const App = () => {
           let net3 = new brain.recurrent.RNNTimeStep({
             hiddenLayers: [15],
             activation: 'leaky-relu',
-            learningRate: 0.002,
-          });//0.342 in LR0.005,IT30000,hL10
-          //0.385 in 0.001,30000,hL10
+            learningRate: 0.005,
+          });
           /*
           default:
           hiddenLayers: [3], // array of ints for the sizes of the hidden layers in the network
@@ -812,15 +811,14 @@ const App = () => {
             let max = Math.max(...normalisedHP1)
             const normalisedHP2 = normalisedHP1.map((x) => Math.round(x / max * 10000) / 10000);//0.000X(4sigfig)
             const denormalise = (x) => x * max + min;
-            console.log(historyPrice, max, normalisedHP1, normalisedHP2)
-            console.log(normalisedHP2.length)
+
             setTimeout(() => {
               net2.train([normalisedHP2], { log: true, logPeriod: 500, iterations: 20000 });//default iterations: 20000,logPeriod:10
               const output2 = net2.forecast(
                 historyPrice
                 , 10);
               console.log(output2.map(denormalise))
-            }, 5000);
+            }, 6000);
 
             setTimeout(() => {
               console.log('third start')
