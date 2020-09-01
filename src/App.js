@@ -30,7 +30,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import moment from 'moment'
 import Fab from '@material-ui/core/Fab';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import * as brain from 'brain.js';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -41,9 +40,11 @@ import './App.css';
 
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-var host = 'https://rockie-stockAlertServer.herokuapp.com'
+let host = 'https://rockie-stockAlertServer.herokuapp.com'
+let testlink = false
 if (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') {
   host = 'http://localhost:3001'
+  testlink = true
 }
 
 const App = () => {
@@ -51,7 +52,7 @@ const App = () => {
   const clientId = "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com"
 
   const [login, setLogin] = useState({
-    email: (window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') ? 'rockie2695@gmail.com' : ''
+    email: (testlink) ? 'rockie2695@gmail.com' : ''
   })
   const [stockHistory, setStockHistory] = useState([])
   const [ws, setWs] = useState(null)
@@ -760,114 +761,7 @@ const App = () => {
         changeSelectHistory(stock, { time: nowTime, price: nowPrice, jsTime: new Date(nowTime).getTime() }, 'end')
       })
   }
-  const preditPrice = (stock) => {
 
-    fetch(host + '/select/allStockPrice', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        stock: stock,
-        email: login.email
-      })
-    })
-      .then(res => res.json())
-      .then((result) => {
-        if (typeof result.ok !== 'undefined') {
-          console.log(result.ok)
-
-
-          /*
-          default:
-          hiddenLayers: [3], // array of ints for the sizes of the hidden layers in the network
-          activation: 'sigmoid', // supported activation types: ['sigmoid', 'relu', 'leaky-relu', 'tanh']
-          */
-
-          //let net2 = new brain.recurrent.LSTMTimeStep();
-          //let net3 = new brain.recurrent.GRUTimeStep();
-          if (result.ok.length > 300) {
-            let net1 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10], learningRate: 0.3, activation: 'relu',
-            });
-            let net4 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10], learningRate: 0.2, activation: 'relu',
-            });
-            let net5 = new brain.recurrent.RNNTimeStep({
-              hiddenLayers: [10], learningRate: 0.1, activation: 'relu',
-            });
-            let net2 = new brain.recurrent.LSTMTimeStep({
-              hiddenLayers: [10],
-            });
-
-            let net3 = new brain.recurrent.GRUTimeStep({
-              hiddenLayers: [10],
-            });
-
-
-
-            setTimeout(() => {
-              console.log('one start')
-              let historyPrice = []
-              for (let i = 0; i < result.ok.length; i++) {
-                historyPrice.push(result.ok[i].price)
-              }
-              net1.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.3, activation: 'relu', });
-
-              const output1 = net1.forecast(
-                [historyPrice[historyPrice.length - 1]]
-                , 300);
-
-              console.log(net1, output1)
-
-
-            }, 2000);
-
-            setTimeout(() => {
-              console.log('second start')
-              let historyPrice = []
-              for (let i = 0; i < result.ok.length; i++) {
-                historyPrice.push(result.ok[i].price)
-              }
-              net4.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.2, activation: 'relu', });
-
-              const output4 = net4.forecast(
-                [historyPrice[historyPrice.length - 1]]
-                , 300);
-
-              console.log(net4, output4)
-
-
-            }, 30000);
-
-            setTimeout(() => {
-              console.log('third start')
-              let historyPrice = []
-              for (let i = 0; i < result.ok.length; i++) {
-                historyPrice.push(result.ok[i].price)
-              }
-              net5.train([historyPrice], { log: true, logPeriod: 100, iterations: 20000, learningRate: 0.1, activation: 'relu', });
-
-              const output5 = net5.forecast(
-                [historyPrice[historyPrice.length - 1]]
-                , 300);
-
-              console.log(net5, output5)
-            }, 60000);
-            //net2.train(normalisedHP, { log: false });
-            //net3.train(normalisedHP, { log: false });
-
-            //const output1 = net1.forecast(normalisedHP2, 3);
-            //const output2 = net2.forecast(normalisedHP, 3);
-            //const output3 = net3.forecast(normalisedHP, 3);
-            //console.log('1) Forecast: ', output1.map(denormalise));
-            //console.log('2) Forecast: ', output2.map(denormalise));
-            //console.log('3) Forecast: ', output3.map(denormalise));
-
-          } else {
-            alert('too less history price to predict')
-          }
-        }
-      })
-  }
   function ElevationScroll(props) {
     const { children } = props;
     const trigger = useScrollTrigger();
@@ -893,7 +787,7 @@ const App = () => {
   */
 
   return (
-    <HttpsRedirect disabled={(window.location.host === 'localhost:3000' || window.location.host === 'localhost:5000') ? true : false}>
+    <HttpsRedirect disabled={(testlink) ? true : false}>
       <CssBaseline />
       <Box bgcolor="text.disabled" style={{ height: '100%', minHeight: '100vh' }}>
         <ElevationScroll {...App.props}>
@@ -904,22 +798,25 @@ const App = () => {
                   StockAlertClient
                 </Link>
               </Typography>
-              {login.email === ''
-                ?
-                <GoogleLogin
-                  clientId={clientId}
-                  buttonText="Login"
-                  onSuccess={fun_login}
-                  onFailure={fun_login}
-                  cookiePolicy={'single_host_origin'}
-                  isSignedIn={true}
-                />
-                :
-                <GoogleLogout
-                  clientId={clientId}
-                  buttonText="Logout"
-                  onLogoutSuccess={fun_logout}
-                ></GoogleLogout>
+              {
+                testlink
+                  ? null
+                  : login.email === ''
+                    ?
+                    <GoogleLogin
+                      clientId={clientId}
+                      buttonText="Login"
+                      onSuccess={fun_login}
+                      onFailure={fun_login}
+                      cookiePolicy={'single_host_origin'}
+                      isSignedIn={true}
+                    />
+                    :
+                    <GoogleLogout
+                      clientId={clientId}
+                      buttonText="Logout"
+                      onLogoutSuccess={fun_logout}
+                    ></GoogleLogout>
               }
             </Toolbar>
             {sendingForm ? <LinearProgress /> : null}
@@ -1373,7 +1270,6 @@ const App = () => {
               ''
             }
           </Typography>
-          <Button variant="contained" color="primary" onClick={() => preditPrice(stockNotify[dialogIndex].stock, dialogIndex)}>Predit</Button>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
