@@ -30,6 +30,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import moment from "moment";
 import Fab from "@material-ui/core/Fab";
 import GetAppIcon from "@material-ui/icons/GetApp";
+import { subscribeUser } from "./subscription";
 
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -37,6 +38,15 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import "./App.css";
+
+/**
+ * change #860 to no for loop
+ * make subscription
+ * make email and download app center wher sm/md
+ * make full screen dialog
+ * fix #251 no stock error
+ * 
+ */ 
 
 import {
   LineChart,
@@ -111,6 +121,7 @@ const App = () => {
           console.log("User added to home screen");
         }
       });
+      subscribeUser();
     });
 
     if (testlink) {
@@ -240,6 +251,7 @@ const App = () => {
       setStockHistory((prevState) => {
         return prevState.map((row, index) => {
           console.log("seesetStockHistory run how many times");
+          console.log(row, message);
           if (
             row.stock === message.stock &&
             !row.priceWithTime.some((e) => e.time === time)
@@ -854,6 +866,7 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((result) => {
+        //todo change
         console.log(result);
         for (let i = result.ok.length - 1; i > -1; i--) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
@@ -984,8 +997,9 @@ const App = () => {
   function ElevationScroll(props) {
     const { children } = props;
     const trigger = useScrollTrigger();
+    console.log("when would render this function", trigger);
     return React.cloneElement(children, {
-      elevation: trigger ? 4 : 1,
+      elevation: trigger||boxShadow!==0 ? 4 : 1,
     });
   }
   function getDayTime() {
