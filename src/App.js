@@ -42,11 +42,10 @@ import "./App.css";
 /**
  * change #860 to no for loop
  * make subscription
- * make email and download app center wher sm/md
  * make full screen dialog
  * fix #251 no stock error
- * 
- */ 
+ * fix stockchart when night error
+ */
 
 import {
   LineChart,
@@ -999,7 +998,7 @@ const App = () => {
     const trigger = useScrollTrigger();
     console.log("when would render this function", trigger);
     return React.cloneElement(children, {
-      elevation: trigger||boxShadow!==0 ? 4 : 1,
+      elevation: trigger || boxShadow !== -1 ? 4 : 1,
     });
   }
   function getDayTime() {
@@ -1468,25 +1467,50 @@ const App = () => {
         >
           <Grid container alignItems="center">
             <Grid item xs={12} sm={12} md={6}>
-              <Typography align="left" variant="h6">
-                make by&nbsp;
-                <Link href="mailto:rockie2695@gmail.com">
-                  rockie2695@gmail.com
-                </Link>
-              </Typography>
+              <Hidden only={["xs", "sm"]}>
+                <Typography align="left" variant="h6">
+                  make by&nbsp;
+                  <Link href="mailto:rockie2695@gmail.com">
+                    rockie2695@gmail.com
+                  </Link>
+                </Typography>
+              </Hidden>
+              <Hidden smUp>
+                <Typography align="center" variant="h6">
+                  make by&nbsp;
+                  <Link href="mailto:rockie2695@gmail.com">
+                    rockie2695@gmail.com
+                  </Link>
+                </Typography>
+              </Hidden>
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
-              <Box textAlign="right">
-                <Fab
-                  color="primary"
-                  aria-label="pwa"
-                  onClick={showA2HS}
-                  className={classes.marginRight12}
-                >
-                  <GetAppIcon />
-                </Fab>
-                <Typography variant="h6">Web App</Typography>
-              </Box>
+              <Hidden only={["xs", "sm"]}>
+                <Box textAlign="right">
+                  <Fab
+                    color="primary"
+                    aria-label="pwa"
+                    onClick={showA2HS}
+                    className={classes.marginRight12}
+                  >
+                    <GetAppIcon />
+                  </Fab>
+                  <Typography variant="h6">Web App</Typography>
+                </Box>
+              </Hidden>
+              <Hidden smUp>
+                <Box textAlign="center">
+                  <Fab
+                    color="primary"
+                    aria-label="pwa"
+                    onClick={showA2HS}
+                    className={classes.marginRight12}
+                  >
+                    <GetAppIcon />
+                  </Fab>
+                  <Typography variant="h6">Web App</Typography>
+                </Box>
+              </Hidden>
             </Grid>
           </Grid>
         </Box>
