@@ -120,7 +120,6 @@ const App = () => {
           console.log("User added to home screen");
         }
       });
-      subscribeUser();
     });
 
     if (testlink) {
@@ -454,6 +453,7 @@ const App = () => {
       setLoading((prevState) => {
         return true;
       });
+      subscribeUser(email);
       //getstockNotify
       fetch(host + "/select/stockNotify", {
         method: "post",
@@ -1475,7 +1475,7 @@ const App = () => {
                   </Link>
                 </Typography>
               </Hidden>
-              <Hidden smUp>
+              <Hidden mdUp>
                 <Typography align="center" variant="h6">
                   make by&nbsp;
                   <Link href="mailto:rockie2695@gmail.com">
@@ -1498,7 +1498,7 @@ const App = () => {
                   <Typography variant="h6">Web App</Typography>
                 </Box>
               </Hidden>
-              <Hidden smUp>
+              <Hidden mdUp>
                 <Box textAlign="center">
                   <Fab
                     color="primary"
