@@ -190,7 +190,8 @@ const App = () => {
             addObject = { nowPrice: message.price, nowTime: message.time };
             if (
               message.time.split(" ")[1] === "09:20" ||
-              message.time.split(" ")[0] !== row.nowTime.split(" ")[0]
+              (typeof row.nowTime !== "undefined" &&
+                message.time.split(" ")[0] !== row.nowTime.split(" ")[0])
             ) {
               findStockNameArray = [
                 { stock: row.stock, email: loginRef.current.email },
