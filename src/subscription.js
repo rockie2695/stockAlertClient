@@ -36,7 +36,6 @@ export function subscribeUser(email) {
           console.log("Push manager unavailable.");
           return;
         }
-
         registration.pushManager
           .getSubscription()
           .then(function (existedSubscription) {
