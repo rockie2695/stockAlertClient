@@ -911,6 +911,7 @@ const App = () => {
           result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
 
           if (
+            typeof stockHistory[j].priceWithTime === "undefined" ||
             !stockHistory[j].priceWithTime.some(
               (e) => e.time === result.ok[i].time
             )
