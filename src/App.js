@@ -40,11 +40,11 @@ import CloseIcon from "@material-ui/icons/Close";
 import "./App.css";
 
 /**
- * change #860 to no for loop
  * make subscription
- * make full screen dialog
+ * make full screen dialog when mobile
  * fix #251 no stock error
  * fix stockchart when night error
+ * fix menu shadow by split menu to another file
  */
 
 import {
@@ -252,6 +252,7 @@ const App = () => {
           console.log("seesetStockHistory run how many times");
           console.log(row, message);
           if (
+            typeof row.stock !== "undefined" &&
             row.stock === message.stock &&
             !row.priceWithTime.some((e) => e.time === time)
           ) {
@@ -366,7 +367,6 @@ const App = () => {
             return [{ time: time, price: message.price }];
           });
         } else if (side === "front") {
-          //todo
           /*
           if (!selectHistory.some(e => e.time === time)) {
             setSelectHistory(prevState => {
@@ -866,9 +866,8 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        //todo change
         console.log(result);
-        for (let i = result.ok.length - 1; i > -1; i--) {
+        /*for (let i = result.ok.length - 1; i > -1; i--) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
             timeZone: "UTC",
           });
@@ -896,9 +895,45 @@ const App = () => {
               }
             });
           });
+        }*/
+        let j = 0;
+        for (j = 0; j < stockHistory.length; j++) {
+          if (stockHistory[j].stock === stock) {
+            break;
+          }
         }
-        //todo
-        //changeSelectHistory(stock, { time: result.ok[i].stringTime.split(' ')[1], price: result.ok[i].price, jsTime: rowTime }, 'front')
+        let insertHistory = [];
+        for (let i = result.ok.length - 1; i > -1; i--) {
+          let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
+            timeZone: "UTC",
+          });
+          result.ok[i].jsTime = new Date(rowTime).getTime();
+          result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
+
+          if (
+            !stockHistory[j].priceWithTime.some(
+              (e) => e.time === result.ok[i].time
+            )
+          ) {
+            insertHistory.push({
+              time: result.ok[i].time,
+              price: result.ok[i].price,
+              jsTime: result.ok[i].jsTime,
+            });
+          }
+        }
+        setStockHistory((prevState) => {
+          return prevState.map((row, index) => {
+            if (row.stock === stock) {
+              return {
+                ...row,
+                priceWithTime: [...insertHistory, ...row.priceWithTime],
+              };
+            } else {
+              return row;
+            }
+          });
+        });
         changeSelectHistory(stock, result.ok, "front");
       });
   };
