@@ -1,9 +1,12 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import React, {
+  useState,
+  useEffect,
+  Fragment,
+  useRef,
+  lazy,
+  Suspense,
+} from "react";
 import Typography from "@material-ui/core/Typography";
-import { GoogleLogin, GoogleLogout } from "react-google-login";
 import Cookies from "universal-cookie";
 import webSocket from "socket.io-client";
 import Box from "@material-ui/core/Box";
@@ -24,7 +27,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import MenuItem from "@material-ui/core/MenuItem";
 import Link from "@material-ui/core/Link";
 import HttpsRedirect from "react-https-redirect";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import moment from "moment";
@@ -32,11 +34,14 @@ import Fab from "@material-ui/core/Fab";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { subscribeUser } from "./subscription";
 
+import Toolbar from "@material-ui/core/Toolbar";
+
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
+
 import "./App.css";
 
 /**
@@ -56,6 +61,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
+const Menu = lazy(() => import("./Menu"));
+const renderLoader = () => <p>Loading</p>;
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
 let testlink = false;
@@ -80,7 +88,7 @@ const App = () => {
   const [stockNotify, setStockNotify] = useState([]);
   const [oldStockNotify, setOldStockNotify] = useState([]);
   const [edit, setEdit] = useState(false);
-  const [boxShadow, setBoxShadow] = useState(-1);
+  //const [boxShadow, setBoxShadow] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [sendingForm, setSendingForm] = useState(false);
   const [addRoomList, setAddRoomList] = useState([]);
@@ -224,6 +232,8 @@ const App = () => {
           return prevState.map((row, index) => {
             if (row.stock === message.stock) {
               return { ...row, priceWithTime: [] };
+            } else {
+              return { ...row };
             }
           });
         });
@@ -600,7 +610,7 @@ const App = () => {
   const test2 = () => {
     console.log("test2");
   };
-  const fun_boxShadow = (index) => {
+  /*const fun_boxShadow = (index) => {
     setBoxShadow((prevState) => {
       if (prevState === index) {
         return -1;
@@ -608,7 +618,7 @@ const App = () => {
         return index;
       }
     });
-  };
+  };*/
   const changeAlertInfo = (event) => {
     if (event.target.name !== null) {
       setStockNotify((prevState) => {
@@ -655,7 +665,7 @@ const App = () => {
     }
   };
   const fun_save = () => {
-    setBoxShadow((prevState) => -1);
+    //setBoxShadow((prevState) => -1);
     console.log(oldStockNotify, stockNotify);
     setSendingForm((prevState) => {
       return true;
@@ -742,7 +752,7 @@ const App = () => {
     }
   };
   const fun_edit = () => {
-    setBoxShadow((prevState) => -1);
+    //setBoxShadow((prevState) => -1);
     if (edit === true) {
       setStockNotify((prevState) => {
         return prevState.filter((row, index) => {
@@ -903,15 +913,15 @@ const App = () => {
           }
         }
         let insertHistory = [];
-        for (let i = result.ok.length - 1; i > -1; i--) {
+        //for (let i = result.ok.length - 1; i > -1; i--) {
+        for (let i = 0; i < result.ok.length; i++) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
             timeZone: "UTC",
           });
           result.ok[i].jsTime = new Date(rowTime).getTime();
           result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
-
           if (
-            typeof stockHistory[j].priceWithTime === "undefined" ||
+            stockHistory.length === 0 ||
             !stockHistory[j].priceWithTime.some(
               (e) => e.time === result.ok[i].time
             )
@@ -926,10 +936,17 @@ const App = () => {
         setStockHistory((prevState) => {
           return prevState.map((row, index) => {
             if (row.stock === stock) {
-              return {
-                ...row,
-                priceWithTime: [...insertHistory, ...row.priceWithTime],
-              };
+              if (typeof row.priceWithTime === "undefined") {
+                return {
+                  ...row,
+                  priceWithTime: [...insertHistory],
+                };
+              } else {
+                return {
+                  ...row,
+                  priceWithTime: [...insertHistory, ...row.priceWithTime],
+                };
+              }
             } else {
               return row;
             }
@@ -1030,12 +1047,12 @@ const App = () => {
       });
   };
 
-  function ElevationScroll(props) {
+  /*function ElevationScroll(props) {
     const { children } = props;
     const trigger = useScrollTrigger();
     console.log("when would render this function", trigger);
     return React.cloneElement(children, {
-      elevation: trigger || boxShadow !== -1 ? 4 : 1,
+      elevation: trigger ? 4 : 1,
     });
   }
   function getDayTime() {
@@ -1048,7 +1065,7 @@ const App = () => {
     let todayDay = today.getDay(); //todayDay=0(sunday),1,2,3,4,5,6
     let todaySecond = today.getSeconds();
     return [todayHour, todayMinute, todayDay, today, todaySecond];
-  }
+  }*/
 
   /*
   you can make style like this
@@ -1064,37 +1081,15 @@ const App = () => {
         bgcolor="text.disabled"
         style={{ height: "100%", minHeight: "100vh" }}
       >
-        <ElevationScroll {...App.props}>
-          <AppBar color="default" position="sticky" top={0}>
-            <Toolbar>
-              <Typography variant="h6" style={{ flexGrow: 1 }}>
-                <Link
-                  href="https://rockie-stockalertclient.herokuapp.com/"
-                  color="inherit"
-                >
-                  StockAlertClient
-                </Link>
-              </Typography>
-              {testlink ? null : login.email === "" ? (
-                <GoogleLogin
-                  clientId={clientId}
-                  buttonText="Login"
-                  onSuccess={fun_login}
-                  onFailure={fun_login}
-                  cookiePolicy={"single_host_origin"}
-                  isSignedIn={true}
-                />
-              ) : (
-                <GoogleLogout
-                  clientId={clientId}
-                  buttonText="Logout"
-                  onLogoutSuccess={fun_logout}
-                ></GoogleLogout>
-              )}
-            </Toolbar>
-            {sendingForm ? <LinearProgress /> : null}
-          </AppBar>
-        </ElevationScroll>
+        <Suspense fallback={renderLoader()}>
+          <Menu
+            login={login}
+            clientId={clientId}
+            fun_login={fun_login}
+            fun_logout={fun_logout}
+            sendingForm={sendingForm}
+          />
+        </Suspense>
 
         <Box position="relative">
           <Box
@@ -1205,15 +1200,16 @@ const App = () => {
                 <Divider />
                 {stockNotify.length !== 0 ? (
                   stockNotify.map((row, index) => (
-                    <Fragment>
+                    <Fragment key={index}>
                       <Box
+                        className="box"
                         display="flex"
                         alignItems="center"
                         padding={2}
                         onClick={() => openDialog(index)}
-                        boxShadow={boxShadow === index ? 1 : 0}
-                        onMouseEnter={() => fun_boxShadow(index)}
-                        onMouseLeave={() => fun_boxShadow(index)}
+                        //boxShadow={boxShadow === index ? 1 : 0}
+                        //onMouseEnter={() => fun_boxShadow(index)}
+                        //onMouseLeave={() => fun_boxShadow(index)}
                       >
                         <Grid container spacing={3} alignItems="center">
                           <Grid
@@ -1224,7 +1220,7 @@ const App = () => {
                             className={classes.margin1}
                           >
                             <Avatar onClick={() => clickAvatar(index)}>
-                              {edit && boxShadow === index ? "X" : index + 1}
+                              {edit ? "X" : index + 1}
                             </Avatar>
                           </Grid>
                           <Grid
@@ -1402,7 +1398,6 @@ const App = () => {
                               sm={2}
                               md={2}
                               className={classes.margin1}
-                              alignItems="center"
                               style={{ textAlign: "center" }}
                             >
                               <FormControlLabel
@@ -1569,124 +1564,198 @@ const App = () => {
             : ""}
         </DialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>
-            {selectHistory.length !== 0 ? (
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                  data={selectHistory}
-                  margin={{ top: 10, right: 25, bottom: 10, left: 0 }}
-                >
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                    dot={false}
-                  />
-                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis
-                    dataKey="jsTime"
-                    tickFormatter={(unixTime) =>
-                      moment(unixTime).format("HH:mm")
-                    }
-                    type="number"
-                    scale="time"
-                    domain={["dataMin", "dataMax"]}
-                    interval={
-                      selectHistory.length > 5
-                        ? parseInt(selectHistory.length / 5)
-                        : 1
-                    }
-                  />
-                  <YAxis domain={["auto", "auto"]} />
-                  <Tooltip
-                    labelFormatter={(unixTime) =>
-                      moment(unixTime).format("HH:mm")
-                    }
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : null}
-          </Typography>
-          <Typography gutterBottom>
-            {dialogIndex > -1 ? (
-              <table class="dialog">
-                <colgroup>
-                  <col style={{ width: "32%" }} />
-                  <col style={{ width: "32%" }} />
-                  <col style={{ width: "32%" }} />
-                  <col style={{ width: "6%" }} />
-                </colgroup>
+          {selectHistory.length !== 0 ? (
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart
+                data={selectHistory}
+                margin={{ top: 10, right: 25, bottom: 10, left: 0 }}
+              >
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#8884d8"
+                  activeDot={{ r: 8 }}
+                  dot={false}
+                />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <XAxis
+                  dataKey="jsTime"
+                  tickFormatter={(unixTime) => moment(unixTime).format("HH:mm")}
+                  type="number"
+                  scale="time"
+                  domain={["dataMin", "dataMax"]}
+                  interval={
+                    selectHistory.length > 5
+                      ? parseInt(selectHistory.length / 5)
+                      : 1
+                  }
+                />
+                <YAxis domain={["auto", "auto"]} />
+                <Tooltip
+                  labelFormatter={(unixTime) =>
+                    moment(unixTime).format("HH:mm")
+                  }
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : null}
+          {dialogIndex > -1 ? (
+            <table className="dialog">
+              <colgroup>
+                <col style={{ width: "32%" }} />
+                <col style={{ width: "32%" }} />
+                <col style={{ width: "32%" }} />
+                <col style={{ width: "6%" }} />
+              </colgroup>
+              <tbody>
                 <tr>
-                  <td>price</td>
-                  <td>現價</td>
-                  <td>{stockNotify[dialogIndex].nowPrice}</td>
+                  <td>
+                    <Typography>price</Typography>
+                  </td>
+                  <td>
+                    <Typography>現價</Typography>
+                  </td>
+                  <td>
+                    <Typography>{stockNotify[dialogIndex].nowPrice}</Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>past</td>
-                  <td>前收市價</td>
-                  <td>{stockNotify[dialogIndex].past}</td>
+                  <td>
+                    <Typography>past</Typography>
+                  </td>
+                  <td>
+                    <Typography>前收市價</Typography>
+                  </td>
+                  <td>
+                    <Typography>{stockNotify[dialogIndex].past}</Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>tenDayLow</td>
-                  <td>10日低</td>
-                  <td>{stockNotify[dialogIndex].tenDayLow}</td>
+                  <td>
+                    <Typography>tenDayLow</Typography>
+                  </td>
+                  <td>
+                    <Typography>10日低</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {stockNotify[dialogIndex].tenDayLow}
+                    </Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>tenDayHigh</td>
-                  <td>10日高</td>
-                  <td>{stockNotify[dialogIndex].tenDayHigh}</td>
+                  <td>
+                    <Typography>tenDayHigh</Typography>
+                  </td>
+                  <td>
+                    <Typography>10日高</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {stockNotify[dialogIndex].tenDayHigh}
+                    </Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>tenDayAvg</td>
-                  <td>10日平均價</td>
-                  <td>{stockNotify[dialogIndex].tenDayAvg}</td>
+                  <td>
+                    <Typography>tenDayAvg</Typography>
+                  </td>
+                  <td>
+                    <Typography>10日平均價</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {stockNotify[dialogIndex].tenDayAvg}
+                    </Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>monthLow</td>
-                  <td>1個月低</td>
-                  <td>{stockNotify[dialogIndex].monthLow}</td>
+                  <td>
+                    <Typography>monthLow</Typography>
+                  </td>
+                  <td>
+                    <Typography>1個月低</Typography>
+                  </td>
+                  <td>
+                    <Typography>{stockNotify[dialogIndex].monthLow}</Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>monthHigh</td>
-                  <td>1個月高</td>
-                  <td>{stockNotify[dialogIndex].monthHigh}</td>
+                  <td>
+                    <Typography>monthHigh</Typography>
+                  </td>
+                  <td>
+                    <Typography>1個月高</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {stockNotify[dialogIndex].monthHigh}
+                    </Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>twentyDayAvg</td>
-                  <td>20日平均價</td>
-                  <td>{stockNotify[dialogIndex].twentyDayAvg}</td>
+                  <td>
+                    <Typography>twentyDayAvg</Typography>
+                  </td>
+                  <td>
+                    <Typography>20日平均價</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {stockNotify[dialogIndex].twentyDayAvg}
+                    </Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>wk52Low</td>
-                  <td>52周低</td>
-                  <td>{stockNotify[dialogIndex].wk52Low}</td>
+                  <td>
+                    <Typography>wk52Low</Typography>
+                  </td>
+                  <td>
+                    <Typography>52周低</Typography>
+                  </td>
+                  <td>
+                    <Typography>{stockNotify[dialogIndex].wk52Low}</Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>wk52High</td>
-                  <td>52周高</td>
-                  <td>{stockNotify[dialogIndex].wk52High}</td>
+                  <td>
+                    <Typography>wk52High</Typography>
+                  </td>
+                  <td>
+                    <Typography>52周高</Typography>
+                  </td>
+                  <td>
+                    <Typography>{stockNotify[dialogIndex].wk52High}</Typography>
+                  </td>
                 </tr>
 
                 <tr>
-                  <td>fiftyDayAvg</td>
-                  <td>50日平均價</td>
-                  <td>{stockNotify[dialogIndex].fiftyDayAvg}</td>
+                  <td>
+                    <Typography>fiftyDayAvg</Typography>
+                  </td>
+                  <td>
+                    <Typography>50日平均價</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {stockNotify[dialogIndex].fiftyDayAvg}
+                    </Typography>
+                  </td>
                 </tr>
-              </table>
-            ) : (
-              ""
-            )}
-          </Typography>
+              </tbody>
+            </table>
+          ) : (
+            ""
+          )}
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
