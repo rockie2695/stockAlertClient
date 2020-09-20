@@ -34,22 +34,21 @@ import Fab from "@material-ui/core/Fab";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { subscribeUser } from "./subscription";
 
-import Toolbar from "@material-ui/core/Toolbar";
-
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
-
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
+import CountUp from "react-countup";
 import "./App.css";
 
 /**
  * make subscription
- * make full screen dialog when mobile
- * fix #251 no stock error
- * fix stockchart when night error
- * fix menu shadow by split menu to another file
+ * https://github.com/glennreyes/react-countup
+ * make dialog last table row no divider by css
+ * avader click by cursor css
  */
 
 import {
@@ -62,9 +61,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const Menu = lazy(() => import("./Menu"));
-const renderLoader = () => <p>Loading</p>;
-
 let host = "https://rockie-stockAlertServer.herokuapp.com";
 let testlink = false;
 if (
@@ -74,6 +70,9 @@ if (
   host = "http://localhost:3001";
   testlink = true;
 }
+
+const Menu = lazy(() => import("./Menu"));
+const renderLoader = () => <p>Loading</p>;
 
 const App = () => {
   const cookies = new Cookies();
@@ -108,6 +107,9 @@ const App = () => {
   stockNotifyRef.current = stockNotify;
   const loginRef = useRef(login);
   loginRef.current = login;
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     console.log("mounted");
@@ -438,8 +440,10 @@ const App = () => {
   const closeDialog = () => {
     console.log(selectHistory);
     setOpen((prevState) => false);
-    setDialogIndex((prevState) => -1);
-    setSelectHistory([]);
+    setTimeout(() => {
+      setDialogIndex((prevState) => -1);
+      setSelectHistory([]);
+    }, 0);
   };
 
   const fun_login = (response) => {
@@ -1305,6 +1309,14 @@ const App = () => {
                                       )}
                                   </span>
                                   <span>{")"}</span>
+                                  test
+                                  <CountUp
+                                    end={row.nowPrice}
+                                    decimals={
+                                      row.nowPrice.toString().split(".")[1]
+                                        .length || 0
+                                    }
+                                  />
                                 </Fragment>
                               ) : null}
                             </Typography>
@@ -1433,9 +1445,7 @@ const App = () => {
                       onMouseEnter={test2}
                       onMouseLeave={test2}
                     >
-                      <Typography color="textSecondary" align="center">
-                        <CircularProgress />
-                      </Typography>
+                      <CircularProgress />
                     </Box>
                     <Divider />
                   </Fragment>
@@ -1553,6 +1563,7 @@ const App = () => {
         onClose={closeDialog}
         aria-labelledby="dialog-title"
         open={open}
+        fullScreen={fullScreen}
       >
         <DialogTitle id="dialog-title" onClose={closeDialog}>
           Stock:

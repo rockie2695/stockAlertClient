@@ -22,7 +22,7 @@ const Menu = (props) => {
   function ElevationScroll(props) {
     const { children } = props;
     const trigger = useScrollTrigger();
-    console.log("when would render this function", trigger);
+    console.log("when would this function render", trigger);
     return React.cloneElement(children, {
       elevation: trigger ? 4 : 1,
     });
