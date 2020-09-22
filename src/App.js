@@ -47,7 +47,7 @@ import "./App.css";
 /**
  * make subscription
  * https://github.com/glennreyes/react-countup
- * make dialog last table row no divider by css
+ * make dialog all stock data button
  * avader click by cursor css
  */
 
@@ -198,6 +198,9 @@ const App = () => {
           let addObject = {};
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time };
+            if (row.hasOwnProperty("nowPrice")) {
+              addObject = { ...addObject, oldPrice: message.price };
+            }
             if (
               message.time.split(" ")[1] === "09:20" ||
               (typeof row.nowTime !== "undefined" &&
@@ -1310,13 +1313,30 @@ const App = () => {
                                   </span>
                                   <span>{")"}</span>
                                   test
-                                  <CountUp
-                                    end={row.nowPrice}
-                                    decimals={
-                                      row.nowPrice.toString().split(".")[1]
-                                        .length || 0
-                                    }
-                                  />
+                                  {row.hasOwnProperty("oldPrice") ? (
+                                    <CountUp
+                                      start={row.oldPrice}
+                                      end={row.nowPrice}
+                                      decimals={
+                                        row.nowPrice.toString().includes(".")
+                                          ? row.nowPrice
+                                              .toString()
+                                              .split(".")[1].length
+                                          : 0
+                                      }
+                                    />
+                                  ) : (
+                                    <CountUp
+                                      end={row.nowPrice}
+                                      decimals={
+                                        row.nowPrice.toString().includes(".")
+                                          ? row.nowPrice
+                                              .toString()
+                                              .split(".")[1].length
+                                          : 0
+                                      }
+                                    />
+                                  )}
                                 </Fragment>
                               ) : null}
                             </Typography>
