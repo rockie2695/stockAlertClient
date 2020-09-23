@@ -62,7 +62,7 @@ export function subscribeUser(email) {
                 });
             } else {
               console.log("Existed subscription detected.");
-              sendSubscription(existedSubscription);
+              sendSubscription(existedSubscription, email);
             }
           });
       })

@@ -1317,25 +1317,10 @@ const App = () => {
                                     <CountUp
                                       start={row.oldPrice}
                                       end={row.nowPrice}
-                                      decimals={
-                                        row.nowPrice.toString().includes(".")
-                                          ? row.nowPrice
-                                              .toString()
-                                              .split(".")[1].length
-                                          : 0
-                                      }
+                                      decimals={3}
                                     />
                                   ) : (
-                                    <CountUp
-                                      end={row.nowPrice}
-                                      decimals={
-                                        row.nowPrice.toString().includes(".")
-                                          ? row.nowPrice
-                                              .toString()
-                                              .split(".")[1].length
-                                          : 0
-                                      }
-                                    />
+                                    <CountUp end={row.nowPrice} decimals={3} />
                                   )}
                                 </Fragment>
                               ) : null}
