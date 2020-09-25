@@ -48,7 +48,7 @@ import "./App.css";
  * make subscription
  * https://github.com/glennreyes/react-countup
  * make dialog all stock data button
- * avader click by cursor css
+ * https://github.com/mui-org/material-ui/issues/6115
  */
 
 import {
@@ -1226,7 +1226,10 @@ const App = () => {
                             md={1}
                             className={classes.margin1}
                           >
-                            <Avatar onClick={() => clickAvatar(index)}>
+                            <Avatar
+                              className={edit ? "avatar" : ""}
+                              onClick={() => clickAvatar(index)}
+                            >
                               {edit ? "X" : index + 1}
                             </Avatar>
                           </Grid>
@@ -1270,7 +1273,22 @@ const App = () => {
                           >
                             <Typography>
                               {typeof row.nowPrice !== "undefined" ? (
-                                "$" + row.nowPrice
+                                row.hasOwnProperty("oldPrice") ? (
+                                  <CountUp
+                                    start={row.oldPrice}
+                                    end={row.nowPrice}
+                                    decimals={3}
+                                    prefix="$ "
+                                    onEnd={() => console.log("Ended!")}
+                                    onStart={() => console.log("Started!")}
+                                  />
+                                ) : (
+                                  <CountUp
+                                    end={row.nowPrice}
+                                    decimals={3}
+                                    prefix="$ "
+                                  />
+                                )
                               ) : (
                                 <Skeleton />
                               )}
@@ -1312,16 +1330,6 @@ const App = () => {
                                       )}
                                   </span>
                                   <span>{")"}</span>
-                                  test
-                                  {row.hasOwnProperty("oldPrice") ? (
-                                    <CountUp
-                                      start={row.oldPrice}
-                                      end={row.nowPrice}
-                                      decimals={3}
-                                    />
-                                  ) : (
-                                    <CountUp end={row.nowPrice} decimals={3} />
-                                  )}
                                 </Fragment>
                               ) : null}
                             </Typography>
