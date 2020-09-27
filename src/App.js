@@ -33,6 +33,8 @@ import moment from "moment";
 import Fab from "@material-ui/core/Fab";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { subscribeUser } from "./subscription";
+import EditIcon from "@material-ui/icons/Edit";
+import SaveIcon from "@material-ui/icons/Save";
 
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -446,7 +448,7 @@ const App = () => {
     setTimeout(() => {
       setDialogIndex((prevState) => -1);
       setSelectHistory([]);
-    }, 0);
+    }, 100);
   };
 
   const fun_login = (response) => {
@@ -1133,13 +1135,15 @@ const App = () => {
                         onClick={fun_save}
                         disabled={sendingForm}
                       >
-                        Save&nbsp;
+                        <Typography style={{ marginRight: 8 }}>Save</Typography>
                         {sendingForm ? (
                           <CircularProgress
                             size={20}
                             style={{ color: "white" }}
                           />
-                        ) : null}
+                        ) : (
+                          <SaveIcon />
+                        )}
                       </Button>
                       <Button
                         variant="contained"
@@ -1147,7 +1151,10 @@ const App = () => {
                         onClick={fun_edit}
                         disabled={sendingForm}
                       >
-                        Cancel
+                        <Typography style={{ marginRight: 8 }}>
+                          Cancel
+                        </Typography>
+                        <CloseIcon />
                       </Button>
                     </Fragment>
                   ) : (
@@ -1156,7 +1163,8 @@ const App = () => {
                       color="primary"
                       onClick={fun_edit}
                     >
-                      Edit
+                      <Typography style={{ marginRight: 8 }}>Edit</Typography>
+                      <EditIcon />
                     </Button>
                   )}
                 </Typography>
@@ -1257,7 +1265,7 @@ const App = () => {
                               />
                             ) : (
                               <Typography>
-                                {row.stock}
+                                {row.stock}&nbsp;
                                 {typeof row.name !== "undefined"
                                   ? row.name
                                   : null}
@@ -1454,9 +1462,8 @@ const App = () => {
                     <Box
                       textAlign="center"
                       alignItems="center"
-                      margin={2}
-                      onMouseEnter={test2}
-                      onMouseLeave={test2}
+                      padding={2}
+                      className="box"
                     >
                       <CircularProgress />
                     </Box>
@@ -1467,9 +1474,8 @@ const App = () => {
                     <Box
                       textAlign="center"
                       alignItems="center"
-                      margin={2}
-                      onMouseEnter={test2}
-                      onMouseLeave={test2}
+                      padding={2}
+                      className="box"
                     >
                       <Typography color="textSecondary" align="center">
                         None of record
@@ -1483,10 +1489,8 @@ const App = () => {
                     <Box
                       textAlign="center"
                       alignItems="center"
-                      margin={2}
-                      onClick={test2}
-                      onMouseEnter={test2}
-                      onMouseLeave={test2}
+                      padding={2}
+                      className="box"
                     >
                       <Typography color="textSecondary" align="center">
                         <IconButton
@@ -1579,7 +1583,7 @@ const App = () => {
         fullScreen={fullScreen}
       >
         <DialogTitle id="dialog-title" onClose={closeDialog}>
-          Stock:
+          Stock:&nbsp;
           {dialogIndex > -1
             ? stockNotify[dialogIndex].stock +
               " (" +
