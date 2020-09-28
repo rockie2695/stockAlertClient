@@ -53,6 +53,6 @@ table.dialog > tbody > tr:hover {
 div.box:hover {
   background-color:  #f5f5f5;
 }
-div.avatar{
+div.cursorPointer{
   cursor: pointer;
 }

@@ -97,6 +97,7 @@ const App = () => {
   const [dialogIndex, setDialogIndex] = useState(-1);
   const [selectHistory, setSelectHistory] = useState([]);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [allDataHistory, setAllDataHistory] = useState([]);
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host));
@@ -616,9 +617,11 @@ const App = () => {
     console.log("startConnectWS");
     connectWebSocket();
   };
-  const test2 = () => {
-    console.log("test2");
+
+  const fun_allData = () => {
+    //get all data from server
   };
+
   /*const fun_boxShadow = (index) => {
     setBoxShadow((prevState) => {
       if (prevState === index) {
@@ -1100,25 +1103,23 @@ const App = () => {
           />
         </Suspense>
 
-        <Box position="relative">
-          <Box
-            position="fixed"
-            zIndex="0"
-            width="100%"
-            height="50%"
-            minHeight="200px"
-            bgcolor="text.primary"
-            color="background.paper"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Typography align="center" variant="h2">
-              For Stock Price Showing And Notification
-            </Typography>
-          </Box>
-          <Box height="50%" minHeight="50vh"></Box>
+        <Box
+          position="fixed"
+          zIndex="0"
+          width="100%"
+          height="50%"
+          minHeight="200px"
+          bgcolor="text.primary"
+          color="background.paper"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography align="center" variant="h2">
+            For Stock Price Showing And Notification
+          </Typography>
         </Box>
+        <Box height="50%" minHeight="50vh"></Box>
         <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
           <Grid container alignItems="center">
             <Hidden only={["xs", "sm"]}>
@@ -1217,7 +1218,7 @@ const App = () => {
                   stockNotify.map((row, index) => (
                     <Fragment key={index}>
                       <Box
-                        className="box"
+                        className={edit ? "box" : "cursorPointer box"}
                         display="flex"
                         alignItems="center"
                         padding={2}
@@ -1235,7 +1236,7 @@ const App = () => {
                             className={classes.margin1}
                           >
                             <Avatar
-                              className={edit ? "avatar" : ""}
+                              className={edit ? "cursorPointer" : ""}
                               onClick={() => clickAvatar(index)}
                             >
                               {edit ? "X" : index + 1}
@@ -1628,162 +1629,216 @@ const App = () => {
             </ResponsiveContainer>
           ) : null}
           {dialogIndex > -1 ? (
-            <table className="dialog">
-              <colgroup>
-                <col style={{ width: "32%" }} />
-                <col style={{ width: "32%" }} />
-                <col style={{ width: "32%" }} />
-                <col style={{ width: "6%" }} />
-              </colgroup>
-              <tbody>
-                <tr>
-                  <td>
-                    <Typography>price</Typography>
-                  </td>
-                  <td>
-                    <Typography>現價</Typography>
-                  </td>
-                  <td>
-                    <Typography>{stockNotify[dialogIndex].nowPrice}</Typography>
-                  </td>
-                </tr>
+            <Fragment>
+              <table className="dialog">
+                <colgroup>
+                  <col style={{ width: "32%" }} />
+                  <col style={{ width: "32%" }} />
+                  <col style={{ width: "32%" }} />
+                  <col style={{ width: "6%" }} />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Typography>price</Typography>
+                    </td>
+                    <td>
+                      <Typography>現價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].nowPrice}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>past</Typography>
-                  </td>
-                  <td>
-                    <Typography>前收市價</Typography>
-                  </td>
-                  <td>
-                    <Typography>{stockNotify[dialogIndex].past}</Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>past</Typography>
+                    </td>
+                    <td>
+                      <Typography>前收市價</Typography>
+                    </td>
+                    <td>
+                      <Typography>{stockNotify[dialogIndex].past}</Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>tenDayLow</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日低</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {stockNotify[dialogIndex].tenDayLow}
-                    </Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>tenDayLow</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日低</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].tenDayLow}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>tenDayHigh</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日高</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {stockNotify[dialogIndex].tenDayHigh}
-                    </Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>tenDayHigh</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].tenDayHigh}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>tenDayAvg</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日平均價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {stockNotify[dialogIndex].tenDayAvg}
-                    </Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>tenDayAvg</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日平均價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].tenDayAvg}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>monthLow</Typography>
-                  </td>
-                  <td>
-                    <Typography>1個月低</Typography>
-                  </td>
-                  <td>
-                    <Typography>{stockNotify[dialogIndex].monthLow}</Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>monthLow</Typography>
+                    </td>
+                    <td>
+                      <Typography>1個月低</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].monthLow}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>monthHigh</Typography>
-                  </td>
-                  <td>
-                    <Typography>1個月高</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {stockNotify[dialogIndex].monthHigh}
-                    </Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>monthHigh</Typography>
+                    </td>
+                    <td>
+                      <Typography>1個月高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].monthHigh}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>twentyDayAvg</Typography>
-                  </td>
-                  <td>
-                    <Typography>20日平均價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {stockNotify[dialogIndex].twentyDayAvg}
-                    </Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>twentyDayAvg</Typography>
+                    </td>
+                    <td>
+                      <Typography>20日平均價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].twentyDayAvg}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>wk52Low</Typography>
-                  </td>
-                  <td>
-                    <Typography>52周低</Typography>
-                  </td>
-                  <td>
-                    <Typography>{stockNotify[dialogIndex].wk52Low}</Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>wk52Low</Typography>
+                    </td>
+                    <td>
+                      <Typography>52周低</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].wk52Low}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>wk52High</Typography>
-                  </td>
-                  <td>
-                    <Typography>52周高</Typography>
-                  </td>
-                  <td>
-                    <Typography>{stockNotify[dialogIndex].wk52High}</Typography>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>
+                      <Typography>wk52High</Typography>
+                    </td>
+                    <td>
+                      <Typography>52周高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].wk52High}
+                      </Typography>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>
-                    <Typography>fiftyDayAvg</Typography>
-                  </td>
-                  <td>
-                    <Typography>50日平均價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {stockNotify[dialogIndex].fiftyDayAvg}
-                    </Typography>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <td>
+                      <Typography>fiftyDayAvg</Typography>
+                    </td>
+                    <td>
+                      <Typography>50日平均價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {stockNotify[dialogIndex].fiftyDayAvg}
+                      </Typography>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <Box textAlign="center" marginTop={1}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={fun_allData}
+                >
+                  <Typography>Get All Data</Typography>
+                </Button>
+              </Box>
+            </Fragment>
           ) : (
             ""
           )}
+          {allDataHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart
+                data={selectHistory}
+                margin={{ top: 10, right: 25, bottom: 10, left: 0 }}
+              >
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#8884d8"
+                  activeDot={{ r: 8 }}
+                  dot={false}
+                />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <XAxis
+                  dataKey="jsTime"
+                  tickFormatter={(unixTime) => moment(unixTime).format("HH:mm")}
+                  type="number"
+                  scale="time"
+                  domain={["dataMin", "dataMax"]}
+                  interval={
+                    selectHistory.length > 5
+                      ? parseInt(selectHistory.length / 5)
+                      : 1
+                  }
+                />
+                <YAxis domain={["auto", "auto"]} />
+                <Tooltip
+                  labelFormatter={(unixTime) =>
+                    moment(unixTime).format("HH:mm")
+                  }
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : null}
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
