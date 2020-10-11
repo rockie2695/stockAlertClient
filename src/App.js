@@ -15,7 +15,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
-import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
@@ -41,8 +40,11 @@ import CountUp from "react-countup";
 import "./App.css";
 
 /**
- * make subscription
  * https://github.com/mui-org/material-ui/issues/6115
+ * add full screen switch
+ * add percent change switch
+ * check subscription and make subscription css
+ * remove withStyles
  */
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
@@ -57,7 +59,7 @@ if (
 
 const Menu = lazy(() => import("./Menu"));
 const DialogBox = lazy(() => import("./DialogBox"));
-const renderLoader = () => <p>Loading</p>;
+const renderLoader = () => <div>Loading</div>;
 
 const App = () => {
   const cookies = new Cookies();
@@ -92,6 +94,8 @@ const App = () => {
   stockNotifyRef.current = stockNotify;
   const loginRef = useRef(login);
   loginRef.current = login;
+  const stockHistoryRef = useRef(stockHistory);
+  stockHistoryRef.current = stockHistory;
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -282,33 +286,6 @@ const App = () => {
       });
     });
   };
-  const useStyles = makeStyles((theme) => ({
-    margin1: {
-      "& > *": {
-        margin: theme.spacing(1),
-      },
-    },
-    margin2: {
-      "& > *": {
-        margin: theme.spacing(2),
-      },
-    },
-    padding2: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: "absolute",
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-    marginRight12: {
-      marginRight: "12px",
-    },
-  }));
-
-  const classes = useStyles();
 
   const changeSelectHistory = (stock, message, side = "new") => {
     if (dialogIndexRef.current > -1) {
@@ -643,6 +620,12 @@ const App = () => {
         });
       } else {
         //new to add
+        if (
+          stockNotify[i].stock !== "" &&
+          parseInt(stockNotify[i].stock) !== 0 &&
+          stockNotify[i].price !== ""
+        ) {
+        }
         insertMessage.push({
           stock: stockNotify[i].stock,
           price: stockNotify[i].price,
@@ -865,11 +848,12 @@ const App = () => {
           });
         }*/
         let j = 0;
-        for (j = 0; j < stockHistory.length; j++) {
-          if (stockHistory[j].stock === stock) {
+        for (j = 0; j < stockHistoryRef.current.length; j++) {
+          if (stockHistoryRef.current[j].stock === stock) {
             break;
           }
         }
+        console.log(stockHistoryRef.current, stockHistoryRef.current.length);
         let insertHistory = [];
         //for (let i = result.ok.length - 1; i > -1; i--) {
         for (let i = 0; i < result.ok.length; i++) {
@@ -879,8 +863,7 @@ const App = () => {
           result.ok[i].jsTime = new Date(rowTime).getTime();
           result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
           if (
-            stockHistory.length === 0 ||
-            !stockHistory[j].priceWithTime.some(
+            !stockHistoryRef.current[j].priceWithTime.some(
               (e) => e.time === result.ok[i].time
             )
           ) {
@@ -1053,7 +1036,7 @@ const App = () => {
           position="fixed"
           zIndex="0"
           width="100%"
-          height="50%"
+          height="50vh"
           minHeight="200px"
           bgcolor="text.primary"
           color="background.paper"
@@ -1065,15 +1048,15 @@ const App = () => {
             For Stock Price Showing And Notification
           </Typography>
         </Box>
-        <Box height="50%" minHeight="50vh"></Box>
+        <Box height="50vh"></Box>
         <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
           <Grid container alignItems="center">
             <Hidden only={["xs", "sm"]}>
-              <Grid item sm={false} md={2} className={classes.margin1}></Grid>
+              <Grid item sm={false} md={2} className="margin1"></Grid>
             </Hidden>
-            <Grid item xs={12} sm={12} md={8} className={classes.margin1}>
+            <Grid item xs={12} sm={12} md={8} className="margin1">
               <Paper>
-                <Typography align="right" className={classes.margin2}>
+                <Typography align="right" className="margin2">
                   {edit === true ? (
                     <Fragment>
                       <Button
@@ -1098,9 +1081,7 @@ const App = () => {
                         onClick={fun_edit}
                         disabled={sendingForm}
                       >
-                        <Typography style={{ marginRight: 8 }}>
-                          Cancel
-                        </Typography>
+                        <Typography>Cancel</Typography>
                         <CloseIcon />
                       </Button>
                     </Fragment>
@@ -1117,17 +1098,11 @@ const App = () => {
                 </Typography>
                 <Box display="flex" alignItems="center" margin={2}>
                   <Grid container spacing={3} alignItems="center">
-                    <Grid
-                      item
-                      xs={3}
-                      sm={1}
-                      md={1}
-                      className={classes.margin1}
-                    ></Grid>
-                    <Grid item xs={5} sm={2} md={2} className={classes.margin1}>
+                    <Grid item xs={3} sm={1} md={1} className="margin1"></Grid>
+                    <Grid item xs={5} sm={2} md={2} className="margin1">
                       <Typography>Stock Number</Typography>
                     </Grid>
-                    <Grid item xs={4} sm={2} md={2} className={classes.margin1}>
+                    <Grid item xs={4} sm={2} md={2} className="margin1">
                       <Typography>Price</Typography>
                     </Grid>
                     <Hidden only="xs">
@@ -1136,24 +1111,12 @@ const App = () => {
                         xs={false}
                         sm={2}
                         md={2}
-                        className={classes.margin1}
+                        className="margin1"
                       ></Grid>
-                      <Grid
-                        item
-                        xs={false}
-                        sm={2}
-                        md={2}
-                        className={classes.margin1}
-                      >
+                      <Grid item xs={false} sm={2} md={2} className="margin1">
                         <Typography>Alert</Typography>
                       </Grid>
-                      <Grid
-                        item
-                        xs={false}
-                        sm={2}
-                        md={2}
-                        className={classes.margin1}
-                      >
+                      <Grid item xs={false} sm={2} md={2} className="margin1">
                         <Typography>now$ to alert$</Typography>
                       </Grid>
                     </Hidden>
@@ -1174,13 +1137,7 @@ const App = () => {
                         //onMouseLeave={() => fun_boxShadow(index)}
                       >
                         <Grid container spacing={3} alignItems="center">
-                          <Grid
-                            item
-                            xs={3}
-                            sm={1}
-                            md={1}
-                            className={classes.margin1}
-                          >
+                          <Grid item xs={3} sm={1} md={1} className="margin1">
                             <Avatar
                               className={edit ? "cursorPointer" : ""}
                               onClick={() => clickAvatar(index)}
@@ -1188,13 +1145,7 @@ const App = () => {
                               {edit ? "X" : index + 1}
                             </Avatar>
                           </Grid>
-                          <Grid
-                            item
-                            xs={5}
-                            sm={2}
-                            md={2}
-                            className={classes.margin1}
-                          >
+                          <Grid item xs={5} sm={2} md={2} className="margin1">
                             {edit === true ? (
                               <TextField
                                 type="number"
@@ -1219,13 +1170,7 @@ const App = () => {
                               </Typography>
                             )}
                           </Grid>
-                          <Grid
-                            item
-                            xs={4}
-                            sm={2}
-                            md={2}
-                            className={classes.margin1}
-                          >
+                          <Grid item xs={4} sm={2} md={2} className="margin1">
                             <Typography>
                               {typeof row.nowPrice !== "undefined" ? (
                                 row.hasOwnProperty("oldPrice") ? (
@@ -1289,13 +1234,7 @@ const App = () => {
                               ) : null}
                             </Typography>
                           </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={2}
-                            md={2}
-                            className={classes.margin1}
-                          >
+                          <Grid item xs={12} sm={2} md={2} className="margin1">
                             <Typography
                               color="textSecondary"
                               align="center"
@@ -1314,7 +1253,7 @@ const App = () => {
                               xs={false}
                               sm={2}
                               md={2}
-                              className={classes.margin1}
+                              className="margin1"
                             >
                               {edit ? (
                                 <TextField
@@ -1346,7 +1285,7 @@ const App = () => {
                               xs={false}
                               sm={1}
                               md={1}
-                              className={classes.margin1}
+                              className="margin1"
                             >
                               {edit ? (
                                 <TextField
@@ -1377,7 +1316,7 @@ const App = () => {
                               xs={false}
                               sm={2}
                               md={2}
-                              className={classes.margin1}
+                              className="margin1"
                               style={{ textAlign: "center" }}
                             >
                               <FormControlLabel
@@ -1455,7 +1394,7 @@ const App = () => {
               </Paper>
             </Grid>
             <Hidden only={["xs", "sm"]}>
-              <Grid item sm={false} md={2} className={classes.margin1}></Grid>
+              <Grid item sm={false} md={2} className="margin1"></Grid>
             </Hidden>
           </Grid>
         </Box>
@@ -1464,7 +1403,7 @@ const App = () => {
           position="relative"
           paddingX={2}
           width="100%"
-          height="50%"
+          height="20vh"
           minHeight="200px"
           color="background.paper"
           display="flex"
@@ -1497,7 +1436,7 @@ const App = () => {
                     color="primary"
                     aria-label="pwa"
                     onClick={showA2HS}
-                    className={classes.marginRight12}
+                    className={fullScreen ? "" : "marginRight12"}
                   >
                     <GetAppIcon />
                   </Fab>
@@ -1510,7 +1449,7 @@ const App = () => {
                     color="primary"
                     aria-label="pwa"
                     onClick={showA2HS}
-                    className={classes.marginRight12}
+                    className={fullScreen ? "" : "marginRight12"}
                   >
                     <GetAppIcon />
                   </Fab>

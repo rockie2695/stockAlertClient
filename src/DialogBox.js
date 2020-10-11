@@ -1,14 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import moment from "moment";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Dialog from "@material-ui/core/Dialog";
 import "./App.css";
@@ -22,66 +22,38 @@ import {
   ResponsiveContainer,
 } from "recharts";
 let host = "https://rockie-stockAlertServer.herokuapp.com";
-let testlink = false;
 if (
   window.location.host === "localhost:3000" ||
   window.location.host === "localhost:5000"
 ) {
   host = "http://localhost:3001";
-  testlink = true;
 }
 
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log("test", props.open);
     if (props.open) {
     } else {
-      setAllDataHistory([]);
+      setTimeout(() => {
+        setAllDataHistory([]);
+      }, 100);
     }
   }, [props.open]);
 
-  const useStyles = makeStyles((theme) => ({
-    margin1: {
-      "& > *": {
-        margin: theme.spacing(1),
-      },
-    },
-    margin2: {
-      "& > *": {
-        margin: theme.spacing(2),
-      },
-    },
-    padding2: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: "absolute",
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-    marginRight12: {
-      marginRight: "12px",
-    },
-  }));
-
-  const classes = useStyles();
-
-  const DialogTitle = withStyles(useStyles)((props) => {
+  const DialogTitle = ((props) => {
     return (
       <MuiDialogTitle
         disableTypography
-        className={classes.padding2}
+        className="padding2"
         {...props.other}
       >
         <Typography variant="h6">{props.children}</Typography>
         {props.onClose ? (
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
+            className="closeButton"
             onClick={props.onClose}
           >
             <CloseIcon />
@@ -93,7 +65,9 @@ const DialogBox = (props) => {
 
   const fun_allData = (stock) => {
     //get all data from server
-    console.log(stock, props.login.email);
+    setLoading((prevState) => {
+      return true;
+    });
     fetch(host + "/select/allStockPrice/", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -122,20 +96,14 @@ const DialogBox = (props) => {
         setAllDataHistory((prevState) => {
           return insertHistory;
         });
+        setLoading((prevState) => {
+          return false;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
-  const DialogContent = withStyles((theme) => ({
-    root: {
-      padding: theme.spacing(2),
-    },
-  }))(MuiDialogContent);
-
-  const DialogActions = withStyles((theme) => ({
-    root: {
-      margin: 0,
-      padding: theme.spacing(1),
-    },
-  }))(MuiDialogActions);
 
   return (
     <Dialog
@@ -154,7 +122,7 @@ const DialogBox = (props) => {
             ")"
           : null}
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers style={{padding:'16px'}}>
         {props.selectHistory.length !== 0 ? (
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
@@ -361,7 +329,16 @@ const DialogBox = (props) => {
                   fun_allData(props.stockNotify[props.dialogIndex].stock)
                 }
               >
-                <Typography>Get All Data</Typography>
+                {loading ? (
+                  <Fragment>
+                    <Typography style={{ marginRight: 8 }}>
+                      Get All Data
+                    </Typography>
+                    <CircularProgress size={20} style={{ color: "white" }} />
+                  </Fragment>
+                ) : (
+                  <Typography>Get All Data</Typography>
+                )}
               </Button>
             </Box>
           </Fragment>

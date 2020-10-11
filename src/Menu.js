@@ -8,13 +8,11 @@ import Toolbar from "@material-ui/core/Toolbar";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import "./App.css";
 
-let host = "https://rockie-stockAlertServer.herokuapp.com";
 let testlink = false;
 if (
   window.location.host === "localhost:3000" ||
   window.location.host === "localhost:5000"
 ) {
-  host = "http://localhost:3001";
   testlink = true;
 }
 
