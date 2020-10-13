@@ -40,11 +40,10 @@ import CountUp from "react-countup";
 import "./App.css";
 
 /**
- * https://github.com/mui-org/material-ui/issues/6115
+ * add alert control to dialogcontent
  * add full screen switch
  * add percent change switch
  * check subscription and make subscription css
- * remove withStyles
  */
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
@@ -99,9 +98,9 @@ const App = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const hideAlert = useMediaQuery(theme.breakpoints.down("xs"));
 
   useEffect(() => {
-    console.log("mounted");
     window.addEventListener("online", handleConnectionChange);
     window.addEventListener("offline", handleConnectionChange);
 
@@ -129,7 +128,7 @@ const App = () => {
   useEffect(() => {
     if (ws) {
       //連線成功在 console 中打印訊息
-      console.log("success connect!");
+      //console.log("success connect!");
       //設定監聽
       initWebSocket();
     }
@@ -137,7 +136,7 @@ const App = () => {
 
   useEffect(() => {
     if (login.email !== "") {
-      console.log("do startConnectWS");
+      //console.log("do startConnectWS");
       startConnectWS();
     }
   }, [login]);
@@ -150,7 +149,7 @@ const App = () => {
   };
 
   const showA2HS = (e) => {
-    console.log("call this medhod showA2HS");
+    //console.log("call this medhod showA2HS");
     // Show the prompt
     deferredPrompt.prompt();
     // Wait for the user to respond to the prompt
@@ -175,15 +174,12 @@ const App = () => {
       //window.location.reload()
     });
     ws.on("stockPrice", (message) => {
-      console.log("receive stockPrice message", message);
       message.jsTime = new Date(message.time).getTime();
       let findStockNameArray = [];
       let changeSelectHistoryArray = [];
       let needEmptySelectHistory = false;
       setStockNotify((prevState) => {
-        console.log(prevState);
         return prevState.map((row, index) => {
-          console.log("in setStockNotify run how many times");
           let addObject = {};
           if (row.stock === message.stock) {
             addObject = { nowPrice: message.price, nowTime: message.time };
@@ -233,11 +229,6 @@ const App = () => {
         });
       }
       if (findStockNameArray.length !== 0) {
-        console.log(
-          "please chech email ",
-          findStockNameArray[0].email,
-          loginRef.current.email
-        );
         findStockName(findStockNameArray[0].stock, loginRef.current.email);
       } else if (
         changeSelectHistoryArray.length !== 0 &&
@@ -253,8 +244,6 @@ const App = () => {
 
       setStockHistory((prevState) => {
         return prevState.map((row, index) => {
-          console.log("seesetStockHistory run how many times");
-          console.log(row, message);
           if (
             typeof row.stock !== "undefined" &&
             row.stock === message.stock &&
@@ -274,7 +263,6 @@ const App = () => {
       });
     });
     ws.on("changeAlert", (message) => {
-      console.log(message);
       setStockNotify((prevState) => {
         return prevState.map((row, index) => {
           let addObject = {};
@@ -560,7 +548,6 @@ const App = () => {
         return prevState.map((row, index) => {
           let addObject = {};
           let target = event.target.name.split("_");
-          console.log(target);
           let value = event.target.value;
           if (index === parseInt(target[1])) {
             if (target[0] === "price") {
@@ -578,13 +565,11 @@ const App = () => {
     }
   };
   const loseFocusAlertInfo = (event) => {
-    console.log(event, event.target.value, event.target.name);
     if (event.target.name !== null) {
       setStockNotify((prevState) => {
         return prevState.map((row, index) => {
           let addObject = {};
           let target = event.target.name.split("_");
-          console.log(target);
           let value = event.target.value;
 
           if (index === parseInt(target[1]) && target[0] === "stock") {
@@ -601,37 +586,36 @@ const App = () => {
   };
   const fun_save = () => {
     //setBoxShadow((prevState) => -1);
-    console.log(oldStockNotify, stockNotify);
     setSendingForm((prevState) => {
       return true;
     });
     let updateMessage = [];
     let insertMessage = [];
     for (let i = 0; i < stockNotify.length; i++) {
-      if (typeof stockNotify[i]._id !== "undefined") {
-        //update
-        updateMessage.push({
-          _id: stockNotify[i]._id,
-          stock: stockNotify[i].stock,
-          price: stockNotify[i].price,
-          equal: stockNotify[i].equal,
-          alert: stockNotify[i].alert,
-          oldStock: oldStockNotify[i].stock,
-        });
-      } else {
-        //new to add
-        if (
-          stockNotify[i].stock !== "" &&
-          parseInt(stockNotify[i].stock) !== 0 &&
-          stockNotify[i].price !== ""
-        ) {
+      if (
+        stockNotify[i].stock !== "" &&
+        parseInt(stockNotify[i].stock) !== 0 &&
+        stockNotify[i].price !== ""
+      ) {
+        if (typeof stockNotify[i]._id !== "undefined") {
+          //update
+          updateMessage.push({
+            _id: stockNotify[i]._id,
+            stock: stockNotify[i].stock,
+            price: stockNotify[i].price,
+            equal: stockNotify[i].equal,
+            alert: stockNotify[i].alert,
+            oldStock: oldStockNotify[i].stock,
+          });
+        } else {
+          //new to add
+          insertMessage.push({
+            stock: stockNotify[i].stock,
+            price: stockNotify[i].price,
+            equal: stockNotify[i].equal,
+            alert: stockNotify[i].alert,
+          });
         }
-        insertMessage.push({
-          stock: stockNotify[i].stock,
-          price: stockNotify[i].price,
-          equal: stockNotify[i].equal,
-          alert: stockNotify[i].alert,
-        });
       }
     }
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
@@ -1470,6 +1454,13 @@ const App = () => {
           stockNotify={stockNotify}
           selectHistory={selectHistory}
           login={login}
+          changeAlertSwitch={changeAlertSwitch}
+          hideAlert={hideAlert}
+          edit={edit}
+          sendingForm={sendingForm}
+          fun_edit={fun_edit}
+          fun_save={fun_save}
+          changeAlertInfo={changeAlertInfo}
         />
       </Suspense>
     </HttpsRedirect>

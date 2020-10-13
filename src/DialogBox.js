@@ -9,9 +9,16 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import moment from "moment";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 import Dialog from "@material-ui/core/Dialog";
-import "./App.css";
+import EditIcon from "@material-ui/icons/Edit";
+import SaveIcon from "@material-ui/icons/Save";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import {
   LineChart,
   Line,
@@ -42,13 +49,9 @@ const DialogBox = (props) => {
     }
   }, [props.open]);
 
-  const DialogTitle = ((props) => {
+  const DialogTitle = (props) => {
     return (
-      <MuiDialogTitle
-        disableTypography
-        className="padding2"
-        {...props.other}
-      >
+      <MuiDialogTitle disableTypography className="padding2" {...props.other}>
         <Typography variant="h6">{props.children}</Typography>
         {props.onClose ? (
           <IconButton
@@ -61,7 +64,7 @@ const DialogBox = (props) => {
         ) : null}
       </MuiDialogTitle>
     );
-  });
+  };
 
   const fun_allData = (stock) => {
     //get all data from server
@@ -122,12 +125,171 @@ const DialogBox = (props) => {
             ")"
           : null}
       </DialogTitle>
-      <DialogContent dividers style={{padding:'16px'}}>
+      <DialogContent dividers style={{ padding: "16px" }}>
+        {props.hideAlert && props.dialogIndex > -1 ? (
+          <Fragment>
+            <Typography align="right" className="margin2">
+              {props.edit === true ? (
+                <Fragment>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={props.fun_save}
+                    disabled={props.sendingForm}
+                  >
+                    <Typography style={{ marginRight: 8 }}>Save</Typography>
+                    {props.sendingForm ? (
+                      <CircularProgress size={20} style={{ color: "white" }} />
+                    ) : (
+                      <SaveIcon />
+                    )}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={props.fun_edit}
+                    disabled={props.sendingForm}
+                  >
+                    <Typography>Cancel</Typography>
+                    <CloseIcon />
+                  </Button>
+                </Fragment>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={props.fun_edit}
+                >
+                  <Typography style={{ marginRight: 8 }}>Edit</Typography>
+                  <EditIcon />
+                </Button>
+              )}
+            </Typography>
+            <Box display="flex" alignItems="center" margin={2}>
+              <Grid container alignItems="center">
+                <Grid container spacing={3} alignItems="center">
+                  <Grid item xs={4} sm={4} md={4} className="margin1">
+                    <Typography>Alert</Typography>
+                  </Grid>
+                  <Grid item xs={4} sm={4} md={4} className="margin1">
+                    <Typography>now$ to alert$</Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    sm={4}
+                    md={4}
+                    className="margin1"
+                    style={{ textAlign: "center" }}
+                  >
+                    <Typography>Enable Switch</Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Box>
+            <Divider />
+            <Box className="box" display="flex" alignItems="center" padding={2}>
+              <Grid container alignItems="center">
+                <Grid container spacing={3} alignItems="center">
+                  <Grid item xs={4} sm={4} md={4} className="margin1">
+                    <Typography>
+                      {props.edit ? (
+                        <TextField
+                          id={"price_" + props.dialogIndex}
+                          name={"price_" + props.dialogIndex}
+                          label="price"
+                          variant="outlined"
+                          value={props.stockNotify[props.dialogIndex].price}
+                          margin="dense"
+                          autoComplete="off"
+                          disabled={props.sendingForm}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            ),
+                          }}
+                          style={{ minWidth: "90px" }}
+                          onChange={props.changeAlertInfo}
+                          type="number"
+                        />
+                      ) : (
+                        <Typography>
+                          ${props.stockNotify[props.dialogIndex].price}
+                        </Typography>
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={4} sm={4} md={4} className="margin1">
+                    <Typography>
+                      {props.edit ? (
+                        <TextField
+                          id={"equal_" + props.dialogIndex}
+                          name={"equal_" + props.dialogIndex}
+                          select
+                          label="equal"
+                          variant="outlined"
+                          margin="dense"
+                          value={props.stockNotify[props.dialogIndex].equal}
+                          style={{ minWidth: "18px" }}
+                          onChange={props.changeAlertInfo}
+                          disabled={props.sendingForm}
+                        >
+                          <MenuItem key=">=" value=">=">
+                            {">="}
+                          </MenuItem>
+                          <MenuItem key="<=" value="<=">
+                            {"<="}
+                          </MenuItem>
+                        </TextField>
+                      ) : (
+                        <Typography>
+                          {props.stockNotify[props.dialogIndex].equal}
+                        </Typography>
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    sm={4}
+                    md={4}
+                    className="margin1"
+                    style={{ textAlign: "center" }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={props.stockNotify[props.dialogIndex].alert}
+                          onChange={() =>
+                            props.changeAlertSwitch(
+                              props.dialogIndex,
+                              props.stockNotify[props.dialogIndex]._id,
+                              props.stockNotify[props.dialogIndex].alert
+                            )
+                          }
+                          name="alertCheck"
+                          color="primary"
+                          disabled={!props.edit || props.sendingForm}
+                        />
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Box>
+            <Divider />
+          </Fragment>
+        ) : null}
+        <Typography align="center" variant="h6">
+          Today Graph
+        </Typography>
         {props.selectHistory.length !== 0 ? (
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
               data={props.selectHistory}
-              margin={{ top: 10, right: 25, bottom: 10, left: 0 }}
+              margin={{ top: 10, right: 0, bottom: 10, left: 0 }}
             >
               <Line
                 type="monotone"
@@ -347,7 +509,7 @@ const DialogBox = (props) => {
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
               data={allDataHistory}
-              margin={{ top: 10, right: 25, bottom: 10, left: 0 }}
+              margin={{ top: 10, right: 0, bottom: 10, left: 0 }}
             >
               <Line
                 type="monotone"
