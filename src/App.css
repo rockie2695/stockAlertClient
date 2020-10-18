@@ -36,22 +36,38 @@
     transform: rotate(360deg);
   }
 }
-table.dialog {
+table.dialog,
+table.dialogDark {
   width: 100%;
   border-collapse: collapse;
 }
 
-table.dialog td {
+table.dialog td,
+table.dialogDark td {
   padding: 8px;
   border-bottom: 1px solid #ddd;
 }
-
+table.dialog > tbody > tr,
+table.dialogDark > tbody > tr {
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+}
 table.dialog > tbody > tr:hover {
   background-color: #f5f5f5;
 }
-
+table.dialogDark > tbody > tr:hover {
+  background-color: #bdbdbd;
+}
+div.box,
+div.boxDark {
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+}
 div.box:hover {
   background-color: #f5f5f5;
+}
+div.boxDark:hover {
+  background-color: #bdbdbd;
 }
 div.cursorPointer {
   cursor: pointer;
@@ -79,4 +95,11 @@ div.cursorPointer {
 
 .marginRight12 {
   margin-right: 12px !important;
+}
+
+.MuiTypography-h2 {
+  font-size: calc(13px + 5.5vmin) !important;
+}
+.MuiButton-containedPrimary {
+  border-radius: 20px !important;
 }

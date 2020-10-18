@@ -20,6 +20,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {
+  AreaChart,
+  Area,
   LineChart,
   Line,
   CartesianGrid,
@@ -39,6 +41,7 @@ if (
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [areaChartSetting, setAreaChartSetting] = useState(false);
 
   useEffect(() => {
     if (props.open) {
@@ -107,7 +110,29 @@ const DialogBox = (props) => {
         console.log(err);
       });
   };
-
+  const changeAreaChartSetting = () => {
+    setAreaChartSetting((prevState) => !prevState);
+  };
+  const gradientOffset = () => {
+    const dataMax = Math.max(...props.selectHistory.map((i) => i.price));
+    const dataMin = Math.min(...props.selectHistory.map((i) => i.price));
+    if (props.dialogIndex > -1) {
+      if (dataMax <= props.stockNotify[props.dialogIndex].past) {
+        return 0;
+      } else if (dataMin >= props.stockNotify[props.dialogIndex].past) {
+        return 1;
+      } else {
+        return (
+          (dataMax - props.stockNotify[props.dialogIndex].past) /
+          (dataMax -
+            props.stockNotify[props.dialogIndex].past -
+            (dataMin - props.stockNotify[props.dialogIndex].past))
+        );
+      }
+    } else {
+      return 0;
+    }
+  };
   return (
     <Dialog
       fullWidth={true}
@@ -188,67 +213,66 @@ const DialogBox = (props) => {
               </Grid>
             </Box>
             <Divider />
-            <Box className="box" display="flex" alignItems="center" padding={2}>
+            <Box
+              className={props.isDarkMode ? "boxDark" : "box"}
+              display="flex"
+              alignItems="center"
+              padding={2}
+            >
               <Grid container alignItems="center">
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={4} sm={4} md={4} className="margin1">
-                    <Typography>
-                      {props.edit ? (
-                        <TextField
-                          id={"price_" + props.dialogIndex}
-                          name={"price_" + props.dialogIndex}
-                          label="price"
-                          variant="outlined"
-                          value={props.stockNotify[props.dialogIndex].price}
-                          margin="dense"
-                          autoComplete="off"
-                          disabled={props.sendingForm}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                $
-                              </InputAdornment>
-                            ),
-                          }}
-                          style={{ minWidth: "90px" }}
-                          onChange={props.changeAlertInfo}
-                          type="number"
-                        />
-                      ) : (
-                        <Typography>
-                          ${props.stockNotify[props.dialogIndex].price}
-                        </Typography>
-                      )}
-                    </Typography>
+                    {props.edit ? (
+                      <TextField
+                        id={"price_" + props.dialogIndex}
+                        name={"price_" + props.dialogIndex}
+                        label="price"
+                        variant="outlined"
+                        value={props.stockNotify[props.dialogIndex].price}
+                        margin="dense"
+                        autoComplete="off"
+                        disabled={props.sendingForm}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">$</InputAdornment>
+                          ),
+                        }}
+                        style={{ minWidth: "90px" }}
+                        onChange={props.changeAlertInfo}
+                        type="number"
+                      />
+                    ) : (
+                      <Typography>
+                        ${props.stockNotify[props.dialogIndex].price}
+                      </Typography>
+                    )}
                   </Grid>
                   <Grid item xs={4} sm={4} md={4} className="margin1">
-                    <Typography>
-                      {props.edit ? (
-                        <TextField
-                          id={"equal_" + props.dialogIndex}
-                          name={"equal_" + props.dialogIndex}
-                          select
-                          label="equal"
-                          variant="outlined"
-                          margin="dense"
-                          value={props.stockNotify[props.dialogIndex].equal}
-                          style={{ minWidth: "18px" }}
-                          onChange={props.changeAlertInfo}
-                          disabled={props.sendingForm}
-                        >
-                          <MenuItem key=">=" value=">=">
-                            {">="}
-                          </MenuItem>
-                          <MenuItem key="<=" value="<=">
-                            {"<="}
-                          </MenuItem>
-                        </TextField>
-                      ) : (
-                        <Typography>
-                          {props.stockNotify[props.dialogIndex].equal}
-                        </Typography>
-                      )}
-                    </Typography>
+                    {props.edit ? (
+                      <TextField
+                        id={"equal_" + props.dialogIndex}
+                        name={"equal_" + props.dialogIndex}
+                        select
+                        label="equal"
+                        variant="outlined"
+                        margin="dense"
+                        value={props.stockNotify[props.dialogIndex].equal}
+                        style={{ minWidth: "18px" }}
+                        onChange={props.changeAlertInfo}
+                        disabled={props.sendingForm}
+                      >
+                        <MenuItem key=">=" value=">=">
+                          {">="}
+                        </MenuItem>
+                        <MenuItem key="<=" value="<=">
+                          {"<="}
+                        </MenuItem>
+                      </TextField>
+                    ) : (
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].equal}
+                      </Typography>
+                    )}
                   </Grid>
                   <Grid
                     item
@@ -282,45 +306,116 @@ const DialogBox = (props) => {
             <Divider />
           </Fragment>
         ) : null}
-        <Typography align="center" variant="h6">
-          Today Graph
-        </Typography>
+
         {props.selectHistory.length !== 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              data={props.selectHistory}
-              margin={{ top: 10, right: 0, bottom: 10, left: 0 }}
-            >
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-                dot={false}
-              />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis
-                dataKey="jsTime"
-                tickFormatter={(unixTime) => moment(unixTime).format("HH:mm")}
-                type="number"
-                scale="time"
-                domain={["dataMin", "dataMax"]}
-                interval={
-                  props.selectHistory.length > 5
-                    ? parseInt(props.selectHistory.length / 5)
-                    : 1
+          <Fragment>
+            <Typography align="center" variant="h6">
+              Today Graph
+            </Typography>
+            <Typography align="right" className="margin2">
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={areaChartSetting}
+                    onChange={changeAreaChartSetting}
+                    name="Area Chart"
+                    color="primary"
+                  />
                 }
+                label="Area Chart"
               />
-              <YAxis domain={["auto", "auto"]} />
-              <Tooltip
-                labelFormatter={(unixTime) => moment(unixTime).format("HH:mm")}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+            </Typography>
+            <ResponsiveContainer width="100%" height={400}>
+              {areaChartSetting ? (
+                <AreaChart
+                  data={props.selectHistory}
+                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
+                      <stop
+                        offset={gradientOffset()}
+                        stopColor="green"
+                        stopOpacity={1}
+                      />
+                      <stop
+                        offset={gradientOffset()}
+                        stopColor="red"
+                        stopOpacity={1}
+                      />
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    type="monotone"
+                    dataKey="price"
+                    stroke="#8884d8"
+                    activeDot={{ r: 8 }}
+                    dot={false}
+                    fill="url(#splitColor)"
+                  />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis
+                    dataKey="jsTime"
+                    tickFormatter={(unixTime) =>
+                      moment(unixTime).format("HH:mm")
+                    }
+                    type="number"
+                    scale="time"
+                    domain={["dataMin", "dataMax"]}
+                    interval={
+                      props.selectHistory.length > 5
+                        ? parseInt(props.selectHistory.length / 5)
+                        : 1
+                    }
+                  />
+                  <YAxis domain={["auto", "auto"]} />
+                  <Tooltip
+                    labelFormatter={(unixTime) =>
+                      moment(unixTime).format("HH:mm")
+                    }
+                  />
+                </AreaChart>
+              ) : (
+                <LineChart
+                  data={props.selectHistory}
+                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                >
+                  <Line
+                    type="monotone"
+                    dataKey="price"
+                    stroke="#8884d8"
+                    activeDot={{ r: 8 }}
+                    dot={false}
+                  />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis
+                    dataKey="jsTime"
+                    tickFormatter={(unixTime) =>
+                      moment(unixTime).format("HH:mm")
+                    }
+                    type="number"
+                    scale="time"
+                    domain={["dataMin", "dataMax"]}
+                    interval={
+                      props.selectHistory.length > 5
+                        ? parseInt(props.selectHistory.length / 5)
+                        : 1
+                    }
+                  />
+                  <YAxis domain={["auto", "auto"]} />
+                  <Tooltip
+                    labelFormatter={(unixTime) =>
+                      moment(unixTime).format("HH:mm")
+                    }
+                  />
+                </LineChart>
+              )}
+            </ResponsiveContainer>
+          </Fragment>
         ) : null}
         {props.dialogIndex > -1 ? (
           <Fragment>
-            <table className="dialog">
+            <table className={props.isDarkMode ? "dialogDark" : "dialog"}>
               <colgroup>
                 <col style={{ width: "32%" }} />
                 <col style={{ width: "32%" }} />
@@ -509,7 +604,7 @@ const DialogBox = (props) => {
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
               data={allDataHistory}
-              margin={{ top: 10, right: 0, bottom: 10, left: 0 }}
+              margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
             >
               <Line
                 type="monotone"

@@ -36,14 +36,15 @@ import SaveIcon from "@material-ui/icons/Save";
 import CloseIcon from "@material-ui/icons/Close";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CountUp from "react-countup";
+import Fade from "@material-ui/core/Fade";
 import "./App.css";
 
 /**
- * add alert control to dialogcontent
- * add full screen switch
- * add percent change switch
- * check subscription and make subscription css
+ * daily stock data
+ * react router
+ * qr code
  */
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
@@ -73,7 +74,6 @@ const App = () => {
   const [stockNotify, setStockNotify] = useState([]);
   const [oldStockNotify, setOldStockNotify] = useState([]);
   const [edit, setEdit] = useState(false);
-  //const [boxShadow, setBoxShadow] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [sendingForm, setSendingForm] = useState(false);
   const [addRoomList, setAddRoomList] = useState([]);
@@ -81,6 +81,8 @@ const App = () => {
   const [dialogIndex, setDialogIndex] = useState(-1);
   const [selectHistory, setSelectHistory] = useState([]);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [fullScreenSetting, setFullScreenSetting] = useState(false);
+  const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(false);
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host));
@@ -96,7 +98,19 @@ const App = () => {
   const stockHistoryRef = useRef(stockHistory);
   stockHistoryRef.current = stockHistory;
 
-  const theme = useTheme();
+  //const theme = useTheme();
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+  const theme = React.useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          type: prefersDarkMode ? "dark" : "light",
+        },
+      }),
+    [prefersDarkMode]
+  );
+  const isDarkMode = theme.palette.type === "dark";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const hideAlert = useMediaQuery(theme.breakpoints.down("xs"));
 
@@ -119,7 +133,6 @@ const App = () => {
         }
       });
     });
-
     if (testlink) {
       fun_login({});
     }
@@ -274,7 +287,12 @@ const App = () => {
       });
     });
   };
-
+  const changePriceDiffPercentSetting = () => {
+    setPriceDeffPercentSetting((prevState) => !prevState);
+  };
+  const changeFullScreenSetting = () => {
+    setFullScreenSetting((prevState) => !prevState);
+  };
   const changeSelectHistory = (stock, message, side = "new") => {
     if (dialogIndexRef.current > -1) {
       if (stock === stockNotifyRef.current[dialogIndexRef.current].stock) {
@@ -300,18 +318,6 @@ const App = () => {
             ];
           });
         } else if (side === "front") {
-          /*
-          if (!selectHistory.some(e => e.time === time)) {
-            setSelectHistory(prevState => {
-              let addArray = []
-              if (!prevState.some(e => e.time === time)) {
-                addArray = [{ time: time, price: message.price, jsTime: message.jsTime }]
-                console.log(time)
-              }
-              return [...addArray, ...prevState]
-            })
-          }
-          */
           if (message.length >= 2 && selectHistory.length >= 1) {
             //check second last
             if (
@@ -359,7 +365,7 @@ const App = () => {
     }
   };
   const closeDialog = () => {
-    console.log(selectHistory);
+    //console.log(selectHistory);
     setOpen((prevState) => false);
     setTimeout(() => {
       setDialogIndex((prevState) => -1);
@@ -368,7 +374,6 @@ const App = () => {
   };
 
   const fun_login = (response) => {
-    console.log(response);
     if (response.hasOwnProperty("tokenId")) {
       let email = response.profileObj.email;
       let newLoginObj = {
@@ -533,15 +538,6 @@ const App = () => {
     connectWebSocket();
   };
 
-  /*const fun_boxShadow = (index) => {
-    setBoxShadow((prevState) => {
-      if (prevState === index) {
-        return -1;
-      } else {
-        return index;
-      }
-    });
-  };*/
   const changeAlertInfo = (event) => {
     if (event.target.name !== null) {
       setStockNotify((prevState) => {
@@ -585,7 +581,6 @@ const App = () => {
     }
   };
   const fun_save = () => {
-    //setBoxShadow((prevState) => -1);
     setSendingForm((prevState) => {
       return true;
     });
@@ -677,7 +672,6 @@ const App = () => {
     }
   };
   const fun_edit = () => {
-    //setBoxShadow((prevState) => -1);
     if (edit === true) {
       setStockNotify((prevState) => {
         return prevState.filter((row, index) => {
@@ -790,7 +784,6 @@ const App = () => {
     }
   };
   const findStockHistory = (stock, subEmail) => {
-    console.log(stock, subEmail);
     fetch(host + "/select/stockPrice/", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -802,35 +795,6 @@ const App = () => {
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
-        /*for (let i = result.ok.length - 1; i > -1; i--) {
-          let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
-            timeZone: "UTC",
-          });
-          result.ok[i].jsTime = new Date(rowTime).getTime();
-          result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
-          setStockHistory((prevState) => {
-            return prevState.map((row, index) => {
-              if (
-                row.stock === stock &&
-                !row.priceWithTime.some((e) => e.time === result.ok[i].time)
-              ) {
-                return {
-                  ...row,
-                  priceWithTime: [
-                    {
-                      time: result.ok[i].time,
-                      price: result.ok[i].price,
-                      jsTime: result.ok[i].jsTime,
-                    },
-                    ...row.priceWithTime,
-                  ],
-                };
-              } else {
-                return row;
-              }
-            });
-          });
-        }*/
         let j = 0;
         for (j = 0; j < stockHistoryRef.current.length; j++) {
           if (stockHistoryRef.current[j].stock === stock) {
@@ -839,7 +803,6 @@ const App = () => {
         }
         console.log(stockHistoryRef.current, stockHistoryRef.current.length);
         let insertHistory = [];
-        //for (let i = result.ok.length - 1; i > -1; i--) {
         for (let i = 0; i < result.ok.length; i++) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
             timeZone: "UTC",
@@ -882,7 +845,6 @@ const App = () => {
   };
   const findStockName = (stock, subEmail) => {
     //since email object may not contain before login
-    console.log(subEmail);
     fetch(host + "/find/stockName/", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -972,14 +934,7 @@ const App = () => {
       });
   };
 
-  /*function ElevationScroll(props) {
-    const { children } = props;
-    const trigger = useScrollTrigger();
-    console.log("when would render this function", trigger);
-    return React.cloneElement(children, {
-      elevation: trigger ? 4 : 1,
-    });
-  }
+  /*
   function getDayTime() {
     let today = new Date().toLocaleString("en-US", {
       timeZone: "Asia/Hong_Kong",
@@ -1001,468 +956,570 @@ const App = () => {
 
   return (
     <HttpsRedirect disabled={testlink ? true : false}>
-      <CssBaseline />
-      <Box
-        bgcolor="text.disabled"
-        style={{ height: "100%", minHeight: "100vh" }}
-      >
-        <Suspense fallback={renderLoader()}>
-          <Menu
-            login={login}
-            clientId={clientId}
-            fun_login={fun_login}
-            fun_logout={fun_logout}
-            sendingForm={sendingForm}
-          />
-        </Suspense>
-
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Box
-          position="fixed"
-          zIndex="0"
-          width="100%"
-          height="50vh"
-          minHeight="200px"
-          bgcolor="text.primary"
-          color="background.paper"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          bgcolor="text.disabled"
+          style={{ height: "100%", minHeight: "100vh" }}
         >
-          <Typography align="center" variant="h2">
-            For Stock Price Showing And Notification
-          </Typography>
-        </Box>
-        <Box height="50vh"></Box>
-        <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
-          <Grid container alignItems="center">
-            <Hidden only={["xs", "sm"]}>
-              <Grid item sm={false} md={2} className="margin1"></Grid>
-            </Hidden>
-            <Grid item xs={12} sm={12} md={8} className="margin1">
-              <Paper>
-                <Typography align="right" className="margin2">
-                  {edit === true ? (
-                    <Fragment>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={fun_save}
-                        disabled={sendingForm}
-                      >
-                        <Typography style={{ marginRight: 8 }}>Save</Typography>
-                        {sendingForm ? (
-                          <CircularProgress
-                            size={20}
-                            style={{ color: "white" }}
+          <Suspense fallback={renderLoader()}>
+            <Menu
+              login={login}
+              clientId={clientId}
+              fun_login={fun_login}
+              fun_logout={fun_logout}
+              sendingForm={sendingForm}
+            />
+          </Suspense>
+
+          <Box
+            position="fixed"
+            zIndex="0"
+            width="100%"
+            height="50vh"
+            minHeight="200px"
+            bgcolor="text.primary"
+            color="background.paper"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography align="center" variant="h2">
+              For Stock Price Showing And Notification
+            </Typography>
+          </Box>
+          <Box height="50vh"></Box>
+          <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
+            <Grid container alignItems="center">
+              <Hidden only={["xs", "sm"]}>
+                <Grid item sm={false} md={2} className="margin1"></Grid>
+              </Hidden>
+              <Grid item xs={12} sm={12} md={8} className="margin1">
+                <Paper>
+                  <Typography align="right" className="margin2">
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={priceDiffPercentSetting}
+                          onChange={changePriceDiffPercentSetting}
+                          name="Percent Price Diff Switch"
+                          color="primary"
+                        />
+                      }
+                      label="Percent Price Diff"
+                    />
+                    {!fullScreen ? (
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={fullScreenSetting}
+                            onChange={changeFullScreenSetting}
+                            name="Full Screen Switch"
+                            color="primary"
                           />
-                        ) : (
-                          <SaveIcon />
-                        )}
-                      </Button>
+                        }
+                        label="Full Screen Dialog"
+                      />
+                    ) : null}
+                  </Typography>
+
+                  <Typography align="right" className="margin2">
+                    {edit === true ? (
+                      <Fragment>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={fun_save}
+                          disabled={sendingForm}
+                        >
+                          <Typography style={{ marginRight: 8 }}>
+                            Save
+                          </Typography>
+                          {sendingForm ? (
+                            <CircularProgress
+                              size={20}
+                              style={{ color: "white" }}
+                            />
+                          ) : (
+                            <SaveIcon />
+                          )}
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={fun_edit}
+                          disabled={sendingForm}
+                        >
+                          <Typography>Cancel</Typography>
+                          <CloseIcon />
+                        </Button>
+                      </Fragment>
+                    ) : (
                       <Button
                         variant="contained"
                         color="primary"
                         onClick={fun_edit}
-                        disabled={sendingForm}
                       >
-                        <Typography>Cancel</Typography>
-                        <CloseIcon />
+                        <Typography style={{ marginRight: 8 }}>Edit</Typography>
+                        <EditIcon />
                       </Button>
-                    </Fragment>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={fun_edit}
-                    >
-                      <Typography style={{ marginRight: 8 }}>Edit</Typography>
-                      <EditIcon />
-                    </Button>
-                  )}
-                </Typography>
-                <Box display="flex" alignItems="center" margin={2}>
-                  <Grid container spacing={3} alignItems="center">
-                    <Grid item xs={3} sm={1} md={1} className="margin1"></Grid>
-                    <Grid item xs={5} sm={2} md={2} className="margin1">
-                      <Typography>Stock Number</Typography>
-                    </Grid>
-                    <Grid item xs={4} sm={2} md={2} className="margin1">
-                      <Typography>Price</Typography>
-                    </Grid>
-                    <Hidden only="xs">
+                    )}
+                  </Typography>
+                  <Box display="flex" alignItems="center" margin={2}>
+                    <Grid container spacing={3} alignItems="center">
                       <Grid
                         item
-                        xs={false}
-                        sm={2}
-                        md={2}
+                        xs={3}
+                        sm={1}
+                        md={1}
                         className="margin1"
                       ></Grid>
-                      <Grid item xs={false} sm={2} md={2} className="margin1">
-                        <Typography>Alert</Typography>
+                      <Grid item xs={5} sm={2} md={2} className="margin1">
+                        <Typography>Stock Number</Typography>
                       </Grid>
-                      <Grid item xs={false} sm={2} md={2} className="margin1">
-                        <Typography>now$ to alert$</Typography>
+                      <Grid item xs={4} sm={2} md={2} className="margin1">
+                        <Typography>Price</Typography>
                       </Grid>
-                    </Hidden>
-                  </Grid>
-                </Box>
-                <Divider />
-                {stockNotify.length !== 0 ? (
-                  stockNotify.map((row, index) => (
-                    <Fragment key={index}>
-                      <Box
-                        className={edit ? "box" : "cursorPointer box"}
-                        display="flex"
-                        alignItems="center"
-                        padding={2}
-                        onClick={() => openDialog(index)}
-                        //boxShadow={boxShadow === index ? 1 : 0}
-                        //onMouseEnter={() => fun_boxShadow(index)}
-                        //onMouseLeave={() => fun_boxShadow(index)}
+                      <Hidden only="xs">
+                        <Grid
+                          item
+                          xs={false}
+                          sm={2}
+                          md={2}
+                          className="margin1"
+                        ></Grid>
+                        <Grid item xs={false} sm={2} md={2} className="margin1">
+                          <Typography>Alert</Typography>
+                        </Grid>
+                        <Grid item xs={false} sm={2} md={2} className="margin1">
+                          <Typography>now$ to alert$</Typography>
+                        </Grid>
+                      </Hidden>
+                    </Grid>
+                  </Box>
+                  <Divider />
+                  {stockNotify.length !== 0 ? (
+                    stockNotify.map((row, index) => (
+                      <Fade
+                        in={true}
+                        timeout={1000}
+                        style={{
+                          transitionDelay:
+                            (row.hasOwnProperty("_id") ? index : 0) * 200 +
+                            "ms",
+                        }}
+                        key={index}
                       >
-                        <Grid container spacing={3} alignItems="center">
-                          <Grid item xs={3} sm={1} md={1} className="margin1">
-                            <Avatar
-                              className={edit ? "cursorPointer" : ""}
-                              onClick={() => clickAvatar(index)}
-                            >
-                              {edit ? "X" : index + 1}
-                            </Avatar>
-                          </Grid>
-                          <Grid item xs={5} sm={2} md={2} className="margin1">
-                            {edit === true ? (
-                              <TextField
-                                type="number"
-                                style={{ minWidth: "85px" }}
-                                id={"stock_" + index}
-                                name={"stock_" + index}
-                                label="stock"
-                                variant="outlined"
-                                value={row.stock}
-                                margin="dense"
-                                autoComplete="off"
-                                onChange={changeAlertInfo}
-                                onBlur={loseFocusAlertInfo}
-                                disabled={sendingForm}
-                              />
-                            ) : (
-                              <Typography>
-                                {row.stock}&nbsp;
-                                {typeof row.name !== "undefined"
-                                  ? row.name
-                                  : null}
-                              </Typography>
-                            )}
-                          </Grid>
-                          <Grid item xs={4} sm={2} md={2} className="margin1">
-                            <Typography>
-                              {typeof row.nowPrice !== "undefined" ? (
-                                row.hasOwnProperty("oldPrice") ? (
-                                  <CountUp
-                                    start={row.oldPrice}
-                                    end={row.nowPrice}
-                                    decimals={3}
-                                    prefix="$ "
-                                    onEnd={() => console.log("Ended!")}
-                                    onStart={() => console.log("Started!")}
+                        <div>
+                          <Box
+                            className={
+                              edit
+                                ? isDarkMode
+                                  ? "boxDark"
+                                  : "box"
+                                : isDarkMode
+                                ? "cursorPointer boxDark"
+                                : "cursorPointer box"
+                            }
+                            display="flex"
+                            alignItems="center"
+                            padding={2}
+                            onClick={() => openDialog(index)}
+                            //boxShadow={boxShadow === index ? 1 : 0}
+                            //onMouseEnter={() => fun_boxShadow(index)}
+                            //onMouseLeave={() => fun_boxShadow(index)}
+                          >
+                            <Grid container spacing={3} alignItems="center">
+                              <Grid
+                                item
+                                xs={3}
+                                sm={1}
+                                md={1}
+                                className="margin1"
+                              >
+                                <Avatar
+                                  className={edit ? "cursorPointer" : ""}
+                                  onClick={() => clickAvatar(index)}
+                                >
+                                  {edit ? "X" : index + 1}
+                                </Avatar>
+                              </Grid>
+                              <Grid
+                                item
+                                xs={5}
+                                sm={2}
+                                md={2}
+                                className="margin1"
+                              >
+                                {edit === true ? (
+                                  <TextField
+                                    type="number"
+                                    style={{ minWidth: "85px" }}
+                                    id={"stock_" + index}
+                                    name={"stock_" + index}
+                                    label="stock"
+                                    variant="outlined"
+                                    value={row.stock}
+                                    margin="dense"
+                                    autoComplete="off"
+                                    onChange={changeAlertInfo}
+                                    onBlur={loseFocusAlertInfo}
+                                    disabled={sendingForm}
                                   />
                                 ) : (
-                                  <CountUp
-                                    end={row.nowPrice}
-                                    decimals={3}
-                                    prefix="$ "
-                                  />
-                                )
-                              ) : (
-                                <Skeleton />
-                              )}
+                                  <Typography>
+                                    {row.stock}{" "}
+                                    {typeof row.name !== "undefined"
+                                      ? row.name
+                                      : null}
+                                  </Typography>
+                                )}
+                              </Grid>
+                              <Grid
+                                item
+                                xs={4}
+                                sm={2}
+                                md={2}
+                                className="margin1"
+                              >
+                                <Typography>
+                                  {typeof row.nowPrice !== "undefined" ? (
+                                    row.hasOwnProperty("oldPrice") ? (
+                                      <CountUp
+                                        start={row.oldPrice}
+                                        end={row.nowPrice}
+                                        decimals={3}
+                                        prefix="$ "
+                                        onEnd={() => console.log("Ended!")}
+                                        onStart={() => console.log("Started!")}
+                                      />
+                                    ) : (
+                                      <CountUp
+                                        end={row.nowPrice}
+                                        decimals={3}
+                                        prefix="$ "
+                                      />
+                                    )
+                                  ) : (
+                                    <Skeleton />
+                                  )}
 
-                              {typeof row.past !== "undefined" &&
-                              typeof row.nowPrice !== "undefined" ? (
-                                <Fragment>
-                                  <span>{" ("}</span>
-                                  <span
-                                    style={
-                                      parseFloat(row.nowPrice) -
-                                        parseFloat(row.past) >
-                                      0
-                                        ? { color: "green" }
-                                        : parseFloat(row.nowPrice) -
-                                            parseFloat(row.past) <
+                                  {typeof row.past !== "undefined" &&
+                                  typeof row.nowPrice !== "undefined" ? (
+                                    <Fragment>
+                                      <span>{" ("}</span>
+                                      <span
+                                        style={
+                                          parseFloat(row.nowPrice) -
+                                            parseFloat(row.past) >
                                           0
-                                        ? { color: "red" }
-                                        : {}
-                                    }
-                                  >
-                                    {(parseFloat(row.nowPrice) -
-                                      parseFloat(row.past) >
-                                    0
-                                      ? "+"
-                                      : "") +
-                                      parseFloat(
-                                        Math.round(
-                                          (parseFloat(row.nowPrice) -
-                                            parseFloat(row.past) +
-                                            0.00001 *
-                                              (parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) >
+                                            ? { color: "#4caf50" }
+                                            : parseFloat(row.nowPrice) -
+                                                parseFloat(row.past) <
                                               0
-                                                ? 1
-                                                : -1)) *
-                                            1000
-                                        ) / 1000
-                                      )}
-                                  </span>
-                                  <span>{")"}</span>
-                                </Fragment>
-                              ) : null}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} sm={2} md={2} className="margin1">
-                            <Typography
-                              color="textSecondary"
-                              align="center"
-                              variant="subtitle2"
-                            >
-                              {typeof row.nowTime !== "undefined" ? (
-                                row.nowTime
-                              ) : (
-                                <Skeleton />
-                              )}
-                            </Typography>
-                          </Grid>
-                          <Hidden only="xs">
-                            <Grid
-                              item
-                              xs={false}
-                              sm={2}
-                              md={2}
-                              className="margin1"
-                            >
-                              {edit ? (
-                                <TextField
-                                  id={"price_" + index}
-                                  name={"price_" + index}
-                                  label="price"
-                                  variant="outlined"
-                                  value={row.price}
-                                  margin="dense"
-                                  autoComplete="off"
-                                  disabled={sendingForm}
-                                  InputProps={{
-                                    startAdornment: (
-                                      <InputAdornment position="start">
-                                        $
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                  style={{ minWidth: "90px" }}
-                                  onChange={changeAlertInfo}
-                                  type="number"
-                                />
-                              ) : (
-                                <Typography>${row.price}</Typography>
-                              )}
-                            </Grid>
-                            <Grid
-                              item
-                              xs={false}
-                              sm={1}
-                              md={1}
-                              className="margin1"
-                            >
-                              {edit ? (
-                                <TextField
-                                  id={"equal_" + index}
-                                  name={"equal_" + index}
-                                  select
-                                  label="equal"
-                                  variant="outlined"
-                                  margin="dense"
-                                  value={row.equal}
-                                  style={{ minWidth: "18px" }}
-                                  onChange={changeAlertInfo}
-                                  disabled={sendingForm}
+                                            ? { color: "#f44336" }
+                                            : {}
+                                        }
+                                      >
+                                        {(parseFloat(row.nowPrice) -
+                                          parseFloat(row.past) >
+                                        0
+                                          ? "+"
+                                          : "") +
+                                          (!priceDiffPercentSetting
+                                            ? parseFloat(
+                                                Math.round(
+                                                  (parseFloat(row.nowPrice) -
+                                                    parseFloat(row.past) +
+                                                    0.00001 *
+                                                      (parseFloat(
+                                                        row.nowPrice
+                                                      ) -
+                                                        parseFloat(row.past) >
+                                                      0
+                                                        ? 1
+                                                        : -1)) *
+                                                    1000
+                                                ) / 1000
+                                              )
+                                            : parseFloat(
+                                                Math.round(
+                                                  ((parseFloat(row.nowPrice) -
+                                                    parseFloat(row.past) +
+                                                    0.00001 *
+                                                      (parseFloat(
+                                                        row.nowPrice
+                                                      ) -
+                                                        parseFloat(row.past) >
+                                                      0
+                                                        ? 1
+                                                        : -1)) /
+                                                    row.past) *
+                                                    100000
+                                                ) / 1000
+                                              ) + "%")}
+                                      </span>
+                                      <span>{")"}</span>
+                                    </Fragment>
+                                  ) : null}
+                                </Typography>
+                              </Grid>
+                              <Grid
+                                item
+                                xs={12}
+                                sm={2}
+                                md={2}
+                                className="margin1"
+                              >
+                                <Typography
+                                  color="textSecondary"
+                                  align="center"
+                                  variant="subtitle2"
                                 >
-                                  <MenuItem key=">=" value=">=">
-                                    {">="}
-                                  </MenuItem>
-                                  <MenuItem key="<=" value="<=">
-                                    {"<="}
-                                  </MenuItem>
-                                </TextField>
-                              ) : (
-                                <Typography>{row.equal}</Typography>
-                              )}
-                            </Grid>
-                            <Grid
-                              item
-                              xs={false}
-                              sm={2}
-                              md={2}
-                              className="margin1"
-                              style={{ textAlign: "center" }}
-                            >
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    checked={row.alert}
-                                    onChange={() =>
-                                      changeAlertSwitch(
-                                        index,
-                                        row._id,
-                                        row.alert
-                                      )
+                                  {typeof row.nowTime !== "undefined" ? (
+                                    row.nowTime
+                                  ) : (
+                                    <Skeleton />
+                                  )}
+                                </Typography>
+                              </Grid>
+                              <Hidden only="xs">
+                                <Grid
+                                  item
+                                  xs={false}
+                                  sm={2}
+                                  md={2}
+                                  className="margin1"
+                                >
+                                  {edit ? (
+                                    <TextField
+                                      id={"price_" + index}
+                                      name={"price_" + index}
+                                      label="price"
+                                      variant="outlined"
+                                      value={row.price}
+                                      margin="dense"
+                                      autoComplete="off"
+                                      disabled={sendingForm}
+                                      InputProps={{
+                                        startAdornment: (
+                                          <InputAdornment position="start">
+                                            $
+                                          </InputAdornment>
+                                        ),
+                                      }}
+                                      style={{ minWidth: "90px" }}
+                                      onChange={changeAlertInfo}
+                                      type="number"
+                                    />
+                                  ) : (
+                                    <Typography>${row.price}</Typography>
+                                  )}
+                                </Grid>
+                                <Grid
+                                  item
+                                  xs={false}
+                                  sm={1}
+                                  md={1}
+                                  className="margin1"
+                                >
+                                  {edit ? (
+                                    <TextField
+                                      id={"equal_" + index}
+                                      name={"equal_" + index}
+                                      select
+                                      label="equal"
+                                      variant="outlined"
+                                      margin="dense"
+                                      value={row.equal}
+                                      style={{ minWidth: "18px" }}
+                                      onChange={changeAlertInfo}
+                                      disabled={sendingForm}
+                                    >
+                                      <MenuItem key=">=" value=">=">
+                                        {">="}
+                                      </MenuItem>
+                                      <MenuItem key="<=" value="<=">
+                                        {"<="}
+                                      </MenuItem>
+                                    </TextField>
+                                  ) : (
+                                    <Typography>{row.equal}</Typography>
+                                  )}
+                                </Grid>
+                                <Grid
+                                  item
+                                  xs={false}
+                                  sm={2}
+                                  md={2}
+                                  className="margin1"
+                                  style={{ textAlign: "center" }}
+                                >
+                                  <FormControlLabel
+                                    control={
+                                      <Switch
+                                        checked={row.alert}
+                                        onChange={() =>
+                                          changeAlertSwitch(
+                                            index,
+                                            row._id,
+                                            row.alert
+                                          )
+                                        }
+                                        name="alertCheck"
+                                        color="primary"
+                                        disabled={!edit || sendingForm}
+                                      />
                                     }
-                                    name="alertCheck"
-                                    color="primary"
-                                    disabled={!edit || sendingForm}
                                   />
-                                }
-                              />
+                                </Grid>
+                              </Hidden>
                             </Grid>
-                          </Hidden>
-                        </Grid>
+                          </Box>
+                          {index === stockNotify.length - 1 ? null : (
+                            <Divider />
+                          )}
+                        </div>
+                      </Fade>
+                    ))
+                  ) : loading === true ? (
+                    <Fragment>
+                      <Box
+                        textAlign="center"
+                        alignItems="center"
+                        padding={2}
+                        className={isDarkMode ? "boxDark" : "box"}
+                      >
+                        <CircularProgress />
                       </Box>
                       <Divider />
                     </Fragment>
-                  ))
-                ) : loading === true ? (
-                  <Fragment>
-                    <Box
-                      textAlign="center"
-                      alignItems="center"
-                      padding={2}
-                      className="box"
-                    >
-                      <CircularProgress />
-                    </Box>
-                    <Divider />
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <Box
-                      textAlign="center"
-                      alignItems="center"
-                      padding={2}
-                      className="box"
-                    >
-                      <Typography color="textSecondary" align="center">
-                        None of record
-                      </Typography>
-                    </Box>
-                    <Divider />
-                  </Fragment>
-                )}
-                {stockNotify.length < 10 && edit === true ? (
-                  <Fragment>
-                    <Box
-                      textAlign="center"
-                      alignItems="center"
-                      padding={2}
-                      className="box"
-                    >
-                      <Typography color="textSecondary" align="center">
-                        <IconButton
-                          color="primary"
-                          aria-label="add notify"
-                          onClick={fun_addNotify}
-                        >
-                          <AddCircleIcon fontSize="large" />
-                        </IconButton>
-                      </Typography>
-                    </Box>
-                    <Divider />
-                  </Fragment>
-                ) : null}
-              </Paper>
-            </Grid>
-            <Hidden only={["xs", "sm"]}>
-              <Grid item sm={false} md={2} className="margin1"></Grid>
-            </Hidden>
-          </Grid>
-        </Box>
-        {/* <Box margin={2} overflow="auto"> */}
-        <Box
-          position="relative"
-          paddingX={2}
-          width="100%"
-          height="20vh"
-          minHeight="200px"
-          color="background.paper"
-          display="flex"
-          alignItems="flex-end"
-          justifyContent="center"
-        >
-          <Grid container alignItems="center">
-            <Grid item xs={12} sm={12} md={6}>
+                  ) : (
+                    <Fragment>
+                      <Box
+                        textAlign="center"
+                        alignItems="center"
+                        padding={2}
+                        className={isDarkMode ? "boxDark" : "box"}
+                      >
+                        <Typography color="textSecondary" align="center">
+                          None of record
+                        </Typography>
+                      </Box>
+                      <Divider />
+                    </Fragment>
+                  )}
+                  {stockNotify.length < 10 && edit === true ? (
+                    <Fragment>
+                      <Box
+                        textAlign="center"
+                        alignItems="center"
+                        padding={2}
+                        className={isDarkMode ? "boxDark" : "box"}
+                      >
+                        <Typography color="textSecondary" align="center">
+                          <IconButton
+                            color="primary"
+                            aria-label="add notify"
+                            onClick={fun_addNotify}
+                          >
+                            <AddCircleIcon fontSize="large" />
+                          </IconButton>
+                        </Typography>
+                      </Box>
+                      <Divider />
+                    </Fragment>
+                  ) : null}
+                </Paper>
+              </Grid>
               <Hidden only={["xs", "sm"]}>
-                <Typography align="left" variant="h6">
-                  make by&nbsp;
-                  <Link href="mailto:rockie2695@gmail.com">
-                    rockie2695@gmail.com
-                  </Link>
-                </Typography>
-              </Hidden>
-              <Hidden mdUp>
-                <Typography align="center" variant="h6">
-                  make by&nbsp;
-                  <Link href="mailto:rockie2695@gmail.com">
-                    rockie2695@gmail.com
-                  </Link>
-                </Typography>
+                <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
             </Grid>
-            <Grid item xs={12} sm={12} md={6}>
-              <Hidden only={["xs", "sm"]}>
-                <Box textAlign="right">
-                  <Fab
-                    color="primary"
-                    aria-label="pwa"
-                    onClick={showA2HS}
-                    className={fullScreen ? "" : "marginRight12"}
-                  >
-                    <GetAppIcon />
-                  </Fab>
-                  <Typography variant="h6">Web App</Typography>
-                </Box>
-              </Hidden>
-              <Hidden mdUp>
-                <Box textAlign="center">
-                  <Fab
-                    color="primary"
-                    aria-label="pwa"
-                    onClick={showA2HS}
-                    className={fullScreen ? "" : "marginRight12"}
-                  >
-                    <GetAppIcon />
-                  </Fab>
-                  <Typography variant="h6">Web App</Typography>
-                </Box>
-              </Hidden>
+          </Box>
+          {/* <Box margin={2} overflow="auto"> */}
+          <Box
+            position="relative"
+            paddingX={2}
+            width="100%"
+            height="20vh"
+            minHeight="200px"
+            color="background.paper"
+            display="flex"
+            alignItems="flex-end"
+            justifyContent="center"
+          >
+            <Grid container alignItems="center">
+              <Grid item xs={12} sm={12} md={6}>
+                <Hidden only={["xs", "sm"]}>
+                  <Typography align="left" variant="h6">
+                    make by&nbsp;
+                    <Link href="mailto:rockie2695@gmail.com">
+                      rockie2695@gmail.com
+                    </Link>
+                  </Typography>
+                </Hidden>
+                <Hidden mdUp>
+                  <Typography align="center" variant="h6">
+                    make by&nbsp;
+                    <Link href="mailto:rockie2695@gmail.com">
+                      rockie2695@gmail.com
+                    </Link>
+                  </Typography>
+                </Hidden>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6}>
+                <Hidden only={["xs", "sm"]}>
+                  <Box textAlign="right">
+                    <Fab
+                      color="primary"
+                      aria-label="pwa"
+                      onClick={showA2HS}
+                      className={fullScreen ? "" : "marginRight12"}
+                    >
+                      <GetAppIcon />
+                    </Fab>
+                    <Typography variant="h6">Web App</Typography>
+                  </Box>
+                </Hidden>
+                <Hidden mdUp>
+                  <Box textAlign="center">
+                    <Fab
+                      color="primary"
+                      aria-label="pwa"
+                      onClick={showA2HS}
+                      className={fullScreen ? "" : "marginRight12"}
+                    >
+                      <GetAppIcon />
+                    </Fab>
+                    <Typography variant="h6">Web App</Typography>
+                  </Box>
+                </Hidden>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
+          {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
         </Box>
-        {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
-      </Box>
-      <Suspense fallback={renderLoader()}>
-        <DialogBox
-          closeDialog={closeDialog}
-          open={open}
-          fullScreen={fullScreen}
-          dialogIndex={dialogIndex}
-          stockNotify={stockNotify}
-          selectHistory={selectHistory}
-          login={login}
-          changeAlertSwitch={changeAlertSwitch}
-          hideAlert={hideAlert}
-          edit={edit}
-          sendingForm={sendingForm}
-          fun_edit={fun_edit}
-          fun_save={fun_save}
-          changeAlertInfo={changeAlertInfo}
-        />
-      </Suspense>
+        <Suspense fallback={renderLoader()}>
+          <DialogBox
+            closeDialog={closeDialog}
+            open={open}
+            fullScreen={fullScreen || fullScreenSetting}
+            dialogIndex={dialogIndex}
+            stockNotify={stockNotify}
+            selectHistory={selectHistory}
+            login={login}
+            changeAlertSwitch={changeAlertSwitch}
+            hideAlert={hideAlert}
+            edit={edit}
+            sendingForm={sendingForm}
+            fun_edit={fun_edit}
+            fun_save={fun_save}
+            changeAlertInfo={changeAlertInfo}
+            isDarkMode={isDarkMode}
+          />
+        </Suspense>
+      </ThemeProvider>
     </HttpsRedirect>
   );
 };
