@@ -40,7 +40,9 @@ if (
 
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [dailyDataHistory, setDailyDataHistory] = useState([]);
+  const [loadingAllData, setLoadingAllData] = useState(false);
+  const [loadingDailyData, setLoadingDailyData] = useState(false);
   const [areaChartSetting, setAreaChartSetting] = useState(false);
 
   useEffect(() => {
@@ -48,6 +50,7 @@ const DialogBox = (props) => {
     } else {
       setTimeout(() => {
         setAllDataHistory([]);
+        setDailyDataHistory([]);
       }, 100);
     }
   }, [props.open]);
@@ -68,10 +71,45 @@ const DialogBox = (props) => {
       </MuiDialogTitle>
     );
   };
-
+  const fun_dailyData = (stock) => {
+    //get data from https://www.quandl.com/api/v3/datasets/HKEX/00001.json?api_key=xCJuSM5DeG9s9PtmNbFg
+    setLoadingDailyData((prevState) => {
+      return true;
+    });
+    fetch(
+      "https://www.quandl.com/api/v3/datasets/HKEX/" +
+        stock +
+        ".json?api_key=xCJuSM5DeG9s9PtmNbFg",
+      {
+        method: "get",
+      }
+    )
+      .then((res) => res.json())
+      .then((result) => {
+        let dailyData = result.dataset.data.reverse();
+        let insertHistory = [];
+        for (let i = 0; i < dailyData.length; i++) {
+          insertHistory.push({
+            stringDay: dailyData[i][0],
+            price: dailyData[i][1],
+          });
+        }
+        setDailyDataHistory((prevState) => {
+          return insertHistory;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingDailyData((prevState) => {
+          return false;
+        });
+      });
+  };
   const fun_allData = (stock) => {
     //get all data from server
-    setLoading((prevState) => {
+    setLoadingAllData((prevState) => {
       return true;
     });
     fetch(host + "/select/allStockPrice/", {
@@ -102,12 +140,14 @@ const DialogBox = (props) => {
         setAllDataHistory((prevState) => {
           return insertHistory;
         });
-        setLoading((prevState) => {
-          return false;
-        });
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoadingAllData((prevState) => {
+          return false;
+        });
       });
   };
   const changeAreaChartSetting = () => {
@@ -586,43 +626,85 @@ const DialogBox = (props) => {
                   fun_allData(props.stockNotify[props.dialogIndex].stock)
                 }
               >
-                {loading ? (
-                  <Fragment>
-                    <Typography style={{ marginRight: 8 }}>
-                      Get All Data
-                    </Typography>
-                    <CircularProgress size={20} style={{ color: "white" }} />
-                  </Fragment>
-                ) : (
+                <Fragment>
                   <Typography>Get All Data</Typography>
-                )}
+                  {loadingAllData ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "white", marginLeft: 8 }}
+                    />
+                  ) : null}
+                </Fragment>
               </Button>
             </Box>
+            {allDataHistory.length > 0 ? (
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                  data={allDataHistory}
+                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                >
+                  <Line
+                    type="monotone"
+                    dataKey="price"
+                    stroke="#8884d8"
+                    activeDot={{ r: 8 }}
+                    dot={false}
+                  />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis
+                    dataKey="stringTime"
+                    type="category"
+                    domain={["auto", "auto"]}
+                  />
+                  <YAxis domain={["auto", "auto"]} />
+                  <Tooltip />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : null}
+            <Box textAlign="center" marginTop={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  fun_dailyData(props.stockNotify[props.dialogIndex].stock)
+                }
+              >
+                <Fragment>
+                  <Typography>Get Daily Data</Typography>
+                  {loadingDailyData ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "white", marginLeft: 8 }}
+                    />
+                  ) : null}
+                </Fragment>
+              </Button>
+            </Box>
+            {dailyDataHistory.length > 0 ? (
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                  data={dailyDataHistory}
+                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                >
+                  <Line
+                    type="monotone"
+                    dataKey="price"
+                    stroke="#8884d8"
+                    activeDot={{ r: 8 }}
+                    dot={false}
+                  />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis
+                    dataKey="stringDay"
+                    type="category"
+                    domain={["auto", "auto"]}
+                  />
+                  <YAxis domain={["auto", "auto"]} />
+                  <Tooltip />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : null}
           </Fragment>
-        ) : null}
-        {allDataHistory.length > 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              data={allDataHistory}
-              margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
-            >
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-                dot={false}
-              />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis
-                dataKey="stringTime"
-                type="category"
-                domain={["auto", "auto"]}
-              />
-              <YAxis domain={["auto", "auto"]} />
-              <Tooltip />
-            </LineChart>
-          </ResponsiveContainer>
         ) : null}
       </DialogContent>
       <DialogActions>

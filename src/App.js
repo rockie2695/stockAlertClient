@@ -35,16 +35,15 @@ import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 import CloseIcon from "@material-ui/icons/Close";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CountUp from "react-countup";
 import Fade from "@material-ui/core/Fade";
 import "./App.css";
 
 /**
- * daily stock data
  * react router
  * qr code
+ * test notify
  */
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
@@ -83,6 +82,7 @@ const App = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [fullScreenSetting, setFullScreenSetting] = useState(false);
   const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(false);
+  const [darkModeSetting, setDarkModeSetting] = useState(false);
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host));
@@ -98,17 +98,16 @@ const App = () => {
   const stockHistoryRef = useRef(stockHistory);
   stockHistoryRef.current = stockHistory;
 
-  //const theme = useTheme();
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const theme = React.useMemo(
     () =>
       createMuiTheme({
         palette: {
-          type: prefersDarkMode ? "dark" : "light",
+          type: prefersDarkMode || darkModeSetting ? "dark" : "light",
         },
       }),
-    [prefersDarkMode]
+    [prefersDarkMode, darkModeSetting]
   );
   const isDarkMode = theme.palette.type === "dark";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -293,59 +292,61 @@ const App = () => {
   const changeFullScreenSetting = () => {
     setFullScreenSetting((prevState) => !prevState);
   };
+  const changeDarkModeSetting = () => {
+    setDarkModeSetting((prevState) => !prevState);
+  };
   const changeSelectHistory = (stock, message, side = "new") => {
-    if (dialogIndexRef.current > -1) {
-      if (stock === stockNotifyRef.current[dialogIndexRef.current].stock) {
-        if (side === "end") {
-          let time = message.time.split(" ")[1];
-          if (!selectHistory.some((e) => e.time === time)) {
-            setSelectHistory((prevState) => {
-              let addArray = [];
-              if (!prevState.some((e) => e.time === time)) {
-                addArray = [
-                  { time: time, price: message.price, jsTime: message.jsTime },
-                ];
-                console.log(time, message.jsTime);
-              }
-              return [...prevState, ...addArray];
-            });
-          }
-        } else if (side === "new") {
-          let time = message.time.split(" ")[1];
+    if (
+      dialogIndexRef.current > -1 &&
+      stock === stockNotifyRef.current[dialogIndexRef.current].stock
+    ) {
+      if (side === "end") {
+        let time = message.time.split(" ")[1];
+        if (!selectHistory.some((e) => e.time === time)) {
           setSelectHistory((prevState) => {
-            return [
-              { time: time, price: message.price, jsTime: message.jsTime },
-            ];
-          });
-        } else if (side === "front") {
-          if (message.length >= 2 && selectHistory.length >= 1) {
-            //check second last
-            if (
-              message[message.length - 2].time ===
-              selectHistory[selectHistory.length - 1].time
-            ) {
-              message.splice(message.length - 2, 2);
+            let addArray = [];
+            if (!prevState.some((e) => e.time === time)) {
+              addArray = [
+                { time: time, price: message.price, jsTime: message.jsTime },
+              ];
+              console.log(time, message.jsTime);
             }
-          }
-          if (message.length >= 1 && selectHistory.length >= 1) {
-            //check last one
-            if (
-              message[message.length - 1].time ===
-              selectHistory[selectHistory.length - 1].time
-            ) {
-              message.splice(message.length - 1, 1);
-            } else if (
-              selectHistory.length >= 2 &&
-              message[message.length - 1].time ===
-                selectHistory[selectHistory.length - 2].time
-            ) {
-              message.splice(message.length - 1, 1);
-            }
-          }
-          setSelectHistory((prevState) => {
-            return [...message, ...prevState];
+            return [...prevState, ...addArray];
           });
         }
+      } else if (side === "new") {
+        let time = message.time.split(" ")[1];
+        setSelectHistory((prevState) => {
+          return [{ time: time, price: message.price, jsTime: message.jsTime }];
+        });
+      } else if (side === "front") {
+        if (message.length >= 2 && selectHistory.length >= 1) {
+          //check second last
+          if (
+            message[message.length - 2].time ===
+            selectHistory[selectHistory.length - 1].time
+          ) {
+            message.splice(message.length - 2, 2);
+          }
+        }
+        if (message.length >= 1 && selectHistory.length >= 1) {
+          //check last one
+          if (
+            message[message.length - 1].time ===
+            selectHistory[selectHistory.length - 1].time
+          ) {
+            message.splice(message.length - 1, 1);
+          } else if (
+            selectHistory.length >= 2 &&
+            message[message.length - 1].time ===
+              selectHistory[selectHistory.length - 2].time
+          ) {
+            message.splice(message.length - 1, 1);
+          }
+        }
+        setSelectHistory((prevState) => {
+          return [...message, ...prevState];
+        });
       }
     }
   };
@@ -440,9 +441,6 @@ const App = () => {
                 findStockHistory(resultArray[i].stock, email);
               }
             }
-            setLoading((prevState) => {
-              return false;
-            });
           } else {
             console.log(result);
             alert("server error. Please refresh");
@@ -451,6 +449,11 @@ const App = () => {
         .catch((err) => {
           console.log(err);
           alert("Can't get your notification. Please refresh");
+        })
+        .finally(() => {
+          setLoading((prevState) => {
+            return false;
+          });
         });
     } else if (testlink) {
       let email = login.email;
@@ -502,9 +505,6 @@ const App = () => {
                 findStockHistory(resultArray[i].stock, email);
               }
             }
-            setLoading((prevState) => {
-              return false;
-            });
           } else {
             console.log(result);
             alert("server error. Please refresh");
@@ -513,6 +513,11 @@ const App = () => {
         .catch((err) => {
           console.log(err);
           alert("Can't get your notification. Please refresh");
+        })
+        .finally(() => {
+          setLoading((prevState) => {
+            return false;
+          });
         });
     }
   };
@@ -529,7 +534,10 @@ const App = () => {
   };
   const fun_addNotify = () => {
     setStockNotify((prevState) => {
-      return [...prevState, { stock: "", price: "", equal: ">=", alert: true }];
+      return [
+        ...prevState,
+        { stock: "", price: "1", equal: ">=", alert: true },
+      ];
     });
   };
   const startConnectWS = () => {
@@ -665,6 +673,11 @@ const App = () => {
               findStockHistory(resultArray[i].stock, login.email);
             }
           }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
           setSendingForm((prevState) => {
             return false;
           });
@@ -719,6 +732,9 @@ const App = () => {
               });
             });
           }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
   };
@@ -773,6 +789,9 @@ const App = () => {
             } else if (typeof result.error !== "undefined") {
               alert(result.error);
             }
+          })
+          .catch((err) => {
+            console.log(err);
           });
       } else {
         setStockNotify((prevState) => {
@@ -794,14 +813,12 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         let j = 0;
         for (j = 0; j < stockHistoryRef.current.length; j++) {
           if (stockHistoryRef.current[j].stock === stock) {
             break;
           }
         }
-        console.log(stockHistoryRef.current, stockHistoryRef.current.length);
         let insertHistory = [];
         for (let i = 0; i < result.ok.length; i++) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
@@ -841,6 +858,9 @@ const App = () => {
           });
         });
         changeSelectHistory(stock, result.ok, "front");
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   const findStockName = (stock, subEmail) => {
@@ -855,7 +875,6 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         let name = result.name;
         let stock = result.stock;
         let past = result.past;
@@ -931,6 +950,9 @@ const App = () => {
           },
           "end"
         );
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -975,7 +997,7 @@ const App = () => {
           <Box
             position="fixed"
             zIndex="0"
-            width="100%"
+            width="100vw"
             height="50vh"
             minHeight="200px"
             bgcolor="text.primary"
@@ -985,7 +1007,7 @@ const App = () => {
             justifyContent="center"
           >
             <Typography align="center" variant="h2">
-              For Stock Price Showing And Notification
+              For HK Stock Price Showing And Notification
             </Typography>
           </Box>
           <Box height="50vh"></Box>
@@ -997,6 +1019,19 @@ const App = () => {
               <Grid item xs={12} sm={12} md={8} className="margin1">
                 <Paper>
                   <Typography align="right" className="margin2">
+                    {!prefersDarkMode ? (
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={darkModeSetting}
+                            onChange={changeDarkModeSetting}
+                            name="Dark Mode Switch"
+                            color="primary"
+                          />
+                        }
+                        label="Dark Mode"
+                      />
+                    ) : null}
                     <FormControlLabel
                       control={
                         <Switch
@@ -1105,7 +1140,7 @@ const App = () => {
                         timeout={1000}
                         style={{
                           transitionDelay:
-                            (row.hasOwnProperty("_id") ? index : 0) * 200 +
+                            (row.hasOwnProperty("_id") ? index : 0) * 150 +
                             "ms",
                         }}
                         key={index}
@@ -1125,9 +1160,6 @@ const App = () => {
                             alignItems="center"
                             padding={2}
                             onClick={() => openDialog(index)}
-                            //boxShadow={boxShadow === index ? 1 : 0}
-                            //onMouseEnter={() => fun_boxShadow(index)}
-                            //onMouseLeave={() => fun_boxShadow(index)}
                           >
                             <Grid container spacing={3} alignItems="center">
                               <Grid
@@ -1382,18 +1414,6 @@ const App = () => {
                         </div>
                       </Fade>
                     ))
-                  ) : loading === true ? (
-                    <Fragment>
-                      <Box
-                        textAlign="center"
-                        alignItems="center"
-                        padding={2}
-                        className={isDarkMode ? "boxDark" : "box"}
-                      >
-                        <CircularProgress />
-                      </Box>
-                      <Divider />
-                    </Fragment>
                   ) : (
                     <Fragment>
                       <Box
@@ -1402,15 +1422,19 @@ const App = () => {
                         padding={2}
                         className={isDarkMode ? "boxDark" : "box"}
                       >
-                        <Typography color="textSecondary" align="center">
-                          None of record
-                        </Typography>
+                        {loading === true ? (
+                          <CircularProgress />
+                        ) : (
+                          <Typography color="textSecondary" align="center">
+                            None of record
+                          </Typography>
+                        )}
                       </Box>
-                      <Divider />
                     </Fragment>
                   )}
                   {stockNotify.length < 10 && edit === true ? (
                     <Fragment>
+                      <Divider />
                       <Box
                         textAlign="center"
                         alignItems="center"
@@ -1427,7 +1451,6 @@ const App = () => {
                           </IconButton>
                         </Typography>
                       </Box>
-                      <Divider />
                     </Fragment>
                   ) : null}
                 </Paper>

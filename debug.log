@@ -1,0 +1,2 @@
+[1016/211915.870:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系統找不到指定的路徑。 (0x3)
+[1016/221328.522:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\loklok\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\4cfb42e8-d860-4677-8287-f3ba9d2f9478: 系統找不到指定的路徑。 (0x3)
