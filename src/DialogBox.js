@@ -944,10 +944,18 @@ const DialogBox = (props) => {
                         : ""
                     }
                     title={row.title}
+                    subheader="September 14, 2016"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                       {row.title}
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      {row.pubDate}
                     </Typography>
                     <Typography
                       variant="body2"
