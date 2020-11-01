@@ -19,6 +19,13 @@ import SaveIcon from "@material-ui/icons/Save";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import green from "@material-ui/core/colors/green";
+import red from "@material-ui/core/colors/red";
 import {
   AreaChart,
   Area,
@@ -30,6 +37,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
 let host = "https://rockie-stockAlertServer.herokuapp.com";
 if (
   window.location.host === "localhost:3000" ||
@@ -38,11 +46,16 @@ if (
   host = "http://localhost:3001";
 }
 
+const green_color = green[500];
+const red_color = red[500];
+
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
   const [dailyDataHistory, setDailyDataHistory] = useState([]);
+  const [newsHistory, setNewsHistory] = useState([]);
   const [loadingAllData, setLoadingAllData] = useState(false);
   const [loadingDailyData, setLoadingDailyData] = useState(false);
+  const [loadingNews, setLoadingNews] = useState(false);
   const [areaChartSetting, setAreaChartSetting] = useState(false);
 
   useEffect(() => {
@@ -51,10 +64,48 @@ const DialogBox = (props) => {
       setTimeout(() => {
         setAllDataHistory([]);
         setDailyDataHistory([]);
+        setNewsHistory([]);
       }, 100);
     }
   }, [props.open]);
 
+  const CustomToolTip = (props) => {
+    const { active, payload, label, labelFormatter } = props;
+    if (!active || !payload) {
+      return null;
+    }
+    const tooltip = {
+      backgroundColor: "white",
+      opacity: "0.9",
+      border: "1px solid black",
+      borderRadius: "15px",
+      paddingLeft: "10px",
+      paddingRight: "10px",
+    };
+
+    return (
+      <div>
+        <div className="custom-tooltip" style={tooltip}>
+          <p style={{ textAlign: "center", color: "black" }}>
+            <strong>
+              {typeof labelFormatter !== "undefined"
+                ? labelFormatter(label)
+                : label}
+            </strong>
+          </p>
+          {payload.map((item, i, payload) => {
+            return (
+              <div key={i}>
+                <p style={{ color: item.color }} key={i}>
+                  {item.name}: <strong>{item.value}</strong>
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
   const DialogTitle = (props) => {
     return (
       <MuiDialogTitle disableTypography className="padding2" {...props.other}>
@@ -71,19 +122,41 @@ const DialogBox = (props) => {
       </MuiDialogTitle>
     );
   };
+  const fun_news = (stock) => {
+    setLoadingNews((prevState) => {
+      return true;
+    });
+    fetch(host + "/find/stockNews/", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: props.login.email,
+        stock: stock,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setNewsHistory(result);
+      })
+      .finally(() => {
+        setLoadingNews((prevState) => {
+          return false;
+        });
+      });
+  };
   const fun_dailyData = (stock) => {
     //get data from https://www.quandl.com/api/v3/datasets/HKEX/00001.json?api_key=xCJuSM5DeG9s9PtmNbFg
     setLoadingDailyData((prevState) => {
       return true;
     });
-    fetch(
-      "https://www.quandl.com/api/v3/datasets/HKEX/" +
-        stock +
-        ".json?api_key=xCJuSM5DeG9s9PtmNbFg",
-      {
-        method: "get",
-      }
-    )
+    fetch(host + "/find/stockDailyPrice/", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: props.login.email,
+        stock: stock,
+      }),
+    })
       .then((res) => res.json())
       .then((result) => {
         let dailyData = result.dataset.data.reverse();
@@ -122,8 +195,6 @@ const DialogBox = (props) => {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
-
         let insertHistory = [];
         for (let i = 0; i < result.ok.length; i++) {
           let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
@@ -152,6 +223,9 @@ const DialogBox = (props) => {
   };
   const changeAreaChartSetting = () => {
     setAreaChartSetting((prevState) => !prevState);
+  };
+  const openLink = (linkUrl) => {
+    window.open(linkUrl);
   };
   const gradientOffset = () => {
     const dataMax = Math.max(...props.selectHistory.map((i) => i.price));
@@ -375,12 +449,12 @@ const DialogBox = (props) => {
                     <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
                       <stop
                         offset={gradientOffset()}
-                        stopColor="green"
+                        stopColor={green_color}
                         stopOpacity={1}
                       />
                       <stop
                         offset={gradientOffset()}
-                        stopColor="red"
+                        stopColor={red_color}
                         stopOpacity={1}
                       />
                     </linearGradient>
@@ -407,11 +481,19 @@ const DialogBox = (props) => {
                         ? parseInt(props.selectHistory.length / 5)
                         : 1
                     }
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
                   />
-                  <YAxis domain={["auto", "auto"]} />
+                  <YAxis
+                    domain={["auto", "auto"]}
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                  />
                   <Tooltip
-                    labelFormatter={(unixTime) =>
-                      moment(unixTime).format("HH:mm")
+                    content={
+                      <CustomToolTip
+                        labelFormatter={(unixTime) =>
+                          moment(unixTime).format("HH:mm")
+                        }
+                      />
                     }
                   />
                 </AreaChart>
@@ -441,11 +523,19 @@ const DialogBox = (props) => {
                         ? parseInt(props.selectHistory.length / 5)
                         : 1
                     }
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
                   />
-                  <YAxis domain={["auto", "auto"]} />
+                  <YAxis
+                    domain={["auto", "auto"]}
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                  />
                   <Tooltip
-                    labelFormatter={(unixTime) =>
-                      moment(unixTime).format("HH:mm")
+                    content={
+                      <CustomToolTip
+                        labelFormatter={(unixTime) =>
+                          moment(unixTime).format("HH:mm")
+                        }
+                      />
                     }
                   />
                 </LineChart>
@@ -616,6 +706,118 @@ const DialogBox = (props) => {
                     </Typography>
                   </td>
                 </tr>
+
+                <tr>
+                  <td>
+                    <Typography>lotSize</Typography>
+                  </td>
+                  <td>
+                    <Typography>每手股數</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].lotSize}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>eps</Typography>
+                  </td>
+                  <td>
+                    <Typography>全年每股盈利(元)</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].eps}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>dividend</Typography>
+                  </td>
+                  <td>
+                    <Typography>全年每股派息(元)</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].dividend}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>rsi10</Typography>
+                  </td>
+                  <td>
+                    <Typography>10日RSI</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].rsi10}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>rsi14</Typography>
+                  </td>
+                  <td>
+                    <Typography>14日RSI</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].rsi14}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>rsi20</Typography>
+                  </td>
+                  <td>
+                    <Typography>20日RSI</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].rsi20}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>pe</Typography>
+                  </td>
+                  <td>
+                    <Typography>市盈率(倍)</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].pe}
+                    </Typography>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <Typography>marketValue</Typography>
+                  </td>
+                  <td>
+                    <Typography>市值</Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {props.stockNotify[props.dialogIndex].marketValue}
+                    </Typography>
+                  </td>
+                </tr>
               </tbody>
             </table>
             <Box textAlign="center" marginTop={1}>
@@ -627,7 +829,7 @@ const DialogBox = (props) => {
                 }
               >
                 <Fragment>
-                  <Typography>Get All Data</Typography>
+                  <Typography>Get Server Data</Typography>
                   {loadingAllData ? (
                     <CircularProgress
                       size={20}
@@ -655,9 +857,13 @@ const DialogBox = (props) => {
                     dataKey="stringTime"
                     type="category"
                     domain={["auto", "auto"]}
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
                   />
-                  <YAxis domain={["auto", "auto"]} />
-                  <Tooltip />
+                  <YAxis
+                    domain={["auto", "auto"]}
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                  />
+                  <Tooltip content={<CustomToolTip />} />
                 </LineChart>
               </ResponsiveContainer>
             ) : null}
@@ -698,12 +904,62 @@ const DialogBox = (props) => {
                     dataKey="stringDay"
                     type="category"
                     domain={["auto", "auto"]}
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
                   />
-                  <YAxis domain={["auto", "auto"]} />
-                  <Tooltip />
+                  <YAxis
+                    domain={["auto", "auto"]}
+                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                  />
+                  <Tooltip content={<CustomToolTip />} />
                 </LineChart>
               </ResponsiveContainer>
             ) : null}
+            <Box textAlign="center" marginY={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  fun_news(props.stockNotify[props.dialogIndex].stock)
+                }
+              >
+                <Fragment>
+                  <Typography>Get News</Typography>
+                  {loadingNews ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "white", marginLeft: 8 }}
+                    />
+                  ) : null}
+                </Fragment>
+              </Button>
+            </Box>
+            {newsHistory.map((row, index) => (
+              <Card key={index}>
+                <CardActionArea onClick={() => openLink(row.link)}>
+                  <CardMedia
+                    component="img"
+                    image={
+                      typeof row.photo !== "undefined"
+                        ? "data:image/png;base64, " + row.photo
+                        : ""
+                    }
+                    title={row.title}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {row.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      {row.content}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            ))}
           </Fragment>
         ) : null}
       </DialogContent>
