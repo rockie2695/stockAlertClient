@@ -112,9 +112,9 @@ const App = () => {
         palette: {
           type: prefersDarkMode || darkModeSetting ? "dark" : "light",
           primary: {
-            light: "#757ce8",
-            main: "#3f50b5",
-            dark: "#002884",
+            light: "#4dabf5",
+            main: "#2196f3",
+            dark: "#1769aa",
             contrastText: "#fff",
           },
           secondary: {
@@ -1544,17 +1544,19 @@ const App = () => {
                   </Box>
                 </Hidden>
                 <Hidden mdUp>
-                  <Box textAlign="center">
-                    <Fab
-                      color="primary"
-                      aria-label="pwa"
-                      onClick={showA2HS}
-                      className={fullScreen ? "" : "marginRight12"}
-                    >
-                      <GetAppIcon />
-                    </Fab>
-                    <Typography variant="h6">Web App</Typography>
-                  </Box>
+                  {deferredPrompt !== null ? (
+                    <Box textAlign="center">
+                      <Fab
+                        color="primary"
+                        aria-label="pwa"
+                        onClick={showA2HS}
+                        className={fullScreen ? "" : "marginRight12"}
+                      >
+                        <GetAppIcon />
+                      </Fab>
+                      <Typography variant="h6">Web App</Typography>
+                    </Box>
+                  ) : null}
                 </Hidden>
               </Grid>
             </Grid>

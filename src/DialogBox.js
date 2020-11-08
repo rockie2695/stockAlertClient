@@ -21,11 +21,17 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
+import Collapse from "@material-ui/core/Collapse";
+import Fade from "@material-ui/core/Fade";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import TimelineIcon from "@material-ui/icons/Timeline";
+import ReceiptIcon from "@material-ui/icons/Receipt";
+
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
+
 import {
   AreaChart,
   Area,
@@ -136,13 +142,20 @@ const DialogBox = (props) => {
     })
       .then((res) => res.json())
       .then((result) => {
-        setNewsHistory(result);
+        if (!result.hasOwnProperty("error")) {
+          setNewsHistory(result);
+        } else {
+          alert(result.error);
+        }
       })
       .finally(() => {
         setLoadingNews((prevState) => {
           return false;
         });
       });
+  };
+  const fun_close_news = () => {
+    setNewsHistory([]);
   };
   const fun_dailyData = (stock) => {
     //get data from https://www.quandl.com/api/v3/datasets/HKEX/00001.json?api_key=xCJuSM5DeG9s9PtmNbFg
@@ -159,17 +172,21 @@ const DialogBox = (props) => {
     })
       .then((res) => res.json())
       .then((result) => {
-        let dailyData = result.dataset.data.reverse();
-        let insertHistory = [];
-        for (let i = 0; i < dailyData.length; i++) {
-          insertHistory.push({
-            stringDay: dailyData[i][0],
-            price: dailyData[i][1],
+        if (!result.hasOwnProperty("error")) {
+          let dailyData = result.dataset.data.reverse();
+          let insertHistory = [];
+          for (let i = 0; i < dailyData.length; i++) {
+            insertHistory.push({
+              stringDay: dailyData[i][0],
+              price: dailyData[i][1],
+            });
+          }
+          setDailyDataHistory((prevState) => {
+            return insertHistory;
           });
+        } else {
+          alert(result.error);
         }
-        setDailyDataHistory((prevState) => {
-          return insertHistory;
-        });
       })
       .catch((err) => {
         console.log(err);
@@ -179,6 +196,9 @@ const DialogBox = (props) => {
           return false;
         });
       });
+  };
+  const fun_close_dailyDataHistory = () => {
+    setDailyDataHistory([]);
   };
   const fun_allData = (stock) => {
     //get all data from server
@@ -195,22 +215,26 @@ const DialogBox = (props) => {
     })
       .then((res) => res.json())
       .then((result) => {
-        let insertHistory = [];
-        for (let i = 0; i < result.ok.length; i++) {
-          let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
-            timeZone: "UTC",
+        if (!result.hasOwnProperty("error")) {
+          let insertHistory = [];
+          for (let i = 0; i < result.ok.length; i++) {
+            let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
+              timeZone: "UTC",
+            });
+            result.ok[i].jsTime = new Date(rowTime).getTime();
+            result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
+            insertHistory.push({
+              stringTime: result.ok[i].stringTime,
+              price: result.ok[i].price,
+              jsTime: result.ok[i].jsTime,
+            });
+          }
+          setAllDataHistory((prevState) => {
+            return insertHistory;
           });
-          result.ok[i].jsTime = new Date(rowTime).getTime();
-          result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
-          insertHistory.push({
-            stringTime: result.ok[i].stringTime,
-            price: result.ok[i].price,
-            jsTime: result.ok[i].jsTime,
-          });
+        } else {
+          alert(result.error);
         }
-        setAllDataHistory((prevState) => {
-          return insertHistory;
-        });
       })
       .catch((err) => {
         console.log(err);
@@ -220,6 +244,9 @@ const DialogBox = (props) => {
           return false;
         });
       });
+  };
+  const fun_close_allDataHistory = () => {
+    setAllDataHistory([]);
   };
   const changeAreaChartSetting = () => {
     setAreaChartSetting((prevState) => !prevState);
@@ -249,725 +276,857 @@ const DialogBox = (props) => {
   };
   return (
     <Dialog
-      fullWidth={true}
       onClose={props.closeDialog}
       aria-labelledby="dialog-title"
       open={props.open}
       fullScreen={props.fullScreen}
+      maxWidth={"md"}
+      fullWidth={true}
     >
       <DialogTitle id="dialog-title" onClose={props.closeDialog}>
         Stock:&nbsp;
         {props.dialogIndex > -1
           ? props.stockNotify[props.dialogIndex].stock +
-            " (" +
-            props.stockNotify[props.dialogIndex].name +
-            ")"
+            (typeof props.stockNotify[props.dialogIndex].name !== "undefined"
+              ? " (" + props.stockNotify[props.dialogIndex].name + ")"
+              : "")
           : null}
       </DialogTitle>
       <DialogContent dividers style={{ padding: "16px" }}>
         {props.hideAlert && props.dialogIndex > -1 ? (
-          <Fragment>
-            <Typography align="right" className="margin2">
-              {props.edit === true ? (
-                <Fragment>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={props.fun_save}
-                    disabled={props.sendingForm}
-                  >
-                    <Typography style={{ marginRight: 8 }}>Save</Typography>
-                    {props.sendingForm ? (
-                      <CircularProgress size={20} style={{ color: "white" }} />
-                    ) : (
-                      <SaveIcon />
-                    )}
-                  </Button>
+          <Box
+            border={1}
+            borderColor={"rgba(0, 0, 0, 0.12)"}
+            borderRadius={16}
+            marginY={2}
+          >
+            <Box marginX={3} marginTop={2}>
+              <Typography align="right" className="margin2">
+                {props.edit === true ? (
+                  <Fragment>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={props.fun_save}
+                      disabled={props.sendingForm}
+                    >
+                      <Typography style={{ marginRight: 8 }}>Save</Typography>
+                      {props.sendingForm ? (
+                        <CircularProgress
+                          size={20}
+                          style={{ color: "white" }}
+                        />
+                      ) : (
+                        <SaveIcon />
+                      )}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={props.fun_edit}
+                      disabled={props.sendingForm}
+                    >
+                      <Typography>Cancel</Typography>
+                      <CloseIcon />
+                    </Button>
+                  </Fragment>
+                ) : (
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={props.fun_edit}
-                    disabled={props.sendingForm}
                   >
-                    <Typography>Cancel</Typography>
-                    <CloseIcon />
+                    <Typography style={{ marginRight: 8 }}>Edit</Typography>
+                    <EditIcon />
                   </Button>
-                </Fragment>
-              ) : (
+                )}
+              </Typography>
+              <Box display="flex" alignItems="center" margin={2}>
+                <Grid container alignItems="center">
+                  <Grid container spacing={3} alignItems="center">
+                    <Grid item xs={4} sm={4} md={4} className="margin1">
+                      <Typography>Alert</Typography>
+                    </Grid>
+                    <Grid item xs={4} sm={4} md={4} className="margin1">
+                      <Typography>now$ to alert$</Typography>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={4}
+                      sm={4}
+                      md={4}
+                      className="margin1"
+                      style={{ textAlign: "center" }}
+                    >
+                      <Typography>Enable Switch</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
+              <Divider />
+              <Box
+                className={props.isDarkMode ? "boxDark" : "box"}
+                display="flex"
+                alignItems="center"
+                padding={2}
+              >
+                <Grid container alignItems="center">
+                  <Grid container spacing={3} alignItems="center">
+                    <Grid item xs={4} sm={4} md={4} className="margin1">
+                      {props.edit ? (
+                        <TextField
+                          id={"price_" + props.dialogIndex}
+                          name={"price_" + props.dialogIndex}
+                          label="price"
+                          variant="outlined"
+                          value={props.stockNotify[props.dialogIndex].price}
+                          margin="dense"
+                          autoComplete="off"
+                          disabled={props.sendingForm}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            ),
+                          }}
+                          style={{ minWidth: "90px" }}
+                          onChange={props.changeAlertInfo}
+                          type="number"
+                        />
+                      ) : (
+                        <Typography>
+                          ${props.stockNotify[props.dialogIndex].price}
+                        </Typography>
+                      )}
+                    </Grid>
+                    <Grid item xs={4} sm={4} md={4} className="margin1">
+                      {props.edit ? (
+                        <TextField
+                          id={"equal_" + props.dialogIndex}
+                          name={"equal_" + props.dialogIndex}
+                          select
+                          label="equal"
+                          variant="outlined"
+                          margin="dense"
+                          value={props.stockNotify[props.dialogIndex].equal}
+                          style={{ minWidth: "18px" }}
+                          onChange={props.changeAlertInfo}
+                          disabled={props.sendingForm}
+                        >
+                          <MenuItem key=">=" value=">=">
+                            {">="}
+                          </MenuItem>
+                          <MenuItem key="<=" value="<=">
+                            {"<="}
+                          </MenuItem>
+                        </TextField>
+                      ) : (
+                        <Typography>
+                          {props.stockNotify[props.dialogIndex].equal}
+                        </Typography>
+                      )}
+                    </Grid>
+                    <Grid
+                      item
+                      xs={4}
+                      sm={4}
+                      md={4}
+                      className="margin1"
+                      style={{ textAlign: "center" }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={props.stockNotify[props.dialogIndex].alert}
+                            onChange={() =>
+                              props.changeAlertSwitch(
+                                props.dialogIndex,
+                                props.stockNotify[props.dialogIndex]._id,
+                                props.stockNotify[props.dialogIndex].alert
+                              )
+                            }
+                            name="alertCheck"
+                            color="primary"
+                            disabled={!props.edit || props.sendingForm}
+                          />
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Box>
+        ) : null}
+        <Box
+          border={1}
+          borderColor={"rgba(0, 0, 0, 0.12)"}
+          borderRadius={16}
+          marginY={2}
+        >
+          {props.selectHistory.length !== 0 ? (
+            <Fragment>
+              <Box marginX={3} marginTop={2}>
+                <Typography align="center" variant="h6">
+                  Today Graph
+                </Typography>
+                <Typography align="right" className="margin2">
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={areaChartSetting}
+                        onChange={changeAreaChartSetting}
+                        name="Area Chart"
+                        color="primary"
+                      />
+                    }
+                    label="Area Chart"
+                  />
+                </Typography>
+              </Box>
+              <Box marginRight={3}>
+                <ResponsiveContainer width="100%" height={400}>
+                  {areaChartSetting ? (
+                    <AreaChart
+                      data={props.selectHistory}
+                      margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="splitColor"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset={gradientOffset()}
+                            stopColor={green_color}
+                            stopOpacity={1}
+                          />
+                          <stop
+                            offset={gradientOffset()}
+                            stopColor={red_color}
+                            stopOpacity={1}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <Area
+                        type="monotone"
+                        dataKey="price"
+                        stroke="#8884d8"
+                        activeDot={{ r: 8 }}
+                        dot={false}
+                        fill="url(#splitColor)"
+                      />
+                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                      <XAxis
+                        dataKey="jsTime"
+                        tickFormatter={(unixTime) =>
+                          moment(unixTime).format("HH:mm")
+                        }
+                        type="number"
+                        scale="time"
+                        domain={["dataMin", "dataMax"]}
+                        interval={
+                          props.selectHistory.length > 5
+                            ? parseInt(props.selectHistory.length / 5)
+                            : 1
+                        }
+                        tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                      />
+                      <YAxis
+                        domain={["auto", "auto"]}
+                        tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                      />
+                      <Tooltip
+                        content={
+                          <CustomToolTip
+                            labelFormatter={(unixTime) =>
+                              moment(unixTime).format("HH:mm")
+                            }
+                          />
+                        }
+                      />
+                    </AreaChart>
+                  ) : (
+                    <LineChart
+                      data={props.selectHistory}
+                      margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                    >
+                      <Line
+                        type="monotone"
+                        dataKey="price"
+                        stroke="#8884d8"
+                        activeDot={{ r: 8 }}
+                        dot={false}
+                      />
+                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                      <XAxis
+                        dataKey="jsTime"
+                        tickFormatter={(unixTime) =>
+                          moment(unixTime).format("HH:mm")
+                        }
+                        type="number"
+                        scale="time"
+                        domain={["dataMin", "dataMax"]}
+                        interval={
+                          props.selectHistory.length > 5
+                            ? parseInt(props.selectHistory.length / 5)
+                            : 1
+                        }
+                        tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                      />
+                      <YAxis
+                        domain={["auto", "auto"]}
+                        tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
+                      />
+                      <Tooltip
+                        content={
+                          <CustomToolTip
+                            labelFormatter={(unixTime) =>
+                              moment(unixTime).format("HH:mm")
+                            }
+                          />
+                        }
+                      />
+                    </LineChart>
+                  )}
+                </ResponsiveContainer>
+              </Box>
+            </Fragment>
+          ) : null}
+          {props.dialogIndex > -1 ? (
+            <Box marginX={3} marginBottom={2}>
+              <table className={props.isDarkMode ? "dialogDark" : "dialog"}>
+                <colgroup>
+                  <col style={{ width: "32%" }} />
+                  <col style={{ width: "32%" }} />
+                  <col style={{ width: "32%" }} />
+                  <col style={{ width: "6%" }} />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Typography>price</Typography>
+                    </td>
+                    <td>
+                      <Typography>現價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].nowPrice}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>past</Typography>
+                    </td>
+                    <td>
+                      <Typography>前收市價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].past}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>tenDayLow</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日低</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].tenDayLow}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>tenDayHigh</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].tenDayHigh}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>tenDayAvg</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日平均價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].tenDayAvg}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>monthLow</Typography>
+                    </td>
+                    <td>
+                      <Typography>1個月低</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].monthLow}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>monthHigh</Typography>
+                    </td>
+                    <td>
+                      <Typography>1個月高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].monthHigh}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>twentyDayAvg</Typography>
+                    </td>
+                    <td>
+                      <Typography>20日平均價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].twentyDayAvg}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>wk52Low</Typography>
+                    </td>
+                    <td>
+                      <Typography>52周低</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].wk52Low}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>wk52High</Typography>
+                    </td>
+                    <td>
+                      <Typography>52周高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].wk52High}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>fiftyDayAvg</Typography>
+                    </td>
+                    <td>
+                      <Typography>50日平均價</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].fiftyDayAvg}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>lotSize</Typography>
+                    </td>
+                    <td>
+                      <Typography>每手股數</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].lotSize}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>eps</Typography>
+                    </td>
+                    <td>
+                      <Typography>全年每股盈利(元)</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].eps}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>dividend</Typography>
+                    </td>
+                    <td>
+                      <Typography>全年每股派息(元)</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].dividend}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>rsi10</Typography>
+                    </td>
+                    <td>
+                      <Typography>10日RSI</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].rsi10}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>rsi14</Typography>
+                    </td>
+                    <td>
+                      <Typography>14日RSI</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].rsi14}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>rsi20</Typography>
+                    </td>
+                    <td>
+                      <Typography>20日RSI</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].rsi20}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>pe</Typography>
+                    </td>
+                    <td>
+                      <Typography>市盈率(倍)</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].pe}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>marketValue</Typography>
+                    </td>
+                    <td>
+                      <Typography>市值</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].marketValue}
+                      </Typography>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Box>
+          ) : null}
+        </Box>
+
+        {props.dialogIndex > -1 ? (
+          <Fragment>
+            <Box
+              border={1}
+              borderColor={"rgba(0, 0, 0, 0.12)"}
+              borderRadius={16}
+              marginY={2}
+            >
+              <Box textAlign="center" paddingY={3}>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={props.fun_edit}
+                  onClick={() =>
+                    allDataHistory.length > 0
+                      ? fun_close_allDataHistory()
+                      : fun_allData(props.stockNotify[props.dialogIndex].stock)
+                  }
                 >
-                  <Typography style={{ marginRight: 8 }}>Edit</Typography>
-                  <EditIcon />
+                  <Fragment>
+                    <Typography>
+                      {allDataHistory.length > 0
+                        ? "Close Server Data"
+                        : "Get Server Data"}
+                    </Typography>
+                    <TrendingUpIcon style={{ marginLeft: 8 }} />
+                    {loadingAllData ? (
+                      <CircularProgress
+                        size={20}
+                        style={{ color: "white", marginLeft: 8 }}
+                      />
+                    ) : null}
+                    {allDataHistory.length > 0 ? (
+                      <CloseIcon style={{ marginLeft: 8 }} />
+                    ) : null}
+                  </Fragment>
                 </Button>
-              )}
-            </Typography>
-            <Box display="flex" alignItems="center" margin={2}>
-              <Grid container alignItems="center">
-                <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={4} sm={4} md={4} className="margin1">
-                    <Typography>Alert</Typography>
-                  </Grid>
-                  <Grid item xs={4} sm={4} md={4} className="margin1">
-                    <Typography>now$ to alert$</Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    sm={4}
-                    md={4}
-                    className="margin1"
-                    style={{ textAlign: "center" }}
-                  >
-                    <Typography>Enable Switch</Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
+              </Box>
+              <Box marginRight={3}>
+                <Collapse in={allDataHistory.length > 0} timeout={1000}>
+                  <Fade in={allDataHistory.length > 0} timeout={1000}>
+                    <div>
+                      {allDataHistory.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={400}>
+                          <LineChart
+                            data={allDataHistory}
+                            margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                          >
+                            <Line
+                              type="monotone"
+                              dataKey="price"
+                              stroke="#8884d8"
+                              activeDot={{ r: 8 }}
+                              dot={false}
+                            />
+                            <CartesianGrid
+                              stroke="#ccc"
+                              strokeDasharray="5 5"
+                            />
+                            <XAxis
+                              dataKey="stringTime"
+                              type="category"
+                              domain={["auto", "auto"]}
+                              tick={{
+                                fill: props.isDarkMode ? "lightgray" : "gray",
+                              }}
+                            />
+                            <YAxis
+                              domain={["auto", "auto"]}
+                              tick={{
+                                fill: props.isDarkMode ? "lightgray" : "gray",
+                              }}
+                            />
+                            <Tooltip content={<CustomToolTip />} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      ) : null}
+                    </div>
+                  </Fade>
+                </Collapse>
+              </Box>
             </Box>
-            <Divider />
+
             <Box
-              className={props.isDarkMode ? "boxDark" : "box"}
-              display="flex"
-              alignItems="center"
-              padding={2}
+              border={1}
+              borderColor={"rgba(0, 0, 0, 0.12)"}
+              borderRadius={16}
+              marginY={2}
             >
-              <Grid container alignItems="center">
-                <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={4} sm={4} md={4} className="margin1">
-                    {props.edit ? (
-                      <TextField
-                        id={"price_" + props.dialogIndex}
-                        name={"price_" + props.dialogIndex}
-                        label="price"
-                        variant="outlined"
-                        value={props.stockNotify[props.dialogIndex].price}
-                        margin="dense"
-                        autoComplete="off"
-                        disabled={props.sendingForm}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">$</InputAdornment>
-                          ),
-                        }}
-                        style={{ minWidth: "90px" }}
-                        onChange={props.changeAlertInfo}
-                        type="number"
+              <Box textAlign="center" paddingY={3}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    dailyDataHistory.length > 0
+                      ? fun_close_dailyDataHistory()
+                      : fun_dailyData(
+                          props.stockNotify[props.dialogIndex].stock
+                        )
+                  }
+                >
+                  <Fragment>
+                    <Typography>
+                      {dailyDataHistory.length > 0
+                        ? "Close Daily Data"
+                        : "Get Daily Data"}
+                    </Typography>
+                    <TimelineIcon style={{ marginLeft: 8 }} />
+                    {loadingDailyData ? (
+                      <CircularProgress
+                        size={20}
+                        style={{ color: "white", marginLeft: 8 }}
                       />
-                    ) : (
-                      <Typography>
-                        ${props.stockNotify[props.dialogIndex].price}
-                      </Typography>
-                    )}
-                  </Grid>
-                  <Grid item xs={4} sm={4} md={4} className="margin1">
-                    {props.edit ? (
-                      <TextField
-                        id={"equal_" + props.dialogIndex}
-                        name={"equal_" + props.dialogIndex}
-                        select
-                        label="equal"
-                        variant="outlined"
-                        margin="dense"
-                        value={props.stockNotify[props.dialogIndex].equal}
-                        style={{ minWidth: "18px" }}
-                        onChange={props.changeAlertInfo}
-                        disabled={props.sendingForm}
-                      >
-                        <MenuItem key=">=" value=">=">
-                          {">="}
-                        </MenuItem>
-                        <MenuItem key="<=" value="<=">
-                          {"<="}
-                        </MenuItem>
-                      </TextField>
-                    ) : (
-                      <Typography>
-                        {props.stockNotify[props.dialogIndex].equal}
-                      </Typography>
-                    )}
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    sm={4}
-                    md={4}
-                    className="margin1"
-                    style={{ textAlign: "center" }}
+                    ) : null}
+                    {dailyDataHistory.length > 0 ? (
+                      <CloseIcon style={{ marginLeft: 8 }} />
+                    ) : null}
+                  </Fragment>
+                </Button>
+              </Box>
+              <Box marginRight={3}>
+                <Collapse in={dailyDataHistory.length > 0} timeout={1000}>
+                  <Fade in={dailyDataHistory.length > 0} timeout={1000}>
+                    <div>
+                      {dailyDataHistory.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={400}>
+                          <LineChart
+                            data={dailyDataHistory}
+                            margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+                          >
+                            <Line
+                              type="monotone"
+                              dataKey="price"
+                              stroke="#8884d8"
+                              activeDot={{ r: 8 }}
+                              dot={false}
+                            />
+                            <CartesianGrid
+                              stroke="#ccc"
+                              strokeDasharray="5 5"
+                            />
+                            <XAxis
+                              dataKey="stringDay"
+                              type="category"
+                              domain={["auto", "auto"]}
+                              tick={{
+                                fill: props.isDarkMode ? "lightgray" : "gray",
+                              }}
+                            />
+                            <YAxis
+                              domain={["auto", "auto"]}
+                              tick={{
+                                fill: props.isDarkMode ? "lightgray" : "gray",
+                              }}
+                            />
+                            <Tooltip content={<CustomToolTip />} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      ) : null}
+                    </div>
+                  </Fade>
+                </Collapse>
+              </Box>
+            </Box>
+
+            <Box
+              border={1}
+              borderColor={"rgba(0, 0, 0, 0.12)"}
+              borderRadius={16}
+              marginY={2}
+            >
+              <Box textAlign="center" paddingY={3}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    newsHistory.length > 0
+                      ? fun_close_news()
+                      : fun_news(props.stockNotify[props.dialogIndex].stock)
+                  }
+                >
+                  <Fragment>
+                    <Typography>
+                      {newsHistory.length > 0 ? "Close News" : "Get News"}
+                    </Typography>
+                    <ReceiptIcon style={{ marginLeft: 8 }} />
+                    {loadingNews ? (
+                      <CircularProgress
+                        size={20}
+                        style={{ color: "white", marginLeft: 8 }}
+                      />
+                    ) : null}
+                    {newsHistory.length > 0 ? (
+                      <CloseIcon style={{ marginLeft: 8 }} />
+                    ) : null}
+                  </Fragment>
+                </Button>
+              </Box>
+              <Box marginX={3} marginBottom={newsHistory.length > 0 ? 3 : 0}>
+                {newsHistory.map((row, index) => (
+                  <Fade
+                    in={true}
+                    timeout={1000}
+                    style={{
+                      transitionDelay: index * 250 + "ms",
+                    }}
+                    key={index}
                   >
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={props.stockNotify[props.dialogIndex].alert}
-                          onChange={() =>
-                            props.changeAlertSwitch(
-                              props.dialogIndex,
-                              props.stockNotify[props.dialogIndex]._id,
-                              props.stockNotify[props.dialogIndex].alert
-                            )
+                    <Card key={index}>
+                      <CardActionArea onClick={() => openLink(row.link)}>
+                        <CardMedia
+                          component="img"
+                          image={
+                            typeof row.photo !== "undefined"
+                              ? "data:image/png;base64, " + row.photo
+                              : ""
                           }
-                          name="alertCheck"
-                          color="primary"
-                          disabled={!props.edit || props.sendingForm}
+                          title={row.title}
                         />
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
+
+                        <CardContent
+                          style={
+                            typeof row.photo !== "undefined"
+                              ? {
+                                  position: "absolute",
+                                  background: "white",
+                                  bottom: 0,
+                                  backdropFilter: "blur(5px)",
+                                  backgroundColor: "rgba(255, 255, 255, 0.65)",
+                                  width: "100%",
+                                }
+                              : ""
+                          }
+                        >
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {row.title}
+                          </Typography>
+                          <Typography variant="subtitle2" component="p">
+                            {row.pubDate}
+                          </Typography>
+                          <Typography variant="body2" component="p">
+                            {row.content}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Fade>
+                ))}
+              </Box>
             </Box>
-            <Divider />
-          </Fragment>
-        ) : null}
-
-        {props.selectHistory.length !== 0 ? (
-          <Fragment>
-            <Typography align="center" variant="h6">
-              Today Graph
-            </Typography>
-            <Typography align="right" className="margin2">
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={areaChartSetting}
-                    onChange={changeAreaChartSetting}
-                    name="Area Chart"
-                    color="primary"
-                  />
-                }
-                label="Area Chart"
-              />
-            </Typography>
-            <ResponsiveContainer width="100%" height={400}>
-              {areaChartSetting ? (
-                <AreaChart
-                  data={props.selectHistory}
-                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset={gradientOffset()}
-                        stopColor={green_color}
-                        stopOpacity={1}
-                      />
-                      <stop
-                        offset={gradientOffset()}
-                        stopColor={red_color}
-                        stopOpacity={1}
-                      />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                    dot={false}
-                    fill="url(#splitColor)"
-                  />
-                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis
-                    dataKey="jsTime"
-                    tickFormatter={(unixTime) =>
-                      moment(unixTime).format("HH:mm")
-                    }
-                    type="number"
-                    scale="time"
-                    domain={["dataMin", "dataMax"]}
-                    interval={
-                      props.selectHistory.length > 5
-                        ? parseInt(props.selectHistory.length / 5)
-                        : 1
-                    }
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <YAxis
-                    domain={["auto", "auto"]}
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <Tooltip
-                    content={
-                      <CustomToolTip
-                        labelFormatter={(unixTime) =>
-                          moment(unixTime).format("HH:mm")
-                        }
-                      />
-                    }
-                  />
-                </AreaChart>
-              ) : (
-                <LineChart
-                  data={props.selectHistory}
-                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
-                >
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                    dot={false}
-                  />
-                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis
-                    dataKey="jsTime"
-                    tickFormatter={(unixTime) =>
-                      moment(unixTime).format("HH:mm")
-                    }
-                    type="number"
-                    scale="time"
-                    domain={["dataMin", "dataMax"]}
-                    interval={
-                      props.selectHistory.length > 5
-                        ? parseInt(props.selectHistory.length / 5)
-                        : 1
-                    }
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <YAxis
-                    domain={["auto", "auto"]}
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <Tooltip
-                    content={
-                      <CustomToolTip
-                        labelFormatter={(unixTime) =>
-                          moment(unixTime).format("HH:mm")
-                        }
-                      />
-                    }
-                  />
-                </LineChart>
-              )}
-            </ResponsiveContainer>
-          </Fragment>
-        ) : null}
-        {props.dialogIndex > -1 ? (
-          <Fragment>
-            <table className={props.isDarkMode ? "dialogDark" : "dialog"}>
-              <colgroup>
-                <col style={{ width: "32%" }} />
-                <col style={{ width: "32%" }} />
-                <col style={{ width: "32%" }} />
-                <col style={{ width: "6%" }} />
-              </colgroup>
-              <tbody>
-                <tr>
-                  <td>
-                    <Typography>price</Typography>
-                  </td>
-                  <td>
-                    <Typography>現價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].nowPrice}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>past</Typography>
-                  </td>
-                  <td>
-                    <Typography>前收市價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].past}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>tenDayLow</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日低</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].tenDayLow}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>tenDayHigh</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日高</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].tenDayHigh}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>tenDayAvg</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日平均價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].tenDayAvg}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>monthLow</Typography>
-                  </td>
-                  <td>
-                    <Typography>1個月低</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].monthLow}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>monthHigh</Typography>
-                  </td>
-                  <td>
-                    <Typography>1個月高</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].monthHigh}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>twentyDayAvg</Typography>
-                  </td>
-                  <td>
-                    <Typography>20日平均價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].twentyDayAvg}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>wk52Low</Typography>
-                  </td>
-                  <td>
-                    <Typography>52周低</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].wk52Low}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>wk52High</Typography>
-                  </td>
-                  <td>
-                    <Typography>52周高</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].wk52High}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>fiftyDayAvg</Typography>
-                  </td>
-                  <td>
-                    <Typography>50日平均價</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].fiftyDayAvg}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>lotSize</Typography>
-                  </td>
-                  <td>
-                    <Typography>每手股數</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].lotSize}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>eps</Typography>
-                  </td>
-                  <td>
-                    <Typography>全年每股盈利(元)</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].eps}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>dividend</Typography>
-                  </td>
-                  <td>
-                    <Typography>全年每股派息(元)</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].dividend}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>rsi10</Typography>
-                  </td>
-                  <td>
-                    <Typography>10日RSI</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].rsi10}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>rsi14</Typography>
-                  </td>
-                  <td>
-                    <Typography>14日RSI</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].rsi14}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>rsi20</Typography>
-                  </td>
-                  <td>
-                    <Typography>20日RSI</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].rsi20}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>pe</Typography>
-                  </td>
-                  <td>
-                    <Typography>市盈率(倍)</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].pe}
-                    </Typography>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <Typography>marketValue</Typography>
-                  </td>
-                  <td>
-                    <Typography>市值</Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {props.stockNotify[props.dialogIndex].marketValue}
-                    </Typography>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <Box textAlign="center" marginTop={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  fun_allData(props.stockNotify[props.dialogIndex].stock)
-                }
-              >
-                <Fragment>
-                  <Typography>Get Server Data</Typography>
-                  {loadingAllData ? (
-                    <CircularProgress
-                      size={20}
-                      style={{ color: "white", marginLeft: 8 }}
-                    />
-                  ) : null}
-                </Fragment>
-              </Button>
-            </Box>
-            {allDataHistory.length > 0 ? (
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                  data={allDataHistory}
-                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
-                >
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                    dot={false}
-                  />
-                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis
-                    dataKey="stringTime"
-                    type="category"
-                    domain={["auto", "auto"]}
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <YAxis
-                    domain={["auto", "auto"]}
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <Tooltip content={<CustomToolTip />} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : null}
-            <Box textAlign="center" marginTop={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  fun_dailyData(props.stockNotify[props.dialogIndex].stock)
-                }
-              >
-                <Fragment>
-                  <Typography>Get Daily Data</Typography>
-                  {loadingDailyData ? (
-                    <CircularProgress
-                      size={20}
-                      style={{ color: "white", marginLeft: 8 }}
-                    />
-                  ) : null}
-                </Fragment>
-              </Button>
-            </Box>
-            {dailyDataHistory.length > 0 ? (
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                  data={dailyDataHistory}
-                  margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
-                >
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                    dot={false}
-                  />
-                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis
-                    dataKey="stringDay"
-                    type="category"
-                    domain={["auto", "auto"]}
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <YAxis
-                    domain={["auto", "auto"]}
-                    tick={{ fill: props.isDarkMode ? "lightgray" : "gray" }}
-                  />
-                  <Tooltip content={<CustomToolTip />} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : null}
-            <Box textAlign="center" marginY={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  fun_news(props.stockNotify[props.dialogIndex].stock)
-                }
-              >
-                <Fragment>
-                  <Typography>Get News</Typography>
-                  {loadingNews ? (
-                    <CircularProgress
-                      size={20}
-                      style={{ color: "white", marginLeft: 8 }}
-                    />
-                  ) : null}
-                </Fragment>
-              </Button>
-            </Box>
-            {newsHistory.map((row, index) => (
-              <Card key={index}>
-                <CardActionArea onClick={() => openLink(row.link)}>
-                  <CardMedia
-                    component="img"
-                    image={
-                      typeof row.photo !== "undefined"
-                        ? "data:image/png;base64, " + row.photo
-                        : ""
-                    }
-                    title={row.title}
-                    subheader="September 14, 2016"
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {row.title}
-                    </Typography>
-                    <Typography
-                      variant="subtitle2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      {row.pubDate}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      {row.content}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            ))}
           </Fragment>
         ) : null}
       </DialogContent>
