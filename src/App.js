@@ -915,6 +915,9 @@ const App = () => {
         let rsi20 = result.rsi20;
         let pe = result.pe;
         let marketValue = result.marketValue;
+        let issuedShare = result.issuedShare;
+        let vol = result.vol;
+        let tvr = result.tvr;
         //let row_index = -2
         setStockNotify((prevState) => {
           return prevState.map((row, index) => {
@@ -942,6 +945,9 @@ const App = () => {
                 rsi20: rsi20,
                 pe: pe,
                 marketValue: marketValue,
+                issuedShare: issuedShare,
+                vol: vol,
+                tvr: tvr,
               };
               if (typeof row.nowPrice === "undefined") {
                 addObject = {
@@ -1157,11 +1163,20 @@ const App = () => {
                           md={2}
                           className="margin1"
                         ></Grid>
-                        <Grid item xs={false} sm={2} md={2} className="margin1">
-                          <Typography>Alert</Typography>
+                        <Grid item xs={false} sm={3} md={3} className="margin1">
+                          <Typography style={{ textAlign: "center" }}>
+                            now$ to alert$
+                          </Typography>
                         </Grid>
-                        <Grid item xs={false} sm={2} md={2} className="margin1">
-                          <Typography>now$ to alert$</Typography>
+                        <Grid
+                          item
+                          xs={false}
+                          sm={1}
+                          md={1}
+                          className="margin1"
+                        ></Grid>
+                        <Grid item xs={false} sm={1} md={1} className="margin1">
+                          <Typography>Alert</Typography>
                         </Grid>
                       </Hidden>
                     </Grid>
@@ -1362,6 +1377,42 @@ const App = () => {
                                   >
                                     {edit ? (
                                       <TextField
+                                        id={"equal_" + index}
+                                        name={"equal_" + index}
+                                        select
+                                        label="equal"
+                                        variant="outlined"
+                                        margin="dense"
+                                        value={row.equal}
+                                        style={{ minWidth: "18px" }}
+                                        onChange={changeAlertInfo}
+                                        disabled={sendingForm}
+                                        fullWidth={true}
+                                      >
+                                        <MenuItem key=">=" value=">=">
+                                          {">="}
+                                        </MenuItem>
+                                        <MenuItem key="<=" value="<=">
+                                          {"<="}
+                                        </MenuItem>
+                                      </TextField>
+                                    ) : (
+                                      <Typography
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        {row.equal}
+                                      </Typography>
+                                    )}
+                                  </Grid>
+                                  <Grid
+                                    item
+                                    xs={false}
+                                    sm={2}
+                                    md={2}
+                                    className="margin1"
+                                  >
+                                    {edit ? (
+                                      <TextField
                                         id={"price_" + index}
                                         name={"price_" + index}
                                         label="price"
@@ -1385,42 +1436,12 @@ const App = () => {
                                       <Typography>${row.price}</Typography>
                                     )}
                                   </Grid>
+
                                   <Grid
                                     item
                                     xs={false}
                                     sm={1}
                                     md={1}
-                                    className="margin1"
-                                  >
-                                    {edit ? (
-                                      <TextField
-                                        id={"equal_" + index}
-                                        name={"equal_" + index}
-                                        select
-                                        label="equal"
-                                        variant="outlined"
-                                        margin="dense"
-                                        value={row.equal}
-                                        style={{ minWidth: "18px" }}
-                                        onChange={changeAlertInfo}
-                                        disabled={sendingForm}
-                                      >
-                                        <MenuItem key=">=" value=">=">
-                                          {">="}
-                                        </MenuItem>
-                                        <MenuItem key="<=" value="<=">
-                                          {"<="}
-                                        </MenuItem>
-                                      </TextField>
-                                    ) : (
-                                      <Typography>{row.equal}</Typography>
-                                    )}
-                                  </Grid>
-                                  <Grid
-                                    item
-                                    xs={false}
-                                    sm={2}
-                                    md={2}
                                     className="margin1"
                                     style={{ textAlign: "center" }}
                                   >

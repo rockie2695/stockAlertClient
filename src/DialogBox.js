@@ -63,18 +63,43 @@ const DialogBox = (props) => {
   const [loadingDailyData, setLoadingDailyData] = useState(false);
   const [loadingNews, setLoadingNews] = useState(false);
   const [areaChartSetting, setAreaChartSetting] = useState(false);
+  const [marketValue, setMarketValue] = useState("");
+  const [issuedShare, setIssuedShare] = useState("");
+  const [vol, setVol] = useState("");
+  const [tvr, setTvr] = useState("");
 
   useEffect(() => {
     if (props.open) {
+      if (props.stockNotify[props.dialogIndex].marketValue !== "") {
+        let sub_marketValue = props.stockNotify[props.dialogIndex].marketValue;
+        setMarketValue(fun_appendFix(sub_marketValue));
+        let sub_issuedShare = props.stockNotify[props.dialogIndex].issuedShare;
+        setIssuedShare(fun_appendFix(sub_issuedShare));
+        let sub_vol = props.stockNotify[props.dialogIndex].vol;
+        setVol(fun_appendFix(sub_vol));
+        let sub_tvr = props.stockNotify[props.dialogIndex].tvr;
+        setTvr(fun_appendFix(sub_tvr));
+      }
     } else {
       setTimeout(() => {
         setAllDataHistory([]);
         setDailyDataHistory([]);
         setNewsHistory([]);
+        setMarketValue("");
+        setIssuedShare("");
+        setVol("");
+        setTvr("");
       }, 100);
     }
-  }, [props.open]);
-
+  }, [props.open, props.dialogIndex, props.stockNotify]);
+  const fun_appendFix = (value) => {
+    if (value > 100000000) {
+      value = Math.round((value / 100000000) * 100) / 100 + "億";
+    } else if (value > 10000) {
+      value = Math.round((value / 10000) * 100) / 100 + "萬";
+    }
+    return value;
+  };
   const CustomToolTip = (props) => {
     const { active, payload, label, labelFormatter } = props;
     if (!active || !payload) {
@@ -296,7 +321,7 @@ const DialogBox = (props) => {
         {props.hideAlert && props.dialogIndex > -1 ? (
           <Box
             border={1}
-            borderColor={"rgba(0, 0, 0, 0.12)"}
+            borderColor={"grey.300"}
             borderRadius={16}
             marginY={2}
           >
@@ -345,10 +370,10 @@ const DialogBox = (props) => {
                 <Grid container alignItems="center">
                   <Grid container spacing={3} alignItems="center">
                     <Grid item xs={4} sm={4} md={4} className="margin1">
-                      <Typography>Alert</Typography>
+                      <Typography>now$ to alert$</Typography>
                     </Grid>
                     <Grid item xs={4} sm={4} md={4} className="margin1">
-                      <Typography>now$ to alert$</Typography>
+                      <Typography>Alert</Typography>
                     </Grid>
                     <Grid
                       item
@@ -375,6 +400,33 @@ const DialogBox = (props) => {
                     <Grid item xs={4} sm={4} md={4} className="margin1">
                       {props.edit ? (
                         <TextField
+                          id={"equal_" + props.dialogIndex}
+                          name={"equal_" + props.dialogIndex}
+                          select
+                          label="equal"
+                          variant="outlined"
+                          margin="dense"
+                          value={props.stockNotify[props.dialogIndex].equal}
+                          style={{ minWidth: "18px" }}
+                          onChange={props.changeAlertInfo}
+                          disabled={props.sendingForm}
+                        >
+                          <MenuItem key=">=" value=">=">
+                            {">="}
+                          </MenuItem>
+                          <MenuItem key="<=" value="<=">
+                            {"<="}
+                          </MenuItem>
+                        </TextField>
+                      ) : (
+                        <Typography>
+                          {props.stockNotify[props.dialogIndex].equal}
+                        </Typography>
+                      )}
+                    </Grid>
+                    <Grid item xs={4} sm={4} md={4} className="margin1">
+                      {props.edit ? (
+                        <TextField
                           id={"price_" + props.dialogIndex}
                           name={"price_" + props.dialogIndex}
                           label="price"
@@ -397,33 +449,6 @@ const DialogBox = (props) => {
                       ) : (
                         <Typography>
                           ${props.stockNotify[props.dialogIndex].price}
-                        </Typography>
-                      )}
-                    </Grid>
-                    <Grid item xs={4} sm={4} md={4} className="margin1">
-                      {props.edit ? (
-                        <TextField
-                          id={"equal_" + props.dialogIndex}
-                          name={"equal_" + props.dialogIndex}
-                          select
-                          label="equal"
-                          variant="outlined"
-                          margin="dense"
-                          value={props.stockNotify[props.dialogIndex].equal}
-                          style={{ minWidth: "18px" }}
-                          onChange={props.changeAlertInfo}
-                          disabled={props.sendingForm}
-                        >
-                          <MenuItem key=">=" value=">=">
-                            {">="}
-                          </MenuItem>
-                          <MenuItem key="<=" value="<=">
-                            {"<="}
-                          </MenuItem>
-                        </TextField>
-                      ) : (
-                        <Typography>
-                          {props.stockNotify[props.dialogIndex].equal}
                         </Typography>
                       )}
                     </Grid>
@@ -459,12 +484,7 @@ const DialogBox = (props) => {
             </Box>
           </Box>
         ) : null}
-        <Box
-          border={1}
-          borderColor={"rgba(0, 0, 0, 0.12)"}
-          borderRadius={16}
-          marginY={2}
-        >
+        <Box border={1} borderColor={"grey.300"} borderRadius={16} marginY={2}>
           {props.selectHistory.length !== 0 ? (
             <Fragment>
               <Box marginX={3} marginTop={2}>
@@ -632,6 +652,30 @@ const DialogBox = (props) => {
                       <Typography>
                         {props.stockNotify[props.dialogIndex].past}
                       </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>vol</Typography>
+                    </td>
+                    <td>
+                      <Typography>成交量</Typography>
+                    </td>
+                    <td>
+                      <Typography>{vol}</Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>tvr</Typography>
+                    </td>
+                    <td>
+                      <Typography>成交金額</Typography>
+                    </td>
+                    <td>
+                      <Typography>{tvr}</Typography>
                     </td>
                   </tr>
 
@@ -867,9 +911,19 @@ const DialogBox = (props) => {
                       <Typography>市值</Typography>
                     </td>
                     <td>
-                      <Typography>
-                        {props.stockNotify[props.dialogIndex].marketValue}
-                      </Typography>
+                      <Typography>{marketValue}</Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>issuedShare</Typography>
+                    </td>
+                    <td>
+                      <Typography>發行股數</Typography>
+                    </td>
+                    <td>
+                      <Typography>{issuedShare}</Typography>
                     </td>
                   </tr>
                 </tbody>
@@ -882,7 +936,7 @@ const DialogBox = (props) => {
           <Fragment>
             <Box
               border={1}
-              borderColor={"rgba(0, 0, 0, 0.12)"}
+              borderColor={"grey.300"}
               borderRadius={16}
               marginY={2}
             >
@@ -962,7 +1016,7 @@ const DialogBox = (props) => {
 
             <Box
               border={1}
-              borderColor={"rgba(0, 0, 0, 0.12)"}
+              borderColor={"grey.300"}
               borderRadius={16}
               marginY={2}
             >
@@ -1044,7 +1098,7 @@ const DialogBox = (props) => {
 
             <Box
               border={1}
-              borderColor={"rgba(0, 0, 0, 0.12)"}
+              borderColor={"grey.300"}
               borderRadius={16}
               marginY={2}
             >
@@ -1101,7 +1155,9 @@ const DialogBox = (props) => {
                           style={
                             typeof row.photo !== "undefined"
                               ? {
-                                  position: "absolute",
+                                  position: props.fullScreen
+                                    ? "block"
+                                    : "absolute",
                                   background: "white",
                                   bottom: 0,
                                   backdropFilter: "blur(5px)",

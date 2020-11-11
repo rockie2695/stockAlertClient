@@ -106,3 +106,9 @@ div.cursorPointer {
 .MuiButton-containedPrimary {
   border-radius: 20px !important;
 }
+.MuiCardMedia-img {
+  transition: transform 0.5s;
+}
+.MuiCardMedia-img:hover {
+  transform: scale(1.05);
+}

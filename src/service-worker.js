@@ -79,3 +79,13 @@ self.addEventListener("push", (event) => {
   };
   event.waitUntil(self.registration.showNotification(data.title, options));
 });
+
+self.addEventListener("notificationclick", function (event) {
+  const clickedNotification = event.notification;
+  clickedNotification.close();
+
+  event.waitUntil(
+    //clients.openWindow("https://rockie-stockalertclient.herokuapp.com/")
+    window.open("https://rockie-stockalertclient.herokuapp.com/", "_blank")
+  );
+});
