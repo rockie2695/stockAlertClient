@@ -84,8 +84,20 @@ self.addEventListener("notificationclick", function (event) {
   const clickedNotification = event.notification;
   clickedNotification.close();
 
+  // Get all the Window clients
   event.waitUntil(
-    //clients.openWindow("https://rockie-stockalertclient.herokuapp.com/")
-    window.open("https://rockie-stockalertclient.herokuapp.com/", "_blank")
+    clients.matchAll({ type: "window" }).then((clientsArr) => {
+      // If a Window tab matching the targeted URL already exists, focus that;
+      const hadWindowToFocus = clientsArr.some((windowClient) =>
+        windowClient.url === event.notification.data.url
+          ? (windowClient.focus(), true)
+          : false
+      );
+      // Otherwise, open a new tab to the applicable URL and focus it.
+      if (!hadWindowToFocus)
+        clients
+          .openWindow(event.notification.data.url)
+          .then((windowClient) => (windowClient ? windowClient.focus() : null));
+    })
   );
 });
