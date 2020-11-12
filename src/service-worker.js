@@ -76,6 +76,9 @@ self.addEventListener("push", (event) => {
   console.log("New notification", data);
   const options = {
     body: data.body,
+    icon: data.icon,
+    badge: data.icon,
+    url: data.url,
   };
   event.waitUntil(self.registration.showNotification(data.title, options));
 });
