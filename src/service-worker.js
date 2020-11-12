@@ -99,9 +99,8 @@ self.addEventListener("notificationclick", function (event) {
       );
       // Otherwise, open a new tab to the applicable URL and focus it.
       if (!hadWindowToFocus)
-        self.clients
-          .openWindow(event.notification.data.url)
-          .then((windowClient) => (windowClient ? windowClient.focus() : null));
+        self.clients.openWindow(event.notification.data.url);
+      //.then((windowClient) => (windowClient ? windowClient.focus() : null));
     })
   );
 });
