@@ -478,6 +478,34 @@ const App = () => {
                 findStockHistory(resultArray[i].stock, email);
               }
             }
+            setTimeout(function () {
+              if (typeof history.location.pathname !== "undefined") {
+                let pathName = history.location.pathname.replace("/", "");
+                let k = 0;
+                for (; k < resultArray.length; k++) {
+                  if (resultArray[k]._id === pathName) {
+                    break;
+                  }
+                }
+                if (k !== resultArray.length) {
+                  setOpen((prevState) => true);
+                  setDialogIndex((prevState) => k);
+                  for (let j = 0; j < stockHistoryRef.current.length; j++) {
+                    if (
+                      stockHistoryRef.current[j].stock ===
+                      stockNotifyRef.current[k].stock
+                    ) {
+                      setSelectHistory(
+                        stockHistoryRef.current[j].priceWithTime
+                      );
+                      break;
+                    }
+                  }
+                } else {
+                  history.push("/");
+                }
+              }
+            }, 0);
           } else {
             console.log(result);
             alert("server error. Please refresh");
