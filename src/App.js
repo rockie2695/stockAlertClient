@@ -39,12 +39,14 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CountUp from "react-countup";
 import Fade from "@material-ui/core/Fade";
 import Collapse from "@material-ui/core/Collapse";
+
+import { useHistory, withRouter } from "react-router-dom";
+
 import "./App.css";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 
 /**
- * react router
  * qr code
  * test notify
  */
@@ -67,6 +69,8 @@ const DialogBox = lazy(() => import("./DialogBox"));
 const renderLoader = () => <div>Loading</div>;
 
 const App = () => {
+  let history = useHistory();
+
   const cookies = new Cookies();
   const clientId =
     "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com";
@@ -325,9 +329,14 @@ const App = () => {
             let addArray = [];
             if (!prevState.some((e) => e.time === time)) {
               addArray = [
-                { time: time, price: message.price, jsTime: message.jsTime },
+                {
+                  time: time,
+                  price: message.price,
+                  jsTime: message.jsTime,
+                  low: message.low,
+                  high: message.high,
+                },
               ];
-              console.log(time, message.jsTime);
             }
             return [...prevState, ...addArray];
           });
@@ -335,7 +344,15 @@ const App = () => {
       } else if (side === "new") {
         let time = message.time.split(" ")[1];
         setSelectHistory((prevState) => {
-          return [{ time: time, price: message.price, jsTime: message.jsTime }];
+          return [
+            {
+              time: time,
+              price: message.price,
+              jsTime: message.jsTime,
+              low: message.low,
+              high: message.high,
+            },
+          ];
         });
       } else if (side === "front") {
         if (message.length >= 2 && selectHistory.length >= 1) {
@@ -373,6 +390,7 @@ const App = () => {
     if (!edit) {
       setOpen((prevState) => true);
       setDialogIndex((prevState) => index);
+      history.push("/" + stockNotify[index]._id);
       console.log(index);
       console.log(stockHistory, stockNotify, selectHistory);
       for (let i = 0; i < stockHistory.length; i++) {
@@ -390,6 +408,7 @@ const App = () => {
       setDialogIndex((prevState) => -1);
       setSelectHistory([]);
     }, 100);
+    history.push("/");
   };
 
   const fun_login = (response) => {
@@ -523,6 +542,34 @@ const App = () => {
                 findStockHistory(resultArray[i].stock, email);
               }
             }
+            setTimeout(function () {
+              if (typeof history.location.pathname !== "undefined") {
+                let pathName = history.location.pathname.replace("/", "");
+                let k = 0;
+                for (; k < resultArray.length; k++) {
+                  if (resultArray[k]._id === pathName) {
+                    break;
+                  }
+                }
+                if (k !== resultArray.length) {
+                  setOpen((prevState) => true);
+                  setDialogIndex((prevState) => k);
+                  for (let j = 0; j < stockHistoryRef.current.length; j++) {
+                    if (
+                      stockHistoryRef.current[j].stock ===
+                      stockNotifyRef.current[k].stock
+                    ) {
+                      setSelectHistory(
+                        stockHistoryRef.current[j].priceWithTime
+                      );
+                      break;
+                    }
+                  }
+                } else {
+                  history.push("/");
+                }
+              }
+            }, 0);
           } else {
             console.log(result);
             alert("server error. Please refresh");
@@ -853,6 +900,8 @@ const App = () => {
               time: result.ok[i].time,
               price: result.ok[i].price,
               jsTime: result.ok[i].jsTime,
+              high: result.ok[i].high,
+              low: result.ok[i].low,
             });
           }
         }
@@ -1033,7 +1082,6 @@ const App = () => {
               sendingForm={sendingForm}
             />
           </Suspense>
-
           <Box
             position="fixed"
             zIndex="0"
@@ -1601,10 +1649,11 @@ const App = () => {
             fun_save={fun_save}
             changeAlertInfo={changeAlertInfo}
             isDarkMode={isDarkMode}
+            priceDiffPercentSetting={priceDiffPercentSetting}
           />
         </Suspense>
       </ThemeProvider>
     </HttpsRedirect>
   );
 };
-export default App;
+export default withRouter(App);

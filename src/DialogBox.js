@@ -69,14 +69,23 @@ const DialogBox = (props) => {
   const [tvr, setTvr] = useState("");
 
   useEffect(() => {
-    if (props.open) {
+    if (
+      props.open &&
+      typeof props.stockNotify[props.dialogIndex] !== "undefined"
+    ) {
       if (props.stockNotify[props.dialogIndex].marketValue !== "") {
         let sub_marketValue = props.stockNotify[props.dialogIndex].marketValue;
         setMarketValue(fun_appendFix(sub_marketValue));
+      }
+      if (props.stockNotify[props.dialogIndex].issuedShare !== "") {
         let sub_issuedShare = props.stockNotify[props.dialogIndex].issuedShare;
         setIssuedShare(fun_appendFix(sub_issuedShare));
+      }
+      if (props.stockNotify[props.dialogIndex].vol !== "") {
         let sub_vol = props.stockNotify[props.dialogIndex].vol;
         setVol(fun_appendFix(sub_vol));
+      }
+      if (props.stockNotify[props.dialogIndex].tvr !== "") {
         let sub_tvr = props.stockNotify[props.dialogIndex].tvr;
         setTvr(fun_appendFix(sub_tvr));
       }
@@ -637,6 +646,147 @@ const DialogBox = (props) => {
                     <td>
                       <Typography>
                         {props.stockNotify[props.dialogIndex].nowPrice}
+                        <Fragment>
+                          <span>{" ("}</span>
+                          <span
+                            style={
+                              parseFloat(
+                                props.stockNotify[props.dialogIndex].nowPrice
+                              ) -
+                                parseFloat(
+                                  props.stockNotify[props.dialogIndex].past
+                                ) >
+                              0
+                                ? { color: green_color }
+                                : parseFloat(
+                                    props.stockNotify[props.dialogIndex]
+                                      .nowPrice
+                                  ) -
+                                    parseFloat(
+                                      props.stockNotify[props.dialogIndex].past
+                                    ) <
+                                  0
+                                ? { color: red_color }
+                                : {}
+                            }
+                          >
+                            {(parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) -
+                              parseFloat(
+                                props.stockNotify[props.dialogIndex].past
+                              ) >
+                            0
+                              ? "+"
+                              : "") +
+                              (!props.priceDiffPercentSetting
+                                ? parseFloat(
+                                    Math.round(
+                                      (parseFloat(
+                                        props.stockNotify[props.dialogIndex]
+                                          .nowPrice
+                                      ) -
+                                        parseFloat(
+                                          props.stockNotify[props.dialogIndex]
+                                            .past
+                                        ) +
+                                        0.00001 *
+                                          (parseFloat(
+                                            props.stockNotify[props.dialogIndex]
+                                              .nowPrice
+                                          ) -
+                                            parseFloat(
+                                              props.stockNotify[
+                                                props.dialogIndex
+                                              ].past
+                                            ) >
+                                          0
+                                            ? 1
+                                            : -1)) *
+                                        1000
+                                    ) / 1000
+                                  )
+                                : parseFloat(
+                                    Math.round(
+                                      ((parseFloat(
+                                        props.stockNotify[props.dialogIndex]
+                                          .nowPrice
+                                      ) -
+                                        parseFloat(
+                                          props.stockNotify[props.dialogIndex]
+                                            .past
+                                        ) +
+                                        0.00001 *
+                                          (parseFloat(
+                                            props.stockNotify[props.dialogIndex]
+                                              .nowPrice
+                                          ) -
+                                            parseFloat(
+                                              props.stockNotify[
+                                                props.dialogIndex
+                                              ].past
+                                            ) >
+                                          0
+                                            ? 1
+                                            : -1)) /
+                                        props.stockNotify[props.dialogIndex]
+                                          .past) *
+                                        100000
+                                    ) / 1000
+                                  ) + "%")}
+                          </span>
+                          <span>{")"}</span>
+                        </Fragment>
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>todayLow-High</Typography>
+                    </td>
+                    <td>
+                      <Typography>今日低高</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.selectHistory.length > 0
+                          ? (typeof props.selectHistory[
+                              props.selectHistory.length - 1
+                            ].low === "undefined" &&
+                            props.selectHistory.length > 1
+                              ? props.selectHistory[
+                                  props.selectHistory.length - 2
+                                ].low
+                              : props.selectHistory[
+                                  props.selectHistory.length - 1
+                                ].low) +
+                            " - " +
+                            (typeof props.selectHistory[
+                              props.selectHistory.length - 1
+                            ].high === "undefined" &&
+                            props.selectHistory.length > 1
+                              ? props.selectHistory[
+                                  props.selectHistory.length - 2
+                                ].high
+                              : props.selectHistory[
+                                  props.selectHistory.length - 1
+                                ].high)
+                          : null}
+                      </Typography>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <Typography>lastUpdateTime</Typography>
+                    </td>
+                    <td>
+                      <Typography>最後更新時間</Typography>
+                    </td>
+                    <td>
+                      <Typography>
+                        {props.stockNotify[props.dialogIndex].nowTime}
                       </Typography>
                     </td>
                   </tr>
@@ -681,27 +831,15 @@ const DialogBox = (props) => {
 
                   <tr>
                     <td>
-                      <Typography>tenDayLow</Typography>
+                      <Typography>tenDayLow-High</Typography>
                     </td>
                     <td>
-                      <Typography>10日低</Typography>
+                      <Typography>10日低高</Typography>
                     </td>
                     <td>
                       <Typography>
                         {props.stockNotify[props.dialogIndex].tenDayLow}
-                      </Typography>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <Typography>tenDayHigh</Typography>
-                    </td>
-                    <td>
-                      <Typography>10日高</Typography>
-                    </td>
-                    <td>
-                      <Typography>
+                        {" - "}
                         {props.stockNotify[props.dialogIndex].tenDayHigh}
                       </Typography>
                     </td>
@@ -723,27 +861,15 @@ const DialogBox = (props) => {
 
                   <tr>
                     <td>
-                      <Typography>monthLow</Typography>
+                      <Typography>monthLow-High</Typography>
                     </td>
                     <td>
-                      <Typography>1個月低</Typography>
+                      <Typography>1個月低高</Typography>
                     </td>
                     <td>
                       <Typography>
                         {props.stockNotify[props.dialogIndex].monthLow}
-                      </Typography>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <Typography>monthHigh</Typography>
-                    </td>
-                    <td>
-                      <Typography>1個月高</Typography>
-                    </td>
-                    <td>
-                      <Typography>
+                        {" - "}
                         {props.stockNotify[props.dialogIndex].monthHigh}
                       </Typography>
                     </td>
@@ -765,27 +891,15 @@ const DialogBox = (props) => {
 
                   <tr>
                     <td>
-                      <Typography>wk52Low</Typography>
+                      <Typography>wk52Low-High</Typography>
                     </td>
                     <td>
-                      <Typography>52周低</Typography>
+                      <Typography>52周低高</Typography>
                     </td>
                     <td>
                       <Typography>
                         {props.stockNotify[props.dialogIndex].wk52Low}
-                      </Typography>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <Typography>wk52High</Typography>
-                    </td>
-                    <td>
-                      <Typography>52周高</Typography>
-                    </td>
-                    <td>
-                      <Typography>
+                        {" - "}
                         {props.stockNotify[props.dialogIndex].wk52High}
                       </Typography>
                     </td>
