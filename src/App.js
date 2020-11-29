@@ -39,15 +39,20 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CountUp from "react-countup";
 import Fade from "@material-ui/core/Fade";
 import Collapse from "@material-ui/core/Collapse";
-
+import AddIcon from "@material-ui/icons/Add";
 import { useHistory, withRouter } from "react-router-dom";
+
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
 
 import "./App.css";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 
 /**
- * qr code
+ * make dense mode
  * test notify
  */
 
@@ -60,13 +65,30 @@ if (
   host = "http://localhost:3001";
   testlink = true;
 }
-
+const QRCode = require("qrcode.react");
 const green_color = green[500];
 const red_color = red[500];
 
 const Menu = lazy(() => import("./Menu"));
 const DialogBox = lazy(() => import("./DialogBox"));
 const renderLoader = () => <div>Loading</div>;
+
+const DialogTitle = (props) => {
+  return (
+    <MuiDialogTitle disableTypography className="padding2" {...props.other}>
+      <Typography variant="h6">{props.children}</Typography>
+      {props.onClose ? (
+        <IconButton
+          aria-label="close"
+          className="closeButton"
+          onClick={props.onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+};
 
 const App = () => {
   let history = useHistory();
@@ -78,6 +100,7 @@ const App = () => {
   const [login, setLogin] = useState({
     email: testlink ? "rockie2695@gmail.com" : "",
   });
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [stockHistory, setStockHistory] = useState([]);
   const [ws, setWs] = useState(null);
   const [stockNotify, setStockNotify] = useState([]);
@@ -92,7 +115,8 @@ const App = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [fullScreenSetting, setFullScreenSetting] = useState(false);
   const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(false);
-  const [darkModeSetting, setDarkModeSetting] = useState(false);
+  const [darkModeSetting, setDarkModeSetting] = useState(prefersDarkMode);
+  const [addStockDialog, setAddStockDialog] = useState(false);
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host));
@@ -107,14 +131,14 @@ const App = () => {
   loginRef.current = login;
   const stockHistoryRef = useRef(stockHistory);
   stockHistoryRef.current = stockHistory;
-
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const selectHistoryRef = useRef(selectHistory);
+  selectHistoryRef.current = selectHistory;
 
   const theme = React.useMemo(
     () =>
       createMuiTheme({
         palette: {
-          type: prefersDarkMode || darkModeSetting ? "dark" : "light",
+          type: darkModeSetting ? "dark" : "light",
           primary: {
             light: "#4dabf5",
             main: "#2196f3",
@@ -129,7 +153,7 @@ const App = () => {
           },
         },
       }),
-    [prefersDarkMode, darkModeSetting]
+    [darkModeSetting]
   );
   const isDarkMode = theme.palette.type === "dark";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -157,6 +181,10 @@ const App = () => {
     if (testlink) {
       fun_login({});
     }
+    return () => {
+      setWs(null);
+      setLogin("");
+    };
   }, []);
 
   useEffect(() => {
@@ -174,6 +202,12 @@ const App = () => {
       startConnectWS();
     }
   }, [login]);
+
+  useEffect(() => {
+    setDarkModeSetting(() => {
+      return prefersDarkMode;
+    });
+  }, [prefersDarkMode]);
 
   const handleConnectionChange = () => {
     const condition = navigator.onLine ? "online" : "offline";
@@ -322,6 +356,7 @@ const App = () => {
       dialogIndexRef.current > -1 &&
       stock === stockNotifyRef.current[dialogIndexRef.current].stock
     ) {
+      console.log(selectHistoryRef.current);
       if (side === "end") {
         let time = message.time.split(" ")[1];
         if (!selectHistory.some((e) => e.time === time)) {
@@ -387,7 +422,7 @@ const App = () => {
   };
 
   const openDialog = (index) => {
-    if (!edit) {
+    if (!edit && typeof stockNotify[index]._id !== "undefined") {
       setOpen((prevState) => true);
       setDialogIndex((prevState) => index);
       history.push("/" + stockNotify[index]._id);
@@ -402,7 +437,7 @@ const App = () => {
     }
   };
   const closeDialog = () => {
-    //console.log(selectHistory);
+    console.log(selectHistory);
     setOpen((prevState) => false);
     setTimeout(() => {
       setDialogIndex((prevState) => -1);
@@ -495,6 +530,7 @@ const App = () => {
                       stockHistoryRef.current[j].stock ===
                       stockNotifyRef.current[k].stock
                     ) {
+                      console.log("add how many times");
                       setSelectHistory(
                         stockHistoryRef.current[j].priceWithTime
                       );
@@ -587,9 +623,17 @@ const App = () => {
                       stockHistoryRef.current[j].stock ===
                       stockNotifyRef.current[k].stock
                     ) {
-                      setSelectHistory(
-                        stockHistoryRef.current[j].priceWithTime
+                      console.log(
+                        "add how many times",
+                        stockHistoryRef.current[j].stock,
+                        stockNotifyRef.current[k].stock
                       );
+                      /*setSelectHistory(
+                        stockHistoryRef.current[j].priceWithTime
+                      );*/
+                      setTimeout(() => {
+                        console.log(stockHistoryRef.current[j]);
+                      }, 1000);
                       break;
                     }
                   }
@@ -777,6 +821,18 @@ const App = () => {
         });
     }
   };
+  const fun_addStockDialog = () => {
+    if (!edit) {
+      fun_addNotify();
+      setDialogIndex((prevState) => stockNotifyRef.current.length - 1);
+      setTimeout(() => {
+        setAddStockDialog((prevState) => !prevState);
+      }, 0);
+    } else {
+      setAddStockDialog((prevState) => !prevState);
+    }
+    fun_edit();
+  };
   const fun_edit = () => {
     if (edit === true) {
       setStockNotify((prevState) => {
@@ -829,6 +885,19 @@ const App = () => {
         .catch((err) => {
           console.log(err);
         });
+    } else if (
+      edit === true &&
+      typeof stockNotify[rowIndex]._id === "undefined"
+    ) {
+      setStockNotify((prevState) => {
+        return prevState.map((row, index) => {
+          let addObject = {};
+          if (index === rowIndex) {
+            addObject = { alert: !alert };
+          }
+          return { ...row, ...addObject };
+        });
+      });
     }
   };
   const clickAvatar = (index) => {
@@ -1133,21 +1202,19 @@ const App = () => {
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
               <Grid item xs={12} sm={12} md={8} className="margin1">
-                <Paper>
+                <Paper style={{ paddingBottom: 2 }}>
                   <Typography align="right" className="margin2">
-                    {!prefersDarkMode ? (
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={darkModeSetting}
-                            onChange={changeDarkModeSetting}
-                            name="Dark Mode Switch"
-                            color="primary"
-                          />
-                        }
-                        label="Dark Mode"
-                      />
-                    ) : null}
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={darkModeSetting}
+                          onChange={changeDarkModeSetting}
+                          name="Dark Mode Switch"
+                          color="primary"
+                        />
+                      }
+                      label="Dark Mode"
+                    />
                     <FormControlLabel
                       control={
                         <Switch
@@ -1326,10 +1393,24 @@ const App = () => {
                                     />
                                   ) : (
                                     <Typography>
-                                      {row.stock}{" "}
-                                      {typeof row.name !== "undefined"
-                                        ? row.name
-                                        : null}
+                                      <span style={{ float: "left" }}>
+                                        {row.stock}
+                                      </span>
+                                      <span style={{ float: "left" }}>
+                                        &nbsp;
+                                      </span>
+                                      {typeof row.name !== "undefined" ? (
+                                        <span style={{ float: "left" }}>
+                                          {row.name}
+                                        </span>
+                                      ) : (
+                                        <Skeleton
+                                          style={{
+                                            width: "50%",
+                                            float: "left",
+                                          }}
+                                        />
+                                      )}
                                     </Typography>
                                   )}
                                 </Grid>
@@ -1537,6 +1618,7 @@ const App = () => {
                                           disabled={!edit || sendingForm}
                                         />
                                       }
+                                      label=""
                                     />
                                   </Grid>
                                 </Hidden>
@@ -1594,8 +1676,9 @@ const App = () => {
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
             </Grid>
+            {/* following box is close of <Box paddingX={1} paddingY={3} overflow="auto" position="relative"> */}
           </Box>
-          {/* <Box margin={2} overflow="auto"> */}
+          {/*bottom*/}
           <Box
             position="relative"
             paddingX={2}
@@ -1608,58 +1691,92 @@ const App = () => {
             justifyContent="center"
           >
             <Grid container alignItems="center">
-              <Grid item xs={12} sm={12} md={6}>
-                <Hidden only={["xs", "sm"]}>
-                  <Typography align="left" variant="h6">
-                    make by&nbsp;
-                    <Link href="mailto:rockie2695@gmail.com">
-                      rockie2695@gmail.com
-                    </Link>
-                  </Typography>
-                </Hidden>
-                <Hidden mdUp>
-                  <Typography align="center" variant="h6">
-                    make by&nbsp;
-                    <Link href="mailto:rockie2695@gmail.com">
-                      rockie2695@gmail.com
-                    </Link>
-                  </Typography>
-                </Hidden>
+              <Hidden only={["xs", "sm"]}>
+                <Grid item sm={false} md={2} className="margin1"></Grid>
+              </Hidden>
+              <Grid item xs={12} sm={12} md={8} className="margin1">
+                <Grid container alignItems="center">
+                  <Grid item xs={12} sm={12} md={4}>
+                    <Hidden only={["xs", "sm"]}>
+                      <Typography align="left" variant="h6">
+                        make by{" "}
+                        <Link href="mailto:rockie2695@gmail.com">
+                          rockie2695@gmail.com
+                        </Link>
+                      </Typography>
+                    </Hidden>
+                    <Hidden mdUp>
+                      <Typography align="center" variant="h6">
+                        make by{" "}
+                        <Link href="mailto:rockie2695@gmail.com">
+                          rockie2695@gmail.com
+                        </Link>
+                      </Typography>
+                    </Hidden>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={4}
+                    style={{ textAlign: "center" }}
+                  >
+                    <QRCode value={window.location.href} />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={4}>
+                    <Hidden only={["xs", "sm"]}>
+                      {deferredPrompt !== null ? (
+                        <Box textAlign="right">
+                          <Fab
+                            color="primary"
+                            aria-label="pwa"
+                            onClick={showA2HS}
+                            className={fullScreen ? "" : "marginRight12"}
+                          >
+                            <GetAppIcon />
+                          </Fab>
+                          <Typography variant="h6">Web App</Typography>
+                        </Box>
+                      ) : null}
+                    </Hidden>
+                    <Hidden mdUp>
+                      {deferredPrompt !== null ? (
+                        <Box textAlign="center">
+                          <Fab
+                            color="primary"
+                            aria-label="pwa"
+                            onClick={showA2HS}
+                            className={fullScreen ? "" : "marginRight12"}
+                          >
+                            <GetAppIcon />
+                          </Fab>
+                          <Typography variant="h6">Web App</Typography>
+                        </Box>
+                      ) : null}
+                    </Hidden>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Hidden only={["xs", "sm"]}>
-                  <Box textAlign="right">
-                    <Fab
-                      color="primary"
-                      aria-label="pwa"
-                      onClick={showA2HS}
-                      className={fullScreen ? "" : "marginRight12"}
-                    >
-                      <GetAppIcon />
-                    </Fab>
-                    <Typography variant="h6">Web App</Typography>
-                  </Box>
-                </Hidden>
-                <Hidden mdUp>
-                  {deferredPrompt !== null ? (
-                    <Box textAlign="center">
-                      <Fab
-                        color="primary"
-                        aria-label="pwa"
-                        onClick={showA2HS}
-                        className={fullScreen ? "" : "marginRight12"}
-                      >
-                        <GetAppIcon />
-                      </Fab>
-                      <Typography variant="h6">Web App</Typography>
-                    </Box>
-                  ) : null}
-                </Hidden>
-              </Grid>
+              <Hidden only={["xs", "sm"]}>
+                <Grid item sm={false} md={2} className="margin1"></Grid>
+              </Hidden>
             </Grid>
+            <Fab
+              color="primary"
+              aria-label="add"
+              style={{
+                position: "fixed",
+                bottom: 16,
+                left: "calc(100vw - 85px)",
+              }}
+              onClick={fun_addStockDialog}
+            >
+              <AddIcon />
+            </Fab>
           </Box>
           {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
         </Box>
+        {/*show Dialog box after click each stock */}
         <Suspense fallback={renderLoader()}>
           <DialogBox
             closeDialog={closeDialog}
@@ -1680,6 +1797,91 @@ const App = () => {
             priceDiffPercentSetting={priceDiffPercentSetting}
           />
         </Suspense>
+        <Dialog
+          aria-labelledby="dialog-title"
+          open={addStockDialog}
+          fullScreen={fullScreen}
+          maxWidth={"md"}
+          fullWidth={true}
+          onClose={fun_addStockDialog}
+        >
+          <DialogTitle id="dialog-title" onClose={fun_addStockDialog}>
+            Add
+          </DialogTitle>
+          <DialogContent dividers style={{ padding: "16px" }}>
+            {addStockDialog ? (
+              <Fragment>
+                <TextField
+                  id={"equal_" + dialogIndex}
+                  name={"equal_" + dialogIndex}
+                  select
+                  label="equal"
+                  variant="outlined"
+                  margin="dense"
+                  value={stockNotifyRef.current[dialogIndex].equal}
+                  style={{ minWidth: "18px" }}
+                  onChange={changeAlertInfo}
+                  disabled={sendingForm}
+                  fullWidth={true}
+                >
+                  <MenuItem key=">=" value=">=">
+                    {">="}
+                  </MenuItem>
+                  <MenuItem key="<=" value="<=">
+                    {"<="}
+                  </MenuItem>
+                </TextField>
+                <TextField
+                  id={"price_" + dialogIndex}
+                  name={"price_" + dialogIndex}
+                  label="price"
+                  variant="outlined"
+                  value={stockNotify[dialogIndex].price}
+                  margin="dense"
+                  autoComplete="off"
+                  disabled={sendingForm}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                  }}
+                  style={{ minWidth: "90px" }}
+                  onChange={changeAlertInfo}
+                  type="number"
+                  fullWidth={true}
+                />
+                <div style={{ textAlign: "center" }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={stockNotify[dialogIndex].alert}
+                        onChange={() =>
+                          changeAlertSwitch(
+                            dialogIndex,
+                            stockNotify[dialogIndex]._id,
+                            stockNotify[dialogIndex].alert
+                          )
+                        }
+                        name="alertCheck"
+                        color="primary"
+                        disabled={!edit || sendingForm}
+                      />
+                    }
+                    label="Enable Switch"
+                  />
+                </div>
+              </Fragment>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus color="primary">
+              Save
+            </Button>
+            <Button autoFocus onClick={fun_addStockDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </ThemeProvider>
     </HttpsRedirect>
   );
