@@ -131,8 +131,6 @@ const App = () => {
   loginRef.current = login;
   const stockHistoryRef = useRef(stockHistory);
   stockHistoryRef.current = stockHistory;
-  const selectHistoryRef = useRef(selectHistory);
-  selectHistoryRef.current = selectHistory;
 
   const theme = React.useMemo(
     () =>
@@ -260,7 +258,7 @@ const App = () => {
                 message.time.split(" ")[0] !== row.nowTime.split(" ")[0])
             ) {
               findStockNameArray = [
-                { stock: row.stock, email: loginRef.current.email },
+                { stock: row.stock, email: loginRef.current.email, index },
               ];
               changeSelectHistoryArray = [
                 {
@@ -297,7 +295,11 @@ const App = () => {
         });
       }
       if (findStockNameArray.length !== 0) {
-        findStockName(findStockNameArray[0].stock, loginRef.current.email);
+        findStockName(
+          findStockNameArray[0].stock,
+          loginRef.current.email,
+          findStockNameArray[0].index
+        );
       } else if (
         changeSelectHistoryArray.length !== 0 &&
         dialogIndexRef.current > -1
@@ -305,7 +307,8 @@ const App = () => {
         changeSelectHistory(
           changeSelectHistoryArray[0].stock,
           changeSelectHistoryArray[0].message,
-          changeSelectHistoryArray[0].side
+          changeSelectHistoryArray[0].side,
+          changeSelectHistoryArray[0].index
         );
       }
       let time = message.time.split(" ")[1];
@@ -351,12 +354,12 @@ const App = () => {
   const changeDarkModeSetting = () => {
     setDarkModeSetting((prevState) => !prevState);
   };
-  const changeSelectHistory = (stock, message, side = "new") => {
+  const changeSelectHistory = (stock, message, side = "new", index = 0) => {
     if (
       dialogIndexRef.current > -1 &&
-      stock === stockNotifyRef.current[dialogIndexRef.current].stock
+      stock === stockNotifyRef.current[dialogIndexRef.current].stock &&
+      dialogIndexRef.current === index
     ) {
-      console.log(selectHistoryRef.current);
       if (side === "end") {
         let time = message.time.split(" ")[1];
         if (!selectHistory.some((e) => e.time === time)) {
@@ -426,8 +429,6 @@ const App = () => {
       setOpen((prevState) => true);
       setDialogIndex((prevState) => index);
       history.push("/" + stockNotify[index]._id);
-      console.log(index);
-      console.log(stockHistory, stockNotify, selectHistory);
       for (let i = 0; i < stockHistory.length; i++) {
         if (stockHistory[i].stock === stockNotify[index].stock) {
           setSelectHistory(stockHistory[i].priceWithTime);
@@ -437,7 +438,6 @@ const App = () => {
     }
   };
   const closeDialog = () => {
-    console.log(selectHistory);
     setOpen((prevState) => false);
     setTimeout(() => {
       setDialogIndex((prevState) => -1);
@@ -509,8 +509,8 @@ const App = () => {
                     return prevState;
                   }
                 });
-                findStockName(resultArray[i].stock, email);
-                findStockHistory(resultArray[i].stock, email);
+                findStockName(resultArray[i].stock, email, i);
+                findStockHistory(resultArray[i].stock, email, i);
               }
             }
             setTimeout(function () {
@@ -530,7 +530,6 @@ const App = () => {
                       stockHistoryRef.current[j].stock ===
                       stockNotifyRef.current[k].stock
                     ) {
-                      console.log("add how many times");
                       setSelectHistory(
                         stockHistoryRef.current[j].priceWithTime
                       );
@@ -602,8 +601,8 @@ const App = () => {
                     return prevState;
                   }
                 });
-                findStockName(resultArray[i].stock, email);
-                findStockHistory(resultArray[i].stock, email);
+                findStockName(resultArray[i].stock, email, i);
+                findStockHistory(resultArray[i].stock, email, i);
               }
             }
             setTimeout(function () {
@@ -618,25 +617,6 @@ const App = () => {
                 if (k !== resultArray.length) {
                   setOpen((prevState) => true);
                   setDialogIndex((prevState) => k);
-                  for (let j = 0; j < stockHistoryRef.current.length; j++) {
-                    if (
-                      stockHistoryRef.current[j].stock ===
-                      stockNotifyRef.current[k].stock
-                    ) {
-                      console.log(
-                        "add how many times",
-                        stockHistoryRef.current[j].stock,
-                        stockNotifyRef.current[k].stock
-                      );
-                      /*setSelectHistory(
-                        stockHistoryRef.current[j].priceWithTime
-                      );*/
-                      setTimeout(() => {
-                        console.log(stockHistoryRef.current[j]);
-                      }, 1000);
-                      break;
-                    }
-                  }
                 } else {
                   history.push("/");
                 }
@@ -806,8 +786,8 @@ const App = () => {
                   return prevState;
                 }
               });
-              findStockName(resultArray[i].stock, login.email);
-              findStockHistory(resultArray[i].stock, login.email);
+              findStockName(resultArray[i].stock, login.email, i);
+              findStockHistory(resultArray[i].stock, login.email, i);
             }
           }
         })
@@ -964,7 +944,7 @@ const App = () => {
       }
     }
   };
-  const findStockHistory = (stock, subEmail) => {
+  const findStockHistory = (stock, subEmail, k) => {
     fetch(host + "/select/stockPrice/", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -1021,13 +1001,13 @@ const App = () => {
             }
           });
         });
-        changeSelectHistory(stock, result.ok, "front");
+        changeSelectHistory(stock, result.ok, "front", k);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  const findStockName = (stock, subEmail) => {
+  const findStockName = (stock = "00001", subEmail, index = 0) => {
     //since email object may not contain before login
     fetch(host + "/find/stockName/", {
       method: "post",
@@ -1134,7 +1114,8 @@ const App = () => {
             price: nowPrice,
             jsTime: new Date(nowTime).getTime(),
           },
-          "end"
+          "end",
+          index
         );
       })
       .catch((err) => {
@@ -1683,7 +1664,6 @@ const App = () => {
             position="relative"
             paddingX={2}
             width="100%"
-            height="20vh"
             minHeight="200px"
             color="background.paper"
             display="flex"
