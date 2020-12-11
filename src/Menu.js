@@ -5,6 +5,9 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Brightness2Icon from "@material-ui/icons/Brightness2";
+import IconButton from "@material-ui/core/IconButton";
+import Brightness7Icon from "@material-ui/icons/Brightness7";
 import "./App.css";
 
 let testlink = false;
@@ -36,6 +39,13 @@ const Menu = (props) => {
             StockAlertClient
           </Link>
         </Typography>
+        <IconButton
+          aria-label="moon icon"
+          color="inherit"
+          onClick={props.changeDarkModeSetting}
+        >
+          {props.darkModeSetting ? <Brightness7Icon /> : <Brightness2Icon />}
+        </IconButton>
         {testlink ? null : props.login.email === "" ? (
           <GoogleLogin
             clientId={props.clientId}

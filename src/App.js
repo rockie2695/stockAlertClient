@@ -53,7 +53,6 @@ import red from "@material-ui/core/colors/red";
 
 /**
  * make dense mode
- * test notify
  */
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
@@ -117,6 +116,7 @@ const App = () => {
   const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(false);
   const [darkModeSetting, setDarkModeSetting] = useState(prefersDarkMode);
   const [addStockDialog, setAddStockDialog] = useState(false);
+  const [denseModeSetting, setDenseModeSetting] = useState(false);
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host));
@@ -354,7 +354,11 @@ const App = () => {
   const changeDarkModeSetting = () => {
     setDarkModeSetting((prevState) => !prevState);
   };
+  const changeDenseModeSetting = () => {
+    setDenseModeSetting((prevState) => !prevState);
+  };
   const changeSelectHistory = (stock, message, side = "new", index = 0) => {
+    console.log("test", stock, dialogIndexRef.current);
     if (
       dialogIndexRef.current > -1 &&
       stock === stockNotifyRef.current[dialogIndexRef.current].stock &&
@@ -698,6 +702,9 @@ const App = () => {
               value = value.substring(value.length - 5, value.length);
             }
             value = value.padStart(5, "0");
+            if (value === "00000") {
+              value = "";
+            }
             addObject = { [target[0]]: value };
           }
           return { ...row, ...addObject };
@@ -738,6 +745,7 @@ const App = () => {
         }
       }
     }
+    console.log(updateMessage, insertMessage);
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
       fetch(host + "/update/stockNotify", {
         method: "post",
@@ -754,6 +762,10 @@ const App = () => {
             let resultArray = result.ok;
             for (let i = 0; i < addRoomList.length; i++) {
               wsRef.current.emit("leaveRoom", addRoomList[i].stock);
+            }
+            setAddStockDialog((prevState) => false);
+            if (dialogIndexRef.current > resultArray.length - 1) {
+              setDialogIndex(() => -1);
             }
             setAddRoomList((prevState) => {
               return [];
@@ -806,10 +818,10 @@ const App = () => {
       fun_addNotify();
       setDialogIndex((prevState) => stockNotifyRef.current.length - 1);
       setTimeout(() => {
-        setAddStockDialog((prevState) => !prevState);
+        setAddStockDialog((prevState) => true);
       }, 0);
     } else {
-      setAddStockDialog((prevState) => !prevState);
+      setAddStockDialog((prevState) => false);
     }
     fun_edit();
   };
@@ -1001,6 +1013,7 @@ const App = () => {
             }
           });
         });
+        console.log("test2", stock);
         changeSelectHistory(stock, result.ok, "front", k);
       })
       .catch((err) => {
@@ -1107,6 +1120,7 @@ const App = () => {
             }
           });
         });
+        console.log("test3", stock);
         changeSelectHistory(
           stock,
           {
@@ -1158,6 +1172,8 @@ const App = () => {
               fun_login={fun_login}
               fun_logout={fun_logout}
               sendingForm={sendingForm}
+              changeDarkModeSetting={changeDarkModeSetting}
+              darkModeSetting={darkModeSetting}
             />
           </Suspense>
           <Box
@@ -1185,7 +1201,7 @@ const App = () => {
               <Grid item xs={12} sm={12} md={8} className="margin1">
                 <Paper style={{ paddingBottom: 2 }}>
                   <Typography align="right" className="margin2">
-                    <FormControlLabel
+                    {/*<FormControlLabel
                       control={
                         <Switch
                           checked={darkModeSetting}
@@ -1195,6 +1211,17 @@ const App = () => {
                         />
                       }
                       label="Dark Mode"
+                    />*/}
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={denseModeSetting}
+                          onChange={changeDenseModeSetting}
+                          name="Dense Mode Switch"
+                          color="primary"
+                        />
+                      }
+                      label="Dense Mode"
                     />
                     <FormControlLabel
                       control={
@@ -1741,18 +1768,20 @@ const App = () => {
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
             </Grid>
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{
-                position: "fixed",
-                bottom: 16,
-                left: "calc(100vw - 85px)",
-              }}
-              onClick={fun_addStockDialog}
-            >
-              <AddIcon />
-            </Fab>
+            {!edit ? (
+              <Fab
+                color="primary"
+                aria-label="add"
+                style={{
+                  position: "fixed",
+                  bottom: 16,
+                  left: "calc(100vw - 85px)",
+                }}
+                onClick={fun_addStockDialog}
+              >
+                <AddIcon />
+              </Fab>
+            ) : null}
           </Box>
           {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
         </Box>
@@ -1791,6 +1820,21 @@ const App = () => {
           <DialogContent dividers style={{ padding: "16px" }}>
             {addStockDialog ? (
               <Fragment>
+                <TextField
+                  type="number"
+                  style={{ minWidth: "85px" }}
+                  id={"stock_" + dialogIndex}
+                  name={"stock_" + dialogIndex}
+                  label="stock"
+                  variant="outlined"
+                  value={stockNotifyRef.current[dialogIndex].stock}
+                  margin="dense"
+                  autoComplete="off"
+                  onChange={changeAlertInfo}
+                  onBlur={loseFocusAlertInfo}
+                  disabled={sendingForm}
+                  fullWidth={true}
+                />
                 <TextField
                   id={"equal_" + dialogIndex}
                   name={"equal_" + dialogIndex}
@@ -1854,7 +1898,7 @@ const App = () => {
             ) : null}
           </DialogContent>
           <DialogActions>
-            <Button autoFocus color="primary">
+            <Button autoFocus color="primary" onClick={fun_save}>
               Save
             </Button>
             <Button autoFocus onClick={fun_addStockDialog} color="primary">
