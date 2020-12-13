@@ -31,7 +31,7 @@ import ReceiptIcon from "@material-ui/icons/Receipt";
 
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
-
+import MaterialTooltip from "@material-ui/core/Tooltip";
 import {
   AreaChart,
   Area,
@@ -302,17 +302,17 @@ const DialogBox = (props) => {
   const gradientOffset = () => {
     const dataMax = Math.max(...props.selectHistory.map((i) => i.price));
     const dataMin = Math.min(...props.selectHistory.map((i) => i.price));
+    const past = props.stockNotify[props.dialogIndex].past;
     if (props.dialogIndex > -1) {
-      if (dataMax <= props.stockNotify[props.dialogIndex].past) {
+      if (dataMax <= past) {
         return 0;
-      } else if (dataMin >= props.stockNotify[props.dialogIndex].past) {
+      } else if (dataMin >= past) {
         return 1;
       } else {
         return (
-          (dataMax - props.stockNotify[props.dialogIndex].past) /
-          (dataMax -
-            props.stockNotify[props.dialogIndex].past -
-            (dataMin - props.stockNotify[props.dialogIndex].past))
+          Math.round(
+            ((dataMax - past) / (dataMax - past - (dataMin - past))) * 1000
+          ) / 1000
         );
       }
     } else {
@@ -525,18 +525,28 @@ const DialogBox = (props) => {
                     <Typography align="center" variant="h6">
                       Today Graph
                     </Typography>
+
                     <Typography align="right" className="margin2">
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={areaChartSetting}
-                            onChange={changeAreaChartSetting}
-                            name="Area Chart"
-                            color="primary"
-                          />
-                        }
-                        label="Area Chart"
-                      />
+                      <MaterialTooltip
+                        title="Area is not sure"
+                        aria-label="Area is not sure"
+                        style={{ margin: 0 }}
+                        placement="bottom"
+                        arrow
+                      >
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={areaChartSetting}
+                              onChange={changeAreaChartSetting}
+                              name="Area Chart"
+                              color="primary"
+                            />
+                          }
+                          label="Area Chart"
+                          style={{ margin: 0 }}
+                        />
+                      </MaterialTooltip>
                     </Typography>
                   </Box>
                   <Box marginRight={3}>
@@ -1370,6 +1380,12 @@ const DialogBox = (props) => {
         </Fragment>
       ) : null}
       <DialogActions>
+        <Button
+          onClick={() => props.clickAvatar(props.dialogIndex)}
+          color="primary"
+        >
+          Delete
+        </Button>
         <Button autoFocus onClick={props.closeDialog} color="primary">
           Close
         </Button>

@@ -7,3 +7,4 @@
 [1204/173206.551:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\loklok\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\541d3620-8eda-4c6e-84a6-d91a8dfc0a28: ╰参тぃ﹚隔畖 (0x3)
 [1204/173206.557:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\loklok\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\2c175013-6153-4c9f-a806-d731375eeccb: ╰参тぃ﹚隔畖 (0x3)
 [1204/173206.563:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\loklok\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\e6777692-eac7-41bf-85f4-3781dba3b27b: ╰参тぃ﹚隔畖 (0x3)
+[1213/001114.052:ERROR:directory_reader_win.cc(43)] FindFirstFile: ╰参тぃ﹚隔畖 (0x3)

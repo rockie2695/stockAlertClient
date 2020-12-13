@@ -358,7 +358,6 @@ const App = () => {
     setDenseModeSetting((prevState) => !prevState);
   };
   const changeSelectHistory = (stock, message, side = "new", index = 0) => {
-    console.log("test", stock, dialogIndexRef.current);
     if (
       dialogIndexRef.current > -1 &&
       stock === stockNotifyRef.current[dialogIndexRef.current].stock &&
@@ -745,7 +744,6 @@ const App = () => {
         }
       }
     }
-    console.log(updateMessage, insertMessage);
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
       fetch(host + "/update/stockNotify", {
         method: "post",
@@ -893,67 +891,66 @@ const App = () => {
     }
   };
   const clickAvatar = (index) => {
-    if (edit) {
-      if (typeof stockNotify[index]._id !== "undefined") {
-        let id = stockNotify[index]._id;
-        let stock = stockNotify[index].stock;
-        let count = stockNotify.filter((row) => row.stock === stock).length;
-        fetch(host + "/delete/stockNotify/", {
-          method: "post",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: login.email,
-            id: id,
-            stock: stock,
-          }),
-        })
-          .then((res) => res.json())
-          .then((result) => {
-            console.log(result);
-            if (typeof result.ok !== "undefined") {
-              //delete stockNotify , stockHistory && leave room
-              setStockNotify((prevState) => {
+    if (typeof stockNotify[index]._id !== "undefined") {
+      let id = stockNotify[index]._id;
+      let stock = stockNotify[index].stock;
+      let count = stockNotify.filter((row) => row.stock === stock).length;
+      fetch(host + "/delete/stockNotify/", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: login.email,
+          id: id,
+          stock: stock,
+        }),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (typeof result.ok !== "undefined") {
+            setDialogIndex(() => -1);
+            setOpen(() => false);
+            //delete stockNotify , stockHistory && leave room
+            setStockNotify((prevState) => {
+              return prevState.filter((row, index) => {
+                return row._id !== id;
+              });
+            });
+            if (count === 1) {
+              setStockHistory((prevState) => {
                 return prevState.filter((row, index) => {
-                  return row._id !== id;
+                  return row.stock !== stock;
                 });
               });
-              if (count === 1) {
-                setStockHistory((prevState) => {
-                  return prevState.filter((row, index) => {
-                    return row.stock !== stock;
-                  });
-                });
-              }
-              for (let i = 0; i < addRoomList.length; i++) {
-                wsRef.current.emit("leaveRoom", addRoomList[i].stock);
-              }
-              setAddRoomList((prevState) => {
-                return [];
-              });
-              for (let i = 0; i < stockHistory.length; i++) {
-                setAddRoomList((prevState) => {
-                  if (!prevState.includes(stockHistory[i].stock)) {
-                    wsRef.current.emit("addRoom", stockHistory[i].stock);
-                    return [...prevState, stockHistory[i].stock];
-                  } else {
-                    return prevState;
-                  }
-                });
-              }
-            } else if (typeof result.error !== "undefined") {
-              alert(result.error);
             }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        setStockNotify((prevState) => {
-          return prevState.filter((row, row_index) => {
-            return row_index !== index;
-          });
+            for (let i = 0; i < addRoomList.length; i++) {
+              wsRef.current.emit("leaveRoom", addRoomList[i].stock);
+            }
+            setAddRoomList((prevState) => {
+              return [];
+            });
+            for (let i = 0; i < stockHistory.length; i++) {
+              setAddRoomList((prevState) => {
+                if (!prevState.includes(stockHistory[i].stock)) {
+                  wsRef.current.emit("addRoom", stockHistory[i].stock);
+                  return [...prevState, stockHistory[i].stock];
+                } else {
+                  return prevState;
+                }
+              });
+            }
+          } else if (typeof result.error !== "undefined") {
+            alert(result.error);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }
+    } else {
+      setStockNotify((prevState) => {
+        return prevState.filter((row, row_index) => {
+          return row_index !== index;
+        });
+      });
     }
   };
   const findStockHistory = (stock, subEmail, k) => {
@@ -1013,7 +1010,6 @@ const App = () => {
             }
           });
         });
-        console.log("test2", stock);
         changeSelectHistory(stock, result.ok, "front", k);
       })
       .catch((err) => {
@@ -1120,7 +1116,6 @@ const App = () => {
             }
           });
         });
-        console.log("test3", stock);
         changeSelectHistory(
           stock,
           {
@@ -1201,17 +1196,6 @@ const App = () => {
               <Grid item xs={12} sm={12} md={8} className="margin1">
                 <Paper style={{ paddingBottom: 2 }}>
                   <Typography align="right" className="margin2">
-                    {/*<FormControlLabel
-                      control={
-                        <Switch
-                          checked={darkModeSetting}
-                          onChange={changeDarkModeSetting}
-                          name="Dark Mode Switch"
-                          color="primary"
-                        />
-                      }
-                      label="Dark Mode"
-                    />*/}
                     <FormControlLabel
                       control={
                         <Switch
@@ -1280,7 +1264,7 @@ const App = () => {
                           <CloseIcon />
                         </Button>
                       </Fragment>
-                    ) : (
+                    ) : hideAlert ? null : (
                       <Button
                         variant="contained"
                         color="primary"
@@ -1372,7 +1356,9 @@ const App = () => {
                                 >
                                   <Avatar
                                     className={edit ? "cursorPointer" : ""}
-                                    onClick={() => clickAvatar(index)}
+                                    onClick={
+                                      edit ? () => clickAvatar(index) : null
+                                    }
                                   >
                                     {edit ? "X" : index + 1}
                                   </Avatar>
@@ -1768,7 +1754,7 @@ const App = () => {
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
             </Grid>
-            {!edit ? (
+            {!edit && hideAlert ? (
               <Fab
                 color="primary"
                 aria-label="add"
@@ -1804,6 +1790,7 @@ const App = () => {
             changeAlertInfo={changeAlertInfo}
             isDarkMode={isDarkMode}
             priceDiffPercentSetting={priceDiffPercentSetting}
+            clickAvatar={clickAvatar}
           />
         </Suspense>
         <Dialog
