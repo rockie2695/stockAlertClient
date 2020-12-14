@@ -814,10 +814,12 @@ const App = () => {
   const fun_addStockDialog = () => {
     if (!edit) {
       fun_addNotify();
-      setDialogIndex((prevState) => stockNotifyRef.current.length - 1);
+      setTimeout(() => {
+        setDialogIndex((prevState) => stockNotifyRef.current.length - 1);
+      }, 0);
       setTimeout(() => {
         setAddStockDialog((prevState) => true);
-      }, 0);
+      }, 100);
     } else {
       setAddStockDialog((prevState) => false);
     }
@@ -938,6 +940,7 @@ const App = () => {
                 }
               });
             }
+            history.push("/");
           } else if (typeof result.error !== "undefined") {
             alert(result.error);
           }
