@@ -1616,6 +1616,7 @@ const App = () => {
                                         />
                                       }
                                       label=""
+                                      style={{ marginLeft: -22 }}
                                     />
                                   </Grid>
                                 </Hidden>
