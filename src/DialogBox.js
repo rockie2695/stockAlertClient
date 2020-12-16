@@ -903,7 +903,24 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].tenDayAvg}
+                            {props.stockNotify[props.dialogIndex].tenDayAvg} (
+                            {parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) >
+                            parseFloat(
+                              props.stockNotify[props.dialogIndex].tenDayAvg
+                            ) ? (
+                              <span style={{ color: green_color }}>高</span>
+                            ) : null}
+                            {parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) <
+                            parseFloat(
+                              props.stockNotify[props.dialogIndex].tenDayAvg
+                            ) ? (
+                              <span style={{ color: red_color }}>低</span>
+                            ) : null}
+                            )
                           </Typography>
                         </td>
                       </tr>
@@ -933,7 +950,25 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].twentyDayAvg}
+                            {props.stockNotify[props.dialogIndex].twentyDayAvg}{" "}
+                            (
+                            {parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) >
+                            parseFloat(
+                              props.stockNotify[props.dialogIndex].twentyDayAvg
+                            ) ? (
+                              <span style={{ color: green_color }}>高</span>
+                            ) : null}
+                            {parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) <
+                            parseFloat(
+                              props.stockNotify[props.dialogIndex].twentyDayAvg
+                            ) ? (
+                              <span style={{ color: red_color }}>低</span>
+                            ) : null}
+                            )
                           </Typography>
                         </td>
                       </tr>
@@ -963,7 +998,24 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].fiftyDayAvg}
+                            {props.stockNotify[props.dialogIndex].fiftyDayAvg} (
+                            {parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) >
+                            parseFloat(
+                              props.stockNotify[props.dialogIndex].fiftyDayAvg
+                            ) ? (
+                              <span style={{ color: green_color }}>高</span>
+                            ) : null}
+                            {parseFloat(
+                              props.stockNotify[props.dialogIndex].nowPrice
+                            ) <
+                            parseFloat(
+                              props.stockNotify[props.dialogIndex].fiftyDayAvg
+                            ) ? (
+                              <span style={{ color: red_color }}>低</span>
+                            ) : null}
+                            )
                           </Typography>
                         </td>
                       </tr>
