@@ -46,7 +46,6 @@ import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
-
 import "./App.css";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
@@ -1237,7 +1236,7 @@ const App = () => {
                   </Typography>
 
                   <Typography align="right" className="margin2">
-                    {hideAlert ? null : edit === true ? (
+                    {hideAlert||denseModeSetting ? null : edit === true ? (
                       <Fragment>
                         <Button
                           variant="contained"
@@ -1279,7 +1278,16 @@ const App = () => {
                     )}
                   </Typography>
                   <Box display="flex" alignItems="center" margin={2}>
-                    {denseModeSetting ? null : (
+                    {denseModeSetting ? (
+                      <Grid container alignItems="center">
+                        <Grid item xs={6} sm={6} md={6}>
+                          <Typography>Stock Number</Typography>
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={6}>
+                          <Typography>Price ($)</Typography>
+                        </Grid>
+                      </Grid>
+                    ) : (
                       <Grid container spacing={3} alignItems="center">
                         <Grid
                           item
@@ -1337,7 +1345,189 @@ const App = () => {
                   {stockNotify.length !== 0 ? (
                     <Collapse in={!loading} timeout={1000}>
                       {denseModeSetting
-                        ? null
+                        ? stockNotify.map((row, index) => (
+                            <Fade
+                              in={true}
+                              timeout={1000}
+                              style={{
+                                transitionDelay:
+                                  (row.hasOwnProperty("_id") ? index : 0) *
+                                    150 +
+                                  "ms",
+                              }}
+                              key={index}
+                            >
+                              <Box
+                                className={
+                                  edit
+                                    ? isDarkMode
+                                      ? "boxDark"
+                                      : "box"
+                                    : isDarkMode
+                                    ? "cursorPointer boxDark"
+                                    : "cursorPointer box"
+                                }
+                                display="flex"
+                                alignItems="center"
+                                paddingX={2}
+                                onClick={() => openDialog(index)}
+                              >
+                                <Grid container alignItems="center">
+                                  <Grid
+                                    item
+                                    xs={6}
+                                    sm={6}
+                                    md={6}
+                                    className="margin1"
+                                  >
+                                    <Typography variant="h6">
+                                      <span style={{ float: "left" }}>
+                                        {row.stock}
+                                      </span>
+                                      <span style={{ float: "left" }}>
+                                        &nbsp;
+                                      </span>
+                                      {typeof row.name !== "undefined" ? (
+                                        <span style={{ float: "left" }}>
+                                          {row.name}
+                                        </span>
+                                      ) : (
+                                        <Skeleton
+                                          style={{
+                                            width: "50%",
+                                            float: "left",
+                                          }}
+                                        />
+                                      )}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid
+                                    item
+                                    xs={6}
+                                    sm={6}
+                                    md={6}
+                                    className="margin1"
+                                  >
+                                    {typeof row.nowPrice !== "undefined" ? (
+                                      <div
+                                        style={
+                                          parseFloat(row.nowPrice) -
+                                            parseFloat(row.past) >
+                                          0
+                                            ? {
+                                                background: green_color,
+                                                color: "white",
+                                                borderRadius: "10px",
+                                                textAlign: "center",
+                                                maxWidth: "120px",
+                                              }
+                                            : parseFloat(row.nowPrice) -
+                                                parseFloat(row.past) <
+                                              0
+                                            ? {
+                                                background: red_color,
+                                                color: "white",
+                                                borderRadius: "10px",
+                                                textAlign: "center",
+                                                maxWidth: "120px",
+                                              }
+                                            : {
+                                                background: "lightgray",
+                                                color: "white",
+                                                borderRadius: "10px",
+                                                textAlign: "center",
+                                                maxWidth: "120px",
+                                              }
+                                        }
+                                      >
+                                        <Typography variant="h6">
+                                          {row.hasOwnProperty("oldPrice") ? (
+                                            <CountUp
+                                              start={row.oldPrice}
+                                              end={row.nowPrice}
+                                              decimals={3}
+                                              onEnd={() =>
+                                                console.log("Ended!")
+                                              }
+                                              onStart={() =>
+                                                console.log("Started!")
+                                              }
+                                            />
+                                          ) : (
+                                            <CountUp
+                                              end={row.nowPrice}
+                                              decimals={3}
+                                            />
+                                          )}
+                                        </Typography>
+                                        <div
+                                          style={{
+                                            borderBottom: "1px solid white",
+                                            width: "100%",
+                                            height: "1px",
+                                          }}
+                                        >
+                                          &nbsp;
+                                        </div>
+                                        {typeof row.past !== "undefined" &&
+                                        typeof row.nowPrice !== "undefined" ? (
+                                          <Typography variant="h6">
+                                            {(parseFloat(row.nowPrice) -
+                                              parseFloat(row.past) >
+                                            0
+                                              ? "+"
+                                              : "") +
+                                              (!priceDiffPercentSetting
+                                                ? parseFloat(
+                                                    Math.round(
+                                                      (parseFloat(
+                                                        row.nowPrice
+                                                      ) -
+                                                        parseFloat(row.past) +
+                                                        0.00001 *
+                                                          (parseFloat(
+                                                            row.nowPrice
+                                                          ) -
+                                                            parseFloat(
+                                                              row.past
+                                                            ) >
+                                                          0
+                                                            ? 1
+                                                            : -1)) *
+                                                        1000
+                                                    ) / 1000
+                                                  )
+                                                : parseFloat(
+                                                    Math.round(
+                                                      ((parseFloat(
+                                                        row.nowPrice
+                                                      ) -
+                                                        parseFloat(row.past) +
+                                                        0.00001 *
+                                                          (parseFloat(
+                                                            row.nowPrice
+                                                          ) -
+                                                            parseFloat(
+                                                              row.past
+                                                            ) >
+                                                          0
+                                                            ? 1
+                                                            : -1)) /
+                                                        row.past) *
+                                                        100000
+                                                    ) / 1000
+                                                  ) + "%")}
+                                          </Typography>
+                                        ) : null}
+                                      </div>
+                                    ) : (
+                                      <Skeleton />
+                                    )}
+                                  </Grid>
+                                </Grid>
+                              </Box>
+                            </Fade>
+                          ))
                         : stockNotify.map((row, index) => (
                             <Fade
                               in={true}
@@ -1678,7 +1868,7 @@ const App = () => {
                       </Box>
                     </Fragment>
                   )}
-                  {stockNotify.length < 10 && edit === true ? (
+                  {(stockNotify.length < 10 && edit === true) && !hideAlert ? (
                     <Fragment>
                       <Divider />
                       <Box

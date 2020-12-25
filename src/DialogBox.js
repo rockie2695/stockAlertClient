@@ -807,6 +807,10 @@ const DialogBox = (props) => {
                                   ? props.selectHistory[
                                       props.selectHistory.length - 2
                                     ].low
+                                  : typeof props.selectHistory[
+                                      props.selectHistory.length - 1
+                                    ].low === "undefined"
+                                  ? "no price"
                                   : props.selectHistory[
                                       props.selectHistory.length - 1
                                     ].low) +
@@ -818,6 +822,10 @@ const DialogBox = (props) => {
                                   ? props.selectHistory[
                                       props.selectHistory.length - 2
                                     ].high
+                                  : typeof props.selectHistory[
+                                      props.selectHistory.length - 1
+                                    ].high === "undefined"
+                                  ? "no price"
                                   : props.selectHistory[
                                       props.selectHistory.length - 1
                                     ].high)
