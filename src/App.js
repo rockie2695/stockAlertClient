@@ -1236,7 +1236,7 @@ const App = () => {
                   </Typography>
 
                   <Typography align="right" className="margin2">
-                    {hideAlert||denseModeSetting ? null : edit === true ? (
+                    {hideAlert || denseModeSetting ? null : edit === true ? (
                       <Fragment>
                         <Button
                           variant="contained"
@@ -1868,7 +1868,7 @@ const App = () => {
                       </Box>
                     </Fragment>
                   )}
-                  {(stockNotify.length < 10 && edit === true) && !hideAlert ? (
+                  {stockNotify.length < 10 && edit === true && !hideAlert ? (
                     <Fragment>
                       <Divider />
                       <Box
@@ -2111,9 +2111,11 @@ const App = () => {
           </DialogContent>
           <DialogActions>
             <Button autoFocus color="primary" onClick={fun_save}>
+              <SaveIcon />
               Save
             </Button>
             <Button autoFocus onClick={fun_addStockDialog} color="primary">
+              <CloseIcon />
               Close
             </Button>
           </DialogActions>

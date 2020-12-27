@@ -28,7 +28,7 @@ import Fade from "@material-ui/core/Fade";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import ReceiptIcon from "@material-ui/icons/Receipt";
-
+import DeleteIcon from "@material-ui/icons/Delete";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 import MaterialTooltip from "@material-ui/core/Tooltip";
@@ -1444,9 +1444,11 @@ const DialogBox = (props) => {
           onClick={() => props.clickAvatar(props.dialogIndex)}
           color="primary"
         >
+          <DeleteIcon />
           Delete
         </Button>
         <Button autoFocus onClick={props.closeDialog} color="primary">
+          <CloseIcon />
           Close
         </Button>
       </DialogActions>
