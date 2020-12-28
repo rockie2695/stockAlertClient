@@ -111,11 +111,28 @@ const App = () => {
   const [dialogIndex, setDialogIndex] = useState(-1);
   const [selectHistory, setSelectHistory] = useState([]);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [fullScreenSetting, setFullScreenSetting] = useState(false);
-  const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(false);
-  const [darkModeSetting, setDarkModeSetting] = useState(prefersDarkMode);
+  const [fullScreenSetting, setFullScreenSetting] = useState(
+    localStorage.getItem("fullScreenSetting") === null
+      ? false
+      : localStorage.getItem("fullScreenSetting") === 'true'
+  );
+  const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(
+    localStorage.getItem("priceDiffPercentSetting") === null
+      ? false
+      : localStorage.getItem("priceDiffPercentSetting") === 'true'
+  );
+  const [darkModeSetting, setDarkModeSetting] = useState(
+    localStorage.getItem("darkModeSetting") === null
+      ? prefersDarkMode
+      : localStorage.getItem("darkModeSetting") === 'true'
+  );
   const [addStockDialog, setAddStockDialog] = useState(false);
-  const [denseModeSetting, setDenseModeSetting] = useState(false);
+  const [denseModeSetting, setDenseModeSetting] = useState(
+    localStorage.getItem("denseModeSetting") === null
+      ? false
+      : localStorage.getItem("denseModeSetting") === 'true'
+  );
+
   const connectWebSocket = () => {
     //開啟
     setWs(webSocket(host));
@@ -345,15 +362,18 @@ const App = () => {
     });
   };
   const changePriceDiffPercentSetting = () => {
+    localStorage.setItem("priceDiffPercentSetting", !priceDiffPercentSetting);
     setPriceDeffPercentSetting((prevState) => !prevState);
   };
   const changeFullScreenSetting = () => {
+    localStorage.setItem("fullScreenSetting", !fullScreenSetting);
     setFullScreenSetting((prevState) => !prevState);
   };
   const changeDarkModeSetting = () => {
     setDarkModeSetting((prevState) => !prevState);
   };
   const changeDenseModeSetting = () => {
+    localStorage.setItem("denseModeSetting", !denseModeSetting);
     setDenseModeSetting((prevState) => !prevState);
   };
   const changeSelectHistory = (stock, message, side = "new", index = 0) => {
