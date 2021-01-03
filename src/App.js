@@ -114,23 +114,23 @@ const App = () => {
   const [fullScreenSetting, setFullScreenSetting] = useState(
     localStorage.getItem("fullScreenSetting") === null
       ? false
-      : localStorage.getItem("fullScreenSetting") === 'true'
+      : localStorage.getItem("fullScreenSetting") === "true"
   );
   const [priceDiffPercentSetting, setPriceDeffPercentSetting] = useState(
     localStorage.getItem("priceDiffPercentSetting") === null
       ? false
-      : localStorage.getItem("priceDiffPercentSetting") === 'true'
+      : localStorage.getItem("priceDiffPercentSetting") === "true"
   );
   const [darkModeSetting, setDarkModeSetting] = useState(
     localStorage.getItem("darkModeSetting") === null
       ? prefersDarkMode
-      : localStorage.getItem("darkModeSetting") === 'true'
+      : localStorage.getItem("darkModeSetting") === "true"
   );
   const [addStockDialog, setAddStockDialog] = useState(false);
   const [denseModeSetting, setDenseModeSetting] = useState(
     localStorage.getItem("denseModeSetting") === null
       ? false
-      : localStorage.getItem("denseModeSetting") === 'true'
+      : localStorage.getItem("denseModeSetting") === "true"
   );
 
   const connectWebSocket = () => {
@@ -1430,35 +1430,26 @@ const App = () => {
                                   >
                                     {typeof row.nowPrice !== "undefined" ? (
                                       <div
-                                        style={
-                                          parseFloat(row.nowPrice) -
-                                            parseFloat(row.past) >
-                                          0
-                                            ? {
-                                                background: green_color,
-                                                color: "white",
-                                                borderRadius: "10px",
-                                                textAlign: "center",
-                                                maxWidth: "120px",
-                                              }
-                                            : parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) <
+                                        style={{
+                                          ...{
+                                            borderRadius: "10px",
+                                            textAlign: "center",
+                                            maxWidth: "120px",
+                                            color: "white",
+                                          },
+                                          ...{
+                                            background:
+                                              parseFloat(row.nowPrice) -
+                                                parseFloat(row.past) >
                                               0
-                                            ? {
-                                                background: red_color,
-                                                color: "white",
-                                                borderRadius: "10px",
-                                                textAlign: "center",
-                                                maxWidth: "120px",
-                                              }
-                                            : {
-                                                background: "lightgray",
-                                                color: "white",
-                                                borderRadius: "10px",
-                                                textAlign: "center",
-                                                maxWidth: "120px",
-                                              }
-                                        }
+                                                ? green_color
+                                                : parseFloat(row.nowPrice) -
+                                                    parseFloat(row.past) <
+                                                  0
+                                                ? red_color
+                                                : "gray",
+                                          },
+                                        }}
                                       >
                                         <Typography variant="h6">
                                           {row.hasOwnProperty("oldPrice") ? (
