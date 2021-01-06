@@ -1378,12 +1378,13 @@ const DialogBox = (props) => {
                   >
                     {newsHistory.map((row, index) => (
                       <Fade
-                        in={true}
+                        in={false}
                         timeout={1000}
                         style={{
                           transitionDelay: index * 250 + "ms",
                         }}
                         key={index}
+                        className={"newsHistory" + index}
                       >
                         <Card key={index}>
                           <CardActionArea onClick={() => openLink(row.link)}>
