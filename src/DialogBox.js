@@ -67,8 +67,21 @@ const DialogBox = (props) => {
   const [issuedShare, setIssuedShare] = useState("");
   const [vol, setVol] = useState("");
   const [tvr, setTvr] = useState("");
+  const [newsHistorySeen, setNewsHistorySeen] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   useEffect(() => {
+    console.log("mounted");
     if (
       props.open &&
       typeof props.stockNotify[props.dialogIndex] !== "undefined"
@@ -89,8 +102,17 @@ const DialogBox = (props) => {
         let sub_tvr = props.stockNotify[props.dialogIndex].tvr;
         setTvr(fun_appendFix(sub_tvr));
       }
+      setTimeout(() => {}, 0);
     } else {
       setTimeout(() => {
+        if (
+          typeof myScrollFunc !== "undefined" &&
+          document.getElementsByClassName("MuiDialogContent-root").length > 0
+        ) {
+          document
+            .getElementsByClassName("MuiDialogContent-root")[0]
+            .removeEventListener("scroll", myScrollFunc);
+        }
         setAllDataHistory([]);
         setDailyDataHistory([]);
         setNewsHistory([]);
@@ -98,9 +120,29 @@ const DialogBox = (props) => {
         setIssuedShare("");
         setVol("");
         setTvr("");
+        setNewsHistorySeen([
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ]);
       }, 100);
     }
     return () => {
+      if (
+        typeof myScrollFunc !== "undefined" &&
+        document.getElementsByClassName("MuiDialogContent-root").length > 0
+      ) {
+        document
+          .getElementsByClassName("MuiDialogContent-root")[0]
+          .removeEventListener("scroll", myScrollFunc);
+      }
       setAllDataHistory([]);
       setDailyDataHistory([]);
       setNewsHistory([]);
@@ -108,8 +150,60 @@ const DialogBox = (props) => {
       setIssuedShare("");
       setVol("");
       setTvr("");
+      setLoadingAllData(false);
+      setLoadingDailyData(false);
+      setLoadingNews(false);
+      setNewsHistorySeen([
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+      ]);
     };
   }, [props.open, props.dialogIndex, props.stockNotify]);
+  const myScrollFunc = () => {
+    let newsLength = document.getElementsByClassName("newsHistory").length;
+    if (newsLength > 0) {
+      let y =
+        document.getElementsByClassName("MuiDialogContent-root")[0].scrollTop +
+        document.getElementsByClassName("newsHistory")[0].offsetHeight;
+
+      let seenArray = [];
+      for (let i = 0; i < newsLength; i++) {
+        if (newsHistorySeen[i] === true) {
+          seenArray.push(true);
+        } else if (seenArray.includes(false)) {
+          seenArray.push(false);
+        } else {
+          seenArray.push(
+            y >= document.getElementsByClassName("newsHistory")[i].offsetTop
+          );
+        }
+      }
+      if (seenArray.length > 0) {
+        if (JSON.stringify(newsHistorySeen) !== JSON.stringify(seenArray)) {
+          setNewsHistorySeen(seenArray);
+          console.log(
+            seenArray,
+            document.getElementsByClassName("MuiDialogContent-root")[0]
+              .scrollTop,
+            document.getElementsByClassName("newsHistory")[0].offsetHeight
+          );
+          if (!seenArray.includes(false)) {
+            document
+              .getElementsByClassName("MuiDialogContent-root")[0]
+              .removeEventListener("scroll", myScrollFunc);
+          }
+        }
+      }
+    }
+  };
   const fun_appendFix = (value) => {
     if (value > 100000000) {
       value = Math.round((value / 100000000) * 100) / 100 + "億";
@@ -187,6 +281,9 @@ const DialogBox = (props) => {
       .then((result) => {
         if (!result.hasOwnProperty("error")) {
           setNewsHistory(result);
+          document
+            .getElementsByClassName("MuiDialogContent-root")[0]
+            .addEventListener("scroll", myScrollFunc);
         } else {
           alert(result.error);
         }
@@ -199,6 +296,9 @@ const DialogBox = (props) => {
   };
   const fun_close_news = () => {
     setNewsHistory([]);
+    document
+      .getElementsByClassName("MuiDialogContent-root")[0]
+      .removeEventListener("scroll", myScrollFunc);
   };
   const fun_dailyData = (stock) => {
     //get data from https://www.quandl.com/api/v3/datasets/HKEX/00001.json?api_key=xCJuSM5DeG9s9PtmNbFg
@@ -1378,13 +1478,14 @@ const DialogBox = (props) => {
                   >
                     {newsHistory.map((row, index) => (
                       <Fade
-                        in={false}
+                        in={newsHistorySeen[index]}
                         timeout={1000}
                         style={{
-                          transitionDelay: index * 250 + "ms",
+                          transitionDelay: 250 + "ms",
                         }}
                         key={index}
-                        className={"newsHistory" + index}
+                        id={"newsHistory" + index}
+                        className={"newsHistory"}
                       >
                         <Card key={index}>
                           <CardActionArea onClick={() => openLink(row.link)}>
@@ -1435,6 +1536,12 @@ const DialogBox = (props) => {
                     ))}
                   </Box>
                 </Box>
+                {props.hideAlert ? (
+                  <Fragment>
+                    <br />
+                    <br />
+                  </Fragment>
+                ) : null}
               </Fragment>
             ) : null}
           </DialogContent>
