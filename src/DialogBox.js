@@ -189,12 +189,6 @@ const DialogBox = (props) => {
       if (seenArray.length > 0) {
         if (JSON.stringify(newsHistorySeen) !== JSON.stringify(seenArray)) {
           setNewsHistorySeen(seenArray);
-          console.log(
-            seenArray,
-            document.getElementsByClassName("MuiDialogContent-root")[0]
-              .scrollTop,
-            document.getElementsByClassName("newsHistory")[0].offsetHeight
-          );
           if (!seenArray.includes(false)) {
             document
               .getElementsByClassName("MuiDialogContent-root")[0]
