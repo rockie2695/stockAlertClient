@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
@@ -79,6 +79,8 @@ const DialogBox = (props) => {
     false,
     false,
   ]);
+  const newsHistorySeenRef = useRef(newsHistorySeen);
+  newsHistorySeenRef.current = newsHistorySeen;
 
   useEffect(() => {
     console.log("mounted");
@@ -173,27 +175,27 @@ const DialogBox = (props) => {
       let y =
         document.getElementsByClassName("MuiDialogContent-root")[0].scrollTop +
         document.getElementsByClassName("newsHistory")[0].offsetHeight;
-
-      let seenArray = [];
-      for (let i = 0; i < newsLength; i++) {
-        if (newsHistorySeen[i] === true) {
-          seenArray.push(true);
-        } else if (seenArray.includes(false)) {
-          seenArray.push(false);
-        } else {
-          seenArray.push(
+      let seenArray = [...newsHistorySeenRef.current];
+      let change = false;
+      let lastIndex = seenArray.lastIndexOf(true);
+      for (let i = lastIndex < 0 ? 0 : lastIndex; i < newsLength; i++) {
+        if (seenArray[i] === false) {
+          if (
             y >= document.getElementsByClassName("newsHistory")[i].offsetTop
-          );
+          ) {
+            seenArray[i] = true;
+            change = true;
+          } else {
+            break;
+          }
         }
       }
-      if (seenArray.length > 0) {
-        if (JSON.stringify(newsHistorySeen) !== JSON.stringify(seenArray)) {
-          setNewsHistorySeen(seenArray);
-          if (!seenArray.includes(false)) {
-            document
-              .getElementsByClassName("MuiDialogContent-root")[0]
-              .removeEventListener("scroll", myScrollFunc);
-          }
+      if (change) {
+        setNewsHistorySeen(() => seenArray);
+        if (!seenArray.includes(false)) {
+          document
+            .getElementsByClassName("MuiDialogContent-root")[0]
+            .removeEventListener("scroll", myScrollFunc);
         }
       }
     }
@@ -290,6 +292,18 @@ const DialogBox = (props) => {
   };
   const fun_close_news = () => {
     setNewsHistory([]);
+    setNewsHistorySeen([
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
     document
       .getElementsByClassName("MuiDialogContent-root")[0]
       .removeEventListener("scroll", myScrollFunc);
