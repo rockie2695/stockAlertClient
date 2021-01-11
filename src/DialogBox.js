@@ -1529,7 +1529,6 @@ const DialogBox = (props) => {
                             transitionDelay: 250 + "ms",
                           }}
                           key={index}
-                          id={"newsHistory" + index}
                           className={"newsHistory"}
                         >
                           <Card key={index}>
