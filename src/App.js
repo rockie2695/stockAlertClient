@@ -1457,12 +1457,6 @@ const App = () => {
                                               start={row.oldPrice}
                                               end={row.nowPrice}
                                               decimals={3}
-                                              onEnd={() =>
-                                                console.log("Ended!")
-                                              }
-                                              onStart={() =>
-                                                console.log("Started!")
-                                              }
                                             />
                                           ) : (
                                             <CountUp
@@ -1648,12 +1642,6 @@ const App = () => {
                                               end={row.nowPrice}
                                               decimals={3}
                                               prefix="$ "
-                                              onEnd={() =>
-                                                console.log("Ended!")
-                                              }
-                                              onStart={() =>
-                                                console.log("Started!")
-                                              }
                                             />
                                           ) : (
                                             <CountUp

@@ -68,7 +68,7 @@ const DialogBox = (props) => {
   const [vol, setVol] = useState("");
   const [tvr, setTvr] = useState("");
   const [newsHistorySeen, setNewsHistorySeen] = useState([
-    false,
+    true,
     false,
     false,
     false,
@@ -83,7 +83,6 @@ const DialogBox = (props) => {
   newsHistorySeenRef.current = newsHistorySeen;
 
   useEffect(() => {
-    console.log("mounted");
     if (
       props.open &&
       typeof props.stockNotify[props.dialogIndex] !== "undefined"
@@ -104,7 +103,6 @@ const DialogBox = (props) => {
         let sub_tvr = props.stockNotify[props.dialogIndex].tvr;
         setTvr(fun_appendFix(sub_tvr));
       }
-      setTimeout(() => {}, 0);
     } else {
       setTimeout(() => {
         if (
@@ -123,7 +121,7 @@ const DialogBox = (props) => {
         setVol("");
         setTvr("");
         setNewsHistorySeen([
-          false,
+          true,
           false,
           false,
           false,
@@ -156,7 +154,7 @@ const DialogBox = (props) => {
       setLoadingDailyData(false);
       setLoadingNews(false);
       setNewsHistorySeen([
-        false,
+        true,
         false,
         false,
         false,
@@ -168,13 +166,37 @@ const DialogBox = (props) => {
         false,
       ]);
     };
-  }, [props.open, props.dialogIndex, props.stockNotify]);
+  }, [props.open, props.dialogIndex]);
+  useEffect(() => {
+    if (
+      props.open &&
+      typeof props.stockNotify[props.dialogIndex] !== "undefined"
+    ) {
+      if (props.stockNotify[props.dialogIndex].marketValue !== "") {
+        let sub_marketValue = props.stockNotify[props.dialogIndex].marketValue;
+        setMarketValue(fun_appendFix(sub_marketValue));
+      }
+      if (props.stockNotify[props.dialogIndex].issuedShare !== "") {
+        let sub_issuedShare = props.stockNotify[props.dialogIndex].issuedShare;
+        setIssuedShare(fun_appendFix(sub_issuedShare));
+      }
+      if (props.stockNotify[props.dialogIndex].vol !== "") {
+        let sub_vol = props.stockNotify[props.dialogIndex].vol;
+        setVol(fun_appendFix(sub_vol));
+      }
+      if (props.stockNotify[props.dialogIndex].tvr !== "") {
+        let sub_tvr = props.stockNotify[props.dialogIndex].tvr;
+        setTvr(fun_appendFix(sub_tvr));
+      }
+    }
+  }, [props.stockNotify]);
   const myScrollFunc = () => {
-    let newsLength = document.getElementsByClassName("newsHistory").length;
+    const newsLength = document.getElementsByClassName("newsHistory").length;
     if (newsLength > 0) {
       let y =
         document.getElementsByClassName("MuiDialogContent-root")[0].scrollTop +
-        document.getElementsByClassName("newsHistory")[0].offsetHeight;
+        document.getElementsByClassName("newsHistory")[0].offsetHeight +
+        170;
       let seenArray = [...newsHistorySeenRef.current];
       let change = false;
       let lastIndex = seenArray.lastIndexOf(true);
@@ -1580,12 +1602,6 @@ const DialogBox = (props) => {
                       ))}
                     </Box>
                   </Box>
-                  {props.hideAlert ? (
-                    <Fragment>
-                      <br />
-                      <br />
-                    </Fragment>
-                  ) : null}
                 </Fragment>
               ) : null}
             </div>
