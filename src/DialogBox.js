@@ -31,6 +31,7 @@ import ReceiptIcon from "@material-ui/icons/Receipt";
 import DeleteIcon from "@material-ui/icons/Delete";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
+import grey from "@material-ui/core/colors/grey";
 import MaterialTooltip from "@material-ui/core/Tooltip";
 import {
   AreaChart,
@@ -54,6 +55,40 @@ if (
 
 const green_color = green[500];
 const red_color = red[500];
+const grey_color = grey[500];
+
+const DayAvgTips = (props) => {
+  if (
+    typeof props.avgPrice !== "undefined" &&
+    typeof props.nowPrice !== "undefined"
+  ) {
+    if (props.nowPrice > props.avgPrice) {
+      return (
+        <Fragment>
+          {"("}
+          <span style={{ color: green_color }}>高</span>
+          {")"}
+        </Fragment>
+      );
+    } else if (props.nowPrice < props.avgPrice) {
+      return (
+        <Fragment>
+          {"("}
+          <span style={{ color: red_color }}>低</span>
+          {")"}
+        </Fragment>
+      );
+    } else {
+      return (
+        <Fragment>
+          {"("}
+          <span style={{ color: grey_color }}>平</span>
+          {")"}
+        </Fragment>
+      );
+    }
+  }
+};
 
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
@@ -449,6 +484,7 @@ const DialogBox = (props) => {
       return 0;
     }
   };
+
   return (
     <Dialog
       onClose={props.closeDialog}
@@ -1070,24 +1106,15 @@ const DialogBox = (props) => {
                           </td>
                           <td>
                             <Typography>
-                              {props.stockNotify[props.dialogIndex].tenDayAvg} (
-                              {parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
-                              ) >
-                              parseFloat(
-                                props.stockNotify[props.dialogIndex].tenDayAvg
-                              ) ? (
-                                <span style={{ color: green_color }}>高</span>
-                              ) : null}
-                              {parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
-                              ) <
-                              parseFloat(
-                                props.stockNotify[props.dialogIndex].tenDayAvg
-                              ) ? (
-                                <span style={{ color: red_color }}>低</span>
-                              ) : null}
-                              )
+                              {props.stockNotify[props.dialogIndex].tenDayAvg}{" "}
+                              <DayAvgTips
+                                avgPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex].tenDayAvg
+                                )}
+                                nowPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex].nowPrice
+                                )}
+                              />
                             </Typography>
                           </td>
                         </tr>
@@ -1121,26 +1148,15 @@ const DialogBox = (props) => {
                                 props.stockNotify[props.dialogIndex]
                                   .twentyDayAvg
                               }{" "}
-                              (
-                              {parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
-                              ) >
-                              parseFloat(
-                                props.stockNotify[props.dialogIndex]
-                                  .twentyDayAvg
-                              ) ? (
-                                <span style={{ color: green_color }}>高</span>
-                              ) : null}
-                              {parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
-                              ) <
-                              parseFloat(
-                                props.stockNotify[props.dialogIndex]
-                                  .twentyDayAvg
-                              ) ? (
-                                <span style={{ color: red_color }}>低</span>
-                              ) : null}
-                              )
+                              <DayAvgTips
+                                avgPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex]
+                                    .twentyDayAvg
+                                )}
+                                nowPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex].nowPrice
+                                )}
+                              />
                             </Typography>
                           </td>
                         </tr>
@@ -1171,24 +1187,15 @@ const DialogBox = (props) => {
                           <td>
                             <Typography>
                               {props.stockNotify[props.dialogIndex].fiftyDayAvg}{" "}
-                              (
-                              {parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
-                              ) >
-                              parseFloat(
-                                props.stockNotify[props.dialogIndex].fiftyDayAvg
-                              ) ? (
-                                <span style={{ color: green_color }}>高</span>
-                              ) : null}
-                              {parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
-                              ) <
-                              parseFloat(
-                                props.stockNotify[props.dialogIndex].fiftyDayAvg
-                              ) ? (
-                                <span style={{ color: red_color }}>低</span>
-                              ) : null}
-                              )
+                              <DayAvgTips
+                                avgPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex]
+                                    .fiftyDayAvg
+                                )}
+                                nowPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex].nowPrice
+                                )}
+                              />
                             </Typography>
                           </td>
                         </tr>
@@ -1328,36 +1335,48 @@ const DialogBox = (props) => {
                     borderRadius={16}
                     marginY={2}
                   >
-                    <Box textAlign="center" paddingY={3}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() =>
-                          allDataHistory.length > 0
-                            ? fun_close_allDataHistory()
-                            : fun_allData(
-                                props.stockNotify[props.dialogIndex].stock
-                              )
-                        }
+                    <Box
+                      textAlign="center"
+                      paddingY={3}
+                      className={"StickyButton"}
+                    >
+                      <MaterialTooltip
+                        title="About one week data"
+                        aria-label="About one week data"
+                        style={{ margin: 0 }}
+                        placement="right"
+                        arrow
                       >
-                        <Fragment>
-                          <Typography>
-                            {allDataHistory.length > 0
-                              ? "Close Server Data"
-                              : "Get Server Data"}
-                          </Typography>
-                          <TrendingUpIcon style={{ marginLeft: 8 }} />
-                          {loadingAllData ? (
-                            <CircularProgress
-                              size={20}
-                              style={{ color: "white", marginLeft: 8 }}
-                            />
-                          ) : null}
-                          {allDataHistory.length > 0 ? (
-                            <CloseIcon style={{ marginLeft: 8 }} />
-                          ) : null}
-                        </Fragment>
-                      </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() =>
+                            allDataHistory.length > 0
+                              ? fun_close_allDataHistory()
+                              : fun_allData(
+                                  props.stockNotify[props.dialogIndex].stock
+                                )
+                          }
+                        >
+                          <Fragment>
+                            <Typography>
+                              {allDataHistory.length > 0
+                                ? "Close Server Data"
+                                : "Get Server Data"}
+                            </Typography>
+                            <TrendingUpIcon style={{ marginLeft: 8 }} />
+                            {loadingAllData ? (
+                              <CircularProgress
+                                size={20}
+                                style={{ color: "white", marginLeft: 8 }}
+                              />
+                            ) : null}
+                            {allDataHistory.length > 0 ? (
+                              <CloseIcon style={{ marginLeft: 8 }} />
+                            ) : null}
+                          </Fragment>
+                        </Button>
+                      </MaterialTooltip>
                     </Box>
                     <Box marginRight={3}>
                       <Collapse in={allDataHistory.length > 0} timeout={1000}>
@@ -1419,36 +1438,48 @@ const DialogBox = (props) => {
                     borderRadius={16}
                     marginY={2}
                   >
-                    <Box textAlign="center" paddingY={3}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() =>
-                          dailyDataHistory.length > 0
-                            ? fun_close_dailyDataHistory()
-                            : fun_dailyData(
-                                props.stockNotify[props.dialogIndex].stock
-                              )
-                        }
+                    <Box
+                      textAlign="center"
+                      paddingY={3}
+                      className={"StickyButton"}
+                    >
+                      <MaterialTooltip
+                        title="Data since stock appear on the market"
+                        aria-label="Data since stock appear on the market"
+                        style={{ margin: 0 }}
+                        placement="right"
+                        arrow
                       >
-                        <Fragment>
-                          <Typography>
-                            {dailyDataHistory.length > 0
-                              ? "Close Daily Data"
-                              : "Get Daily Data"}
-                          </Typography>
-                          <TimelineIcon style={{ marginLeft: 8 }} />
-                          {loadingDailyData ? (
-                            <CircularProgress
-                              size={20}
-                              style={{ color: "white", marginLeft: 8 }}
-                            />
-                          ) : null}
-                          {dailyDataHistory.length > 0 ? (
-                            <CloseIcon style={{ marginLeft: 8 }} />
-                          ) : null}
-                        </Fragment>
-                      </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() =>
+                            dailyDataHistory.length > 0
+                              ? fun_close_dailyDataHistory()
+                              : fun_dailyData(
+                                  props.stockNotify[props.dialogIndex].stock
+                                )
+                          }
+                        >
+                          <Fragment>
+                            <Typography>
+                              {dailyDataHistory.length > 0
+                                ? "Close Daily Data"
+                                : "Get Daily Data"}
+                            </Typography>
+                            <TimelineIcon style={{ marginLeft: 8 }} />
+                            {loadingDailyData ? (
+                              <CircularProgress
+                                size={20}
+                                style={{ color: "white", marginLeft: 8 }}
+                              />
+                            ) : null}
+                            {dailyDataHistory.length > 0 ? (
+                              <CloseIcon style={{ marginLeft: 8 }} />
+                            ) : null}
+                          </Fragment>
+                        </Button>
+                      </MaterialTooltip>
                     </Box>
                     <Box marginRight={3}>
                       <Collapse in={dailyDataHistory.length > 0} timeout={1000}>
@@ -1510,7 +1541,11 @@ const DialogBox = (props) => {
                     borderRadius={16}
                     marginY={2}
                   >
-                    <Box textAlign="center" paddingY={3}>
+                    <Box
+                      textAlign="center"
+                      paddingY={3}
+                      className={"StickyButton"}
+                    >
                       <Button
                         variant="contained"
                         color="primary"
@@ -1572,12 +1607,6 @@ const DialogBox = (props) => {
                                         position: props.fullScreen
                                           ? "block"
                                           : "absolute",
-                                        background: "white",
-                                        bottom: 0,
-                                        backdropFilter: "blur(5px)",
-                                        backgroundColor:
-                                          "rgba(255, 255, 255, 0.65)",
-                                        width: "100%",
                                       }
                                     : ""
                                 }
