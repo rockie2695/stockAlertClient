@@ -126,6 +126,11 @@ const App = () => {
       ? prefersDarkMode
       : localStorage.getItem("darkModeSetting") === "true"
   );
+  console.log(
+    localStorage.getItem("darkModeSetting"),
+    prefersDarkMode,
+    darkModeSetting
+  );
   const [addStockDialog, setAddStockDialog] = useState(false);
   const [denseModeSetting, setDenseModeSetting] = useState(
     localStorage.getItem("denseModeSetting") === null
@@ -181,7 +186,6 @@ const App = () => {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       //e.preventDefault();
       // Stash the event so it can be triggered later.
-      console.log("beforeinstallprompt", e);
       setDeferredPrompt((prevState) => e);
       e.userChoice.then(function (choiceResult) {
         console.log(choiceResult.outcome);
@@ -218,9 +222,11 @@ const App = () => {
   }, [login]);
 
   useEffect(() => {
-    setDarkModeSetting(() => {
-      return prefersDarkMode;
-    });
+    if (localStorage.getItem("darkModeSetting") === null) {
+      setDarkModeSetting(() => {
+        return prefersDarkMode;
+      });
+    }
   }, [prefersDarkMode]);
 
   const handleConnectionChange = () => {
@@ -370,6 +376,7 @@ const App = () => {
     setFullScreenSetting((prevState) => !prevState);
   };
   const changeDarkModeSetting = () => {
+    localStorage.setItem("darkModeSetting", !darkModeSetting);
     setDarkModeSetting((prevState) => !prevState);
   };
   const changeDenseModeSetting = () => {
@@ -1050,31 +1057,33 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        let name = result.name;
-        let stock = result.stock;
-        let past = result.past;
-        let nowPrice = result.nowPrice;
-        let nowTime = result.nowTime;
-        let tenDayLow = result.tenDayLow;
-        let tenDayHigh = result.tenDayHigh;
-        let tenDayAvg = result.tenDayAvg;
-        let monthLow = result.monthLow;
-        let monthHigh = result.monthHigh;
-        let twentyDayAvg = result.twentyDayAvg;
-        let wk52Low = result.wk52Low;
-        let wk52High = result.wk52High;
-        let fiftyDayAvg = result.fiftyDayAvg;
-        let lotSize = result.lotSize;
-        let eps = result.eps;
-        let dividend = result.dividend;
-        let rsi10 = result.rsi10;
-        let rsi14 = result.rsi14;
-        let rsi20 = result.rsi20;
-        let pe = result.pe;
-        let marketValue = result.marketValue;
-        let issuedShare = result.issuedShare;
-        let vol = result.vol;
-        let tvr = result.tvr;
+        let {
+          name,
+          stock,
+          past,
+          nowPrice,
+          nowTime,
+          tenDayLow,
+          tenDayHigh,
+          tenDayAvg,
+          monthLow,
+          monthHigh,
+          twentyDayAvg,
+          wk52Low,
+          wk52High,
+          fiftyDayAvg,
+          lotSize,
+          eps,
+          dividend,
+          rsi10,
+          rsi14,
+          rsi20,
+          pe,
+          marketValue,
+          issuedShare,
+          vol,
+          tvr,
+        } = result;
         //let row_index = -2
         setStockNotify((prevState) => {
           return prevState.map((row, index) => {
@@ -1787,8 +1796,8 @@ const App = () => {
                                       >
                                         {edit ? (
                                           <TextField
-                                            id={"price_" + index}
-                                            name={"price_" + index}
+                                            id={`price_${index}`}
+                                            name={`price_${index}`}
                                             label="price"
                                             variant="outlined"
                                             value={row.price}
@@ -2034,8 +2043,8 @@ const App = () => {
                 <TextField
                   type="number"
                   style={{ minWidth: "85px" }}
-                  id={"stock_" + dialogIndex}
-                  name={"stock_" + dialogIndex}
+                  id={`stock_${dialogIndex}`}
+                  name={`stock_${dialogIndex}`}
                   label="stock"
                   variant="outlined"
                   value={stockNotifyRef.current[dialogIndex].stock}
@@ -2047,8 +2056,8 @@ const App = () => {
                   fullWidth={true}
                 />
                 <TextField
-                  id={"equal_" + dialogIndex}
-                  name={"equal_" + dialogIndex}
+                  id={`equal_${dialogIndex}`}
+                  name={`equal_${dialogIndex}`}
                   select
                   label="equal"
                   variant="outlined"
@@ -2067,8 +2076,8 @@ const App = () => {
                   </MenuItem>
                 </TextField>
                 <TextField
-                  id={"price_" + dialogIndex}
-                  name={"price_" + dialogIndex}
+                  id={`price_${dialogIndex}`}
+                  name={`price_${dialogIndex}`}
                   label="price"
                   variant="outlined"
                   value={stockNotify[dialogIndex].price}

@@ -502,7 +502,7 @@ const DialogBox = (props) => {
               ? props.stockNotify[props.dialogIndex].stock +
                 (typeof props.stockNotify[props.dialogIndex].name !==
                 "undefined"
-                  ? " (" + props.stockNotify[props.dialogIndex].name + ")"
+                  ? ` ( ${props.stockNotify[props.dialogIndex].name} )`
                   : "")
               : null}
           </DialogTitle>
@@ -603,8 +603,8 @@ const DialogBox = (props) => {
                           <Grid item xs={4} sm={4} md={4} className="margin1">
                             {props.edit ? (
                               <TextField
-                                id={"equal_" + props.dialogIndex}
-                                name={"equal_" + props.dialogIndex}
+                                id={`equal_${props.dialogIndex}`}
+                                name={`equal_${props.dialogIndex}`}
                                 select
                                 label="equal"
                                 variant="outlined"
@@ -633,8 +633,8 @@ const DialogBox = (props) => {
                           <Grid item xs={4} sm={4} md={4} className="margin1">
                             {props.edit ? (
                               <TextField
-                                id={"price_" + props.dialogIndex}
-                                name={"price_" + props.dialogIndex}
+                                id={`price_${props.dialogIndex}`}
+                                name={`price_${props.dialogIndex}`}
                                 label="price"
                                 variant="outlined"
                                 value={
