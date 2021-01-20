@@ -1942,7 +1942,14 @@ const App = () => {
                     md={4}
                     style={{ textAlign: "center" }}
                   >
-                    <QRCode value={window.location.href} />
+                    <QRCode
+                      value={window.location.href}
+                      imageSettings={{
+                        src: "../logo192.png",
+                        height: 50,
+                        width: 50,
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={12} sm={12} md={4}>
                     <Hidden only={["xs", "sm"]}>
