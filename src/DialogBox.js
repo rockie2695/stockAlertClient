@@ -319,33 +319,54 @@ const DialogBox = (props) => {
     );
   };
   const fun_news = (stock) => {
-    setLoadingNews((prevState) => {
-      return true;
-    });
-    fetch(host + "/find/stockNews/", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: props.login.email,
-        stock: stock,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (!result.hasOwnProperty("error")) {
-          setNewsHistory(result);
-          document
-            .getElementsByClassName("MuiDialogContent-root")[0]
-            .addEventListener("scroll", myScrollFunc);
-        } else {
-          alert(result.error);
-        }
-      })
-      .finally(() => {
-        setLoadingNews((prevState) => {
-          return false;
-        });
+    if (!loadingNews) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let abortTimeout = setTimeout(() => {
+        controller.abort();
+      }, 10000);
+      setLoadingNews((prevState) => {
+        return true;
       });
+      fetch(host + "/find/stockNews/", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: props.login.email,
+          stock: stock,
+        }),
+        signal: signal,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (!result.hasOwnProperty("error")) {
+            setNewsHistory(result);
+            if (
+              typeof myScrollFunc !== "undefined" &&
+              document.getElementsByClassName("MuiDialogContent-root").length >
+                0
+            ) {
+              document
+                .getElementsByClassName("MuiDialogContent-root")[0]
+                .removeEventListener("scroll", myScrollFunc);
+            }
+            document
+              .getElementsByClassName("MuiDialogContent-root")[0]
+              .addEventListener("scroll", myScrollFunc);
+          } else {
+            alert(result.error);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          clearTimeout(abortTimeout);
+          setLoadingNews((prevState) => {
+            return false;
+          });
+        });
+    }
   };
   const fun_close_news = () => {
     setNewsHistory([]);
@@ -366,94 +387,115 @@ const DialogBox = (props) => {
       .removeEventListener("scroll", myScrollFunc);
   };
   const fun_dailyData = (stock) => {
-    //get data from https://www.quandl.com/api/v3/datasets/HKEX/00001.json?api_key=xCJuSM5DeG9s9PtmNbFg
-    setLoadingDailyData((prevState) => {
-      return true;
-    });
-    fetch(host + "/find/stockDailyPrice/", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: props.login.email,
-        stock: stock,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (!result.hasOwnProperty("error")) {
-          let dailyData = result.dataset.data.reverse();
-          let insertHistory = [];
-          for (let i = 0; i < dailyData.length; i++) {
-            insertHistory.push({
-              stringDay: dailyData[i][0],
-              price: dailyData[i][1],
-            });
-          }
-          setDailyDataHistory((prevState) => {
-            return insertHistory;
-          });
-        } else {
-          alert(result.error);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoadingDailyData((prevState) => {
-          return false;
-        });
+    if (!loadingDailyData) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let abortTimeout = setTimeout(() => {
+        controller.abort();
+      }, 10000);
+      //get data from https://www.quandl.com/api/v3/datasets/HKEX/00001.json?api_key=xCJuSM5DeG9s9PtmNbFg
+      setLoadingDailyData((prevState) => {
+        return true;
       });
+      fetch(host + "/find/stockDailyPrice/", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: props.login.email,
+          stock: stock,
+        }),
+        signal: signal,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (!result.hasOwnProperty("error")) {
+            let dailyData = result.dataset.data.reverse();
+            let insertHistory = [];
+            for (let i = 0; i < dailyData.length; i++) {
+              insertHistory.push({
+                stringDay: dailyData[i][0],
+                price: dailyData[i][1],
+              });
+            }
+            setDailyDataHistory((prevState) => {
+              return insertHistory;
+            });
+          } else {
+            alert(result.error);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          clearTimeout(abortTimeout);
+          setLoadingDailyData((prevState) => {
+            return false;
+          });
+        });
+    }
   };
   const fun_close_dailyDataHistory = () => {
     setDailyDataHistory([]);
   };
   const fun_allData = (stock) => {
     //get all data from server
-    setLoadingAllData((prevState) => {
-      return true;
-    });
-    fetch(host + "/select/allStockPrice/", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: props.login.email,
-        stock: stock,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (!result.hasOwnProperty("error")) {
-          let insertHistory = [];
-          for (let i = 0; i < result.ok.length; i++) {
-            let rowTime = new Date(result.ok[i].time).toLocaleString("en-US", {
-              timeZone: "UTC",
-            });
-            result.ok[i].jsTime = new Date(rowTime).getTime();
-            result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
-            insertHistory.push({
-              stringTime: result.ok[i].stringTime,
-              price: result.ok[i].price,
-              jsTime: result.ok[i].jsTime,
-              high: result.ok[i].high,
-              low: result.ok[i].low,
-            });
-          }
-          setAllDataHistory((prevState) => {
-            return insertHistory;
-          });
-        } else {
-          alert(result.error);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoadingAllData((prevState) => {
-          return false;
-        });
+    if (!loadingAllData) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let abortTimeout = setTimeout(() => {
+        controller.abort();
+      }, 10000);
+      setLoadingAllData((prevState) => {
+        return true;
       });
+      fetch(host + "/select/allStockPrice/", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: props.login.email,
+          stock: stock,
+        }),
+        signal: signal,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (!result.hasOwnProperty("error")) {
+            let insertHistory = [];
+            for (let i = 0; i < result.ok.length; i++) {
+              let rowTime = new Date(result.ok[i].time).toLocaleString(
+                "en-US",
+                {
+                  timeZone: "UTC",
+                }
+              );
+              result.ok[i].jsTime = new Date(rowTime).getTime();
+              result.ok[i].time = result.ok[i].stringTime.split(" ")[1];
+              insertHistory.push({
+                stringTime: result.ok[i].stringTime,
+                price: result.ok[i].price,
+                jsTime: result.ok[i].jsTime,
+                high: result.ok[i].high,
+                low: result.ok[i].low,
+              });
+            }
+            setAllDataHistory((prevState) => {
+              return insertHistory;
+            });
+          } else {
+            alert(result.error);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          clearTimeout(abortTimeout);
+          setLoadingAllData((prevState) => {
+            return false;
+          });
+        });
+    }
   };
   const fun_close_allDataHistory = () => {
     setAllDataHistory([]);
@@ -513,7 +555,9 @@ const DialogBox = (props) => {
                 position: "absolute",
                 width: "100%",
                 zIndex: 999,
-                background: "linear-gradient(180deg, white, transparent)",
+                background: props.isDarkMode
+                  ? "linear-gradient(180deg, grey, transparent)"
+                  : "linear-gradient(180deg, white, transparent)",
               }}
             ></div>
             <div style={{ padding: "16px" }}>
@@ -1615,13 +1659,22 @@ const DialogBox = (props) => {
                                   gutterBottom
                                   variant="h5"
                                   component="h2"
+                                  style={{ color: "black" }}
                                 >
                                   {row.title}
                                 </Typography>
-                                <Typography variant="subtitle2" component="p">
+                                <Typography
+                                  variant="subtitle2"
+                                  component="p"
+                                  style={{ color: "black" }}
+                                >
                                   {row.pubDate}
                                 </Typography>
-                                <Typography variant="body2" component="p">
+                                <Typography
+                                  variant="body2"
+                                  component="p"
+                                  style={{ color: "black" }}
+                                >
                                   {row.content}
                                 </Typography>
                               </CardContent>

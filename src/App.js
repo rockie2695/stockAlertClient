@@ -126,11 +126,6 @@ const App = () => {
       ? prefersDarkMode
       : localStorage.getItem("darkModeSetting") === "true"
   );
-  console.log(
-    localStorage.getItem("darkModeSetting"),
-    prefersDarkMode,
-    darkModeSetting
-  );
   const [addStockDialog, setAddStockDialog] = useState(false);
   const [denseModeSetting, setDenseModeSetting] = useState(
     localStorage.getItem("denseModeSetting") === null
@@ -1602,8 +1597,8 @@ const App = () => {
                                         <TextField
                                           type="number"
                                           style={{ minWidth: "85px" }}
-                                          id={"stock_" + index}
-                                          name={"stock_" + index}
+                                          id={`stock_${index}`}
+                                          name={`stock_${index}`}
                                           label="stock"
                                           variant="outlined"
                                           value={row.stock}
@@ -1760,8 +1755,8 @@ const App = () => {
                                       >
                                         {edit ? (
                                           <TextField
-                                            id={"equal_" + index}
-                                            name={"equal_" + index}
+                                            id={`equal_${index}`}
+                                            name={`equal_${index}`}
                                             select
                                             label="equal"
                                             variant="outlined"
@@ -2118,11 +2113,11 @@ const App = () => {
             ) : null}
           </DialogContent>
           <DialogActions>
-            <Button autoFocus color="primary" onClick={fun_save}>
+            <Button color="primary" onClick={fun_save}>
               <SaveIcon />
               Save
             </Button>
-            <Button autoFocus onClick={fun_addStockDialog} color="primary">
+            <Button autoFocus color="primary" onClick={fun_addStockDialog}>
               <CloseIcon />
               Close
             </Button>
