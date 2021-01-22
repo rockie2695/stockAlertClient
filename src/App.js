@@ -1262,7 +1262,7 @@ const App = () => {
                   <Typography align="right" className="margin2">
                     {hideAlert ||
                     denseModeSetting ||
-                    login == "" ? null : edit === true ? (
+                    login === "" ? null : edit === true ? (
                       <Fragment>
                         <Button
                           variant="contained"
@@ -1867,7 +1867,9 @@ const App = () => {
                           <CircularProgress />
                         ) : (
                           <Typography color="textSecondary" align="center">
-                            None of record
+                            {login === ""
+                              ? "Please login first"
+                              : "None of record"}
                           </Typography>
                         )}
                       </Box>
