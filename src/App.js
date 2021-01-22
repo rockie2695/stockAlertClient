@@ -210,7 +210,7 @@ const App = () => {
   }, [ws]);
 
   useEffect(() => {
-    if (login.email !== "") {
+    if (login !== "" && login.email !== "") {
       //console.log("do startConnectWS");
       startConnectWS();
     }
@@ -1260,7 +1260,9 @@ const App = () => {
                   </Typography>
 
                   <Typography align="right" className="margin2">
-                    {hideAlert || denseModeSetting ? null : edit === true ? (
+                    {hideAlert ||
+                    denseModeSetting ||
+                    login == "" ? null : edit === true ? (
                       <Fragment>
                         <Button
                           variant="contained"
@@ -1915,76 +1917,80 @@ const App = () => {
               <Hidden only={["xs", "sm"]}>
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
+
               <Grid item xs={12} sm={12} md={8} className="margin1">
-                <Grid container alignItems="center">
-                  <Grid item xs={12} sm={12} md={4}>
-                    <Hidden only={["xs", "sm"]}>
-                      <Typography align="left" variant="h6">
-                        make by{" "}
-                        <Link href="mailto:rockie2695@gmail.com">
-                          rockie2695@gmail.com
-                        </Link>
-                      </Typography>
-                    </Hidden>
-                    <Hidden mdUp>
-                      <Typography align="center" variant="h6">
-                        make by{" "}
-                        <Link href="mailto:rockie2695@gmail.com">
-                          rockie2695@gmail.com
-                        </Link>
-                      </Typography>
-                    </Hidden>
+                <Box padding={1}>
+                  <Grid container alignItems="center">
+                    <Grid item xs={12} sm={12} md={4}>
+                      <Hidden only={["xs", "sm"]}>
+                        <Typography align="left" variant="h6">
+                          make by{" "}
+                          <Link href="mailto:rockie2695@gmail.com">
+                            rockie2695@gmail.com
+                          </Link>
+                        </Typography>
+                      </Hidden>
+                      <Hidden mdUp>
+                        <Typography align="center" variant="h6">
+                          make by{" "}
+                          <Link href="mailto:rockie2695@gmail.com">
+                            rockie2695@gmail.com
+                          </Link>
+                        </Typography>
+                      </Hidden>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={4}
+                      style={{ textAlign: "center" }}
+                    >
+                      <QRCode
+                        value={window.location.href}
+                        imageSettings={{
+                          src: "../logo192.png",
+                          height: 50,
+                          width: 50,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={4}>
+                      <Hidden only={["xs", "sm"]}>
+                        {deferredPrompt !== null ? (
+                          <Box textAlign="right">
+                            <Fab
+                              color="primary"
+                              aria-label="pwa"
+                              onClick={showA2HS}
+                              className={fullScreen ? "" : "marginRight12"}
+                            >
+                              <GetAppIcon />
+                            </Fab>
+                            <Typography variant="h6">Web App</Typography>
+                          </Box>
+                        ) : null}
+                      </Hidden>
+                      <Hidden mdUp>
+                        {deferredPrompt !== null ? (
+                          <Box textAlign="center">
+                            <Fab
+                              color="primary"
+                              aria-label="pwa"
+                              onClick={showA2HS}
+                              className={fullScreen ? "" : "marginRight12"}
+                            >
+                              <GetAppIcon />
+                            </Fab>
+                            <Typography variant="h6">Web App</Typography>
+                          </Box>
+                        ) : null}
+                      </Hidden>
+                    </Grid>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sm={12}
-                    md={4}
-                    style={{ textAlign: "center" }}
-                  >
-                    <QRCode
-                      value={window.location.href}
-                      imageSettings={{
-                        src: "../logo192.png",
-                        height: 50,
-                        width: 50,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={4}>
-                    <Hidden only={["xs", "sm"]}>
-                      {deferredPrompt !== null ? (
-                        <Box textAlign="right">
-                          <Fab
-                            color="primary"
-                            aria-label="pwa"
-                            onClick={showA2HS}
-                            className={fullScreen ? "" : "marginRight12"}
-                          >
-                            <GetAppIcon />
-                          </Fab>
-                          <Typography variant="h6">Web App</Typography>
-                        </Box>
-                      ) : null}
-                    </Hidden>
-                    <Hidden mdUp>
-                      {deferredPrompt !== null ? (
-                        <Box textAlign="center">
-                          <Fab
-                            color="primary"
-                            aria-label="pwa"
-                            onClick={showA2HS}
-                            className={fullScreen ? "" : "marginRight12"}
-                          >
-                            <GetAppIcon />
-                          </Fab>
-                          <Typography variant="h6">Web App</Typography>
-                        </Box>
-                      ) : null}
-                    </Hidden>
-                  </Grid>
-                </Grid>
+                </Box>
               </Grid>
+
               <Hidden only={["xs", "sm"]}>
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
