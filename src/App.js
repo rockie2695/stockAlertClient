@@ -96,7 +96,7 @@ const App = () => {
     "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com";
 
   const [login, setLogin] = useState({
-    email: testlink ? "rockie2695@gmail.com" : "",
+    email: testlink ? "" : "",
   });
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [stockHistory, setStockHistory] = useState([]);
@@ -191,12 +191,12 @@ const App = () => {
         }
       });
     });
-    if (testlink) {
+    if (testlink && login.emil !== "") {
       fun_login({});
     }
     return () => {
       setWs(null);
-      setLogin("");
+      setLogin({ email: "" });
     };
   }, []);
 
@@ -210,7 +210,7 @@ const App = () => {
   }, [ws]);
 
   useEffect(() => {
-    if (login !== "" && login.email !== "") {
+    if (login.email !== "") {
       //console.log("do startConnectWS");
       startConnectWS();
     }
@@ -579,7 +579,7 @@ const App = () => {
             return false;
           });
         });
-    } else if (testlink) {
+    } else if (login.email !== "" && testlink) {
       let email = login.email;
       setLoading((prevState) => {
         return true;
@@ -672,6 +672,9 @@ const App = () => {
       maxAge: 3600,
       domain: window.location.host,
     });
+    setTimeout(() => {
+      window.location.reload();
+    }, 0);
   };
   const fun_addNotify = () => {
     setStockNotify((prevState) => {
@@ -1262,7 +1265,7 @@ const App = () => {
                   <Typography align="right" className="margin2">
                     {hideAlert ||
                     denseModeSetting ||
-                    login === "" ? null : edit === true ? (
+                    login.email === "" ? null : edit === true ? (
                       <Fragment>
                         <Button
                           variant="contained"
@@ -1867,7 +1870,7 @@ const App = () => {
                           <CircularProgress />
                         ) : (
                           <Typography color="textSecondary" align="center">
-                            {login === ""
+                            {login.email === ""
                               ? "Please login first"
                               : "None of record"}
                           </Typography>
