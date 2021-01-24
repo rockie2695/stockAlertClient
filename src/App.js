@@ -96,7 +96,7 @@ const App = () => {
     "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com";
 
   const [login, setLogin] = useState({
-    email: testlink ? "" : "",
+    email: testlink ? "rockie2695@gmail.com" : "",
   });
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [stockHistory, setStockHistory] = useState([]);
@@ -2000,7 +2000,7 @@ const App = () => {
                 <Grid item sm={false} md={2} className="margin1"></Grid>
               </Hidden>
             </Grid>
-            {!edit && hideAlert ? (
+            {!edit && hideAlert && login.email !== "" ? (
               <Fab
                 color="primary"
                 aria-label="add"
