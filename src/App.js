@@ -228,7 +228,6 @@ const App = () => {
       setStockHistory([]);
       setAddRoomList([]);
       setSelectHistory([]);
-      setWs(null);
     }
   }, [login]);
 
