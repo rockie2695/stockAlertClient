@@ -197,6 +197,13 @@ const App = () => {
     return () => {
       setWs(null);
       setLogin({ email: "" });
+      setStockNotify([]);
+      setOldStockNotify([]);
+      setEdit(false);
+      setStockHistory([]);
+      setAddRoomList([]);
+      setSelectHistory([]);
+      setWs(null);
     };
   }, []);
 
@@ -213,6 +220,15 @@ const App = () => {
     if (login.email !== "") {
       //console.log("do startConnectWS");
       startConnectWS();
+    } else {
+      setLogin({ email: "" });
+      setStockNotify([]);
+      setOldStockNotify([]);
+      setEdit(false);
+      setStockHistory([]);
+      setAddRoomList([]);
+      setSelectHistory([]);
+      setWs(null);
     }
   }, [login]);
 
