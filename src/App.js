@@ -221,7 +221,6 @@ const App = () => {
       //console.log("do startConnectWS");
       startConnectWS();
     } else {
-      setLogin({ email: "" });
       setStockNotify([]);
       setOldStockNotify([]);
       setEdit(false);
