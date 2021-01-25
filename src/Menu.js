@@ -43,6 +43,7 @@ const Menu = (props) => {
           aria-label="moon icon"
           color="inherit"
           onClick={props.changeDarkModeSetting}
+          style={{ margin: "5px" }}
         >
           {props.darkModeSetting ? <Brightness7Icon /> : <Brightness2Icon />}
         </IconButton>

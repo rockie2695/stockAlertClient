@@ -1402,160 +1402,166 @@ const App = () => {
                               }}
                               key={index}
                             >
-                              <Box
-                                className={
-                                  edit
-                                    ? isDarkMode
-                                      ? "boxDark"
-                                      : "box"
-                                    : isDarkMode
-                                    ? "cursorPointer boxDark"
-                                    : "cursorPointer box"
-                                }
-                                display="flex"
-                                alignItems="center"
-                                paddingX={2}
-                                onClick={() => openDialog(index)}
-                              >
-                                <Grid container alignItems="center">
-                                  <Grid
-                                    item
-                                    xs={6}
-                                    sm={6}
-                                    md={6}
-                                    className="margin1"
-                                  >
-                                    <Typography variant="h6">
-                                      <span style={{ float: "left" }}>
-                                        {row.stock}
-                                      </span>
-                                      <span style={{ float: "left" }}>
-                                        &nbsp;
-                                      </span>
-                                      {typeof row.name !== "undefined" ? (
+                              <div>
+                                <Box
+                                  className={
+                                    edit
+                                      ? isDarkMode
+                                        ? "boxDark"
+                                        : "box"
+                                      : isDarkMode
+                                      ? "cursorPointer boxDark"
+                                      : "cursorPointer box"
+                                  }
+                                  display="flex"
+                                  alignItems="center"
+                                  style={{ paddingLeft: 16, paddingRight: 16 }}
+                                  onClick={() => openDialog(index)}
+                                >
+                                  <Grid container alignItems="center">
+                                    <Grid
+                                      item
+                                      xs={6}
+                                      sm={6}
+                                      md={6}
+                                      className="margin1"
+                                    >
+                                      <Typography variant="h6">
                                         <span style={{ float: "left" }}>
-                                          {row.name}
+                                          {row.stock}
                                         </span>
-                                      ) : (
-                                        <Skeleton
-                                          style={{
-                                            width: "50%",
-                                            float: "left",
-                                          }}
-                                        />
-                                      )}
-                                    </Typography>
-                                  </Grid>
-                                  <Grid
-                                    item
-                                    xs={6}
-                                    sm={6}
-                                    md={6}
-                                    className="margin1"
-                                  >
-                                    {typeof row.nowPrice !== "undefined" ? (
-                                      <div
-                                        style={{
-                                          ...{
-                                            borderRadius: "10px",
-                                            textAlign: "center",
-                                            maxWidth: "120px",
-                                            color: "white",
-                                          },
-                                          ...{
-                                            background:
-                                              parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) >
-                                              0
-                                                ? green_color
-                                                : parseFloat(row.nowPrice) -
-                                                    parseFloat(row.past) <
-                                                  0
-                                                ? red_color
-                                                : "gray",
-                                          },
-                                        }}
-                                      >
-                                        <Typography variant="h6">
-                                          {row.hasOwnProperty("oldPrice") ? (
-                                            <CountUp
-                                              start={row.oldPrice}
-                                              end={row.nowPrice}
-                                              decimals={3}
-                                            />
-                                          ) : (
-                                            <CountUp
-                                              end={row.nowPrice}
-                                              decimals={3}
-                                            />
-                                          )}
-                                        </Typography>
+                                        <span style={{ float: "left" }}>
+                                          &nbsp;
+                                        </span>
+                                        {typeof row.name !== "undefined" ? (
+                                          <span style={{ float: "left" }}>
+                                            {row.name}
+                                          </span>
+                                        ) : (
+                                          <Skeleton
+                                            style={{
+                                              width: "50%",
+                                              float: "left",
+                                            }}
+                                          />
+                                        )}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid
+                                      item
+                                      xs={6}
+                                      sm={6}
+                                      md={6}
+                                      className="margin1"
+                                    >
+                                      {typeof row.nowPrice !== "undefined" ? (
                                         <div
                                           style={{
-                                            borderBottom: "1px solid white",
-                                            width: "100%",
-                                            height: "1px",
+                                            ...{
+                                              borderRadius: "10px",
+                                              textAlign: "center",
+                                              maxWidth: "120px",
+                                              color: "white",
+                                            },
+                                            ...{
+                                              background:
+                                                parseFloat(row.nowPrice) -
+                                                  parseFloat(row.past) >
+                                                0
+                                                  ? green_color
+                                                  : parseFloat(row.nowPrice) -
+                                                      parseFloat(row.past) <
+                                                    0
+                                                  ? red_color
+                                                  : "gray",
+                                            },
                                           }}
                                         >
-                                          &nbsp;
-                                        </div>
-                                        {typeof row.past !== "undefined" &&
-                                        typeof row.nowPrice !== "undefined" ? (
                                           <Typography variant="h6">
-                                            {(parseFloat(row.nowPrice) -
-                                              parseFloat(row.past) >
-                                            0
-                                              ? "+"
-                                              : "") +
-                                              (!priceDiffPercentSetting
-                                                ? parseFloat(
-                                                    Math.round(
-                                                      (parseFloat(
-                                                        row.nowPrice
-                                                      ) -
-                                                        parseFloat(row.past) +
-                                                        0.00001 *
-                                                          (parseFloat(
-                                                            row.nowPrice
-                                                          ) -
-                                                            parseFloat(
-                                                              row.past
-                                                            ) >
-                                                          0
-                                                            ? 1
-                                                            : -1)) *
-                                                        1000
-                                                    ) / 1000
-                                                  )
-                                                : parseFloat(
-                                                    Math.round(
-                                                      ((parseFloat(
-                                                        row.nowPrice
-                                                      ) -
-                                                        parseFloat(row.past) +
-                                                        0.00001 *
-                                                          (parseFloat(
-                                                            row.nowPrice
-                                                          ) -
-                                                            parseFloat(
-                                                              row.past
-                                                            ) >
-                                                          0
-                                                            ? 1
-                                                            : -1)) /
-                                                        row.past) *
-                                                        100000
-                                                    ) / 1000
-                                                  ) + "%")}
+                                            {row.hasOwnProperty("oldPrice") ? (
+                                              <CountUp
+                                                start={row.oldPrice}
+                                                end={row.nowPrice}
+                                                decimals={3}
+                                              />
+                                            ) : (
+                                              <CountUp
+                                                end={row.nowPrice}
+                                                decimals={3}
+                                              />
+                                            )}
                                           </Typography>
-                                        ) : null}
-                                      </div>
-                                    ) : (
-                                      <Skeleton />
-                                    )}
+                                          <div
+                                            style={{
+                                              borderBottom: "1px solid white",
+                                              width: "100%",
+                                              height: "1px",
+                                            }}
+                                          >
+                                            &nbsp;
+                                          </div>
+                                          {typeof row.past !== "undefined" &&
+                                          typeof row.nowPrice !==
+                                            "undefined" ? (
+                                            <Typography variant="h6">
+                                              {(parseFloat(row.nowPrice) -
+                                                parseFloat(row.past) >
+                                              0
+                                                ? "+"
+                                                : "") +
+                                                (!priceDiffPercentSetting
+                                                  ? parseFloat(
+                                                      Math.round(
+                                                        (parseFloat(
+                                                          row.nowPrice
+                                                        ) -
+                                                          parseFloat(row.past) +
+                                                          0.00001 *
+                                                            (parseFloat(
+                                                              row.nowPrice
+                                                            ) -
+                                                              parseFloat(
+                                                                row.past
+                                                              ) >
+                                                            0
+                                                              ? 1
+                                                              : -1)) *
+                                                          1000
+                                                      ) / 1000
+                                                    )
+                                                  : parseFloat(
+                                                      Math.round(
+                                                        ((parseFloat(
+                                                          row.nowPrice
+                                                        ) -
+                                                          parseFloat(row.past) +
+                                                          0.00001 *
+                                                            (parseFloat(
+                                                              row.nowPrice
+                                                            ) -
+                                                              parseFloat(
+                                                                row.past
+                                                              ) >
+                                                            0
+                                                              ? 1
+                                                              : -1)) /
+                                                          row.past) *
+                                                          100000
+                                                      ) / 1000
+                                                    ) + "%")}
+                                            </Typography>
+                                          ) : null}
+                                        </div>
+                                      ) : (
+                                        <Skeleton />
+                                      )}
+                                    </Grid>
                                   </Grid>
-                                </Grid>
-                              </Box>
+                                </Box>
+                                {index === stockNotify.length - 1 ? null : (
+                                  <Divider />
+                                )}
+                              </div>
                             </Fade>
                           ))
                         : stockNotify.map((row, index) => (
