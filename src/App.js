@@ -476,6 +476,7 @@ const App = () => {
     }
   };
   const closeDialog = () => {
+    setEdit(() => false);
     setOpen((prevState) => false);
     setTimeout(() => {
       setDialogIndex((prevState) => -1);
@@ -1218,7 +1219,7 @@ const App = () => {
             position="fixed"
             zIndex="0"
             width="100vw"
-            height="50vh"
+            height="40vh"
             minHeight="200px"
             bgcolor="text.primary"
             color="background.paper"
@@ -1230,7 +1231,7 @@ const App = () => {
               For HK Stock Price Showing And Notification
             </Typography>
           </Box>
-          <Box height="50vh"></Box>
+          <Box height="40vh"></Box>
           <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
             <Grid container alignItems="center">
               <Hidden only={["xs", "sm"]}>
@@ -1371,13 +1372,7 @@ const App = () => {
                             md={1}
                             className="margin1"
                           ></Grid>
-                          <Grid
-                            item
-                            xs={false}
-                            sm={1}
-                            md={1}
-                            className="margin1"
-                          >
+                          <Grid item xs={false} sm={1} md={1}>
                             <Typography>Alert</Typography>
                           </Grid>
                         </Hidden>
@@ -1865,7 +1860,7 @@ const App = () => {
                                             />
                                           }
                                           label=""
-                                          style={{ marginLeft: -22 }}
+                                          className="marginLeftn11"
                                         />
                                       </Grid>
                                     </Hidden>

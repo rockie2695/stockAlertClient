@@ -39,7 +39,7 @@ div.cursorPointer {
 }
 
 .margin1 > * {
-  margin: 0.5em;
+  margin: 0.5em !important;
 }
 
 .margin2 > * {
@@ -89,4 +89,8 @@ div.cursorPointer {
   width: fit-content;
   margin: auto;
   z-index: 1;
+}
+
+.marginLeftn11 {
+  margin-left: -11px !important;
 }

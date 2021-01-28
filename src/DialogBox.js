@@ -569,7 +569,7 @@ const DialogBox = (props) => {
                   marginY={2}
                 >
                   <Box marginX={3} marginTop={2}>
-                    <Typography align="right" className="margin2">
+                    <Typography align="right" className="margin1">
                       {props.edit === true ? (
                         <Fragment>
                           <Button
@@ -731,6 +731,7 @@ const DialogBox = (props) => {
                                 />
                               }
                               label=""
+                              style={{ marginLeft: "0px" }}
                             />
                           </Grid>
                         </Grid>
