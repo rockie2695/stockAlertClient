@@ -1239,7 +1239,11 @@ const App = () => {
               </Hidden>
               <Grid item xs={12} sm={12} md={8} className="margin1">
                 <Paper style={{ paddingBottom: 2 }}>
-                  <Typography align="right" className="margin2">
+                  <Typography
+                    align="right"
+                    className="margin1"
+                    style={{ margin: "0.5em", paddingTop: "0.5em" }}
+                  >
                     <FormControlLabel
                       control={
                         <Switch
@@ -1277,7 +1281,11 @@ const App = () => {
                     ) : null}
                   </Typography>
 
-                  <Typography align="right" className="margin2">
+                  <Typography
+                    align="right"
+                    className="margin1"
+                    style={{ margin: "0.5em" }}
+                  >
                     {hideAlert ||
                     denseModeSetting ||
                     login.email === "" ? null : edit === true ? (
