@@ -114,6 +114,7 @@ const DialogBox = (props) => {
     false,
     false,
   ]);
+  const [observerArray, setObserverArray] = useState([]);
   const newsHistorySeenRef = useRef(newsHistorySeen);
   newsHistorySeenRef.current = newsHistorySeen;
 
@@ -139,15 +140,25 @@ const DialogBox = (props) => {
         setTvr(fun_appendFix(sub_tvr));
       }
     } else {
-      setTimeout(() => {
+      if (newsHistory.length > 0) {
         if (
-          typeof myScrollFunc !== "undefined" &&
-          document.getElementsByClassName("MuiDialogContent-root").length > 0
+          "IntersectionObserver" in window &&
+          "IntersectionObserverEntry" in window &&
+          "intersectionRatio" in window.IntersectionObserverEntry.prototype
         ) {
+          if (observerArray.length > 0) {
+            for (let i = 0; i < observerArray.length; i++) {
+              observerArray[i].disconnect();
+            }
+            setObserverArray([]);
+          }
+        } else if (typeof myScrollFunc !== "undefined") {
           document
             .getElementsByClassName("MuiDialogContent-root")[0]
             .removeEventListener("scroll", myScrollFunc);
         }
+      }
+      setTimeout(() => {
         setAllDataHistory([]);
         setDailyDataHistory([]);
         setNewsHistory([]);
@@ -170,13 +181,23 @@ const DialogBox = (props) => {
       }, 100);
     }
     return () => {
-      if (
-        typeof myScrollFunc !== "undefined" &&
-        document.getElementsByClassName("MuiDialogContent-root").length > 0
-      ) {
-        document
-          .getElementsByClassName("MuiDialogContent-root")[0]
-          .removeEventListener("scroll", myScrollFunc);
+      if (newsHistory.length > 0) {
+        if (
+          "IntersectionObserver" in window &&
+          "IntersectionObserverEntry" in window &&
+          "intersectionRatio" in window.IntersectionObserverEntry.prototype
+        ) {
+          if (observerArray.length > 0) {
+            for (let i = 0; i < observerArray.length; i++) {
+              observerArray[i].disconnect();
+            }
+            setObserverArray([]);
+          }
+        } else if (typeof myScrollFunc !== "undefined") {
+          document
+            .getElementsByClassName("MuiDialogContent-root")[0]
+            .removeEventListener("scroll", myScrollFunc);
+        }
       }
       setAllDataHistory([]);
       setDailyDataHistory([]);
@@ -340,19 +361,68 @@ const DialogBox = (props) => {
         .then((res) => res.json())
         .then((result) => {
           if (!result.hasOwnProperty("error")) {
-            setNewsHistory(result);
+            if (newsHistory.length > 0) {
+              if (
+                "IntersectionObserver" in window &&
+                "IntersectionObserverEntry" in window &&
+                "intersectionRatio" in
+                  window.IntersectionObserverEntry.prototype
+              ) {
+                if (observerArray.length > 0) {
+                  for (let i = 0; i < observerArray.length; i++) {
+                    observerArray[i].disconnect();
+                  }
+                  setObserverArray([]);
+                }
+              } else if (typeof myScrollFunc !== "undefined") {
+                document
+                  .getElementsByClassName("MuiDialogContent-root")[0]
+                  .removeEventListener("scroll", myScrollFunc);
+              }
+            }
+            setNewsHistory(() => result);
             if (
-              typeof myScrollFunc !== "undefined" &&
-              document.getElementsByClassName("MuiDialogContent-root").length >
-                0
+              "IntersectionObserver" in window &&
+              "IntersectionObserverEntry" in window &&
+              "intersectionRatio" in window.IntersectionObserverEntry.prototype
             ) {
+              let observerSubArray = [];
+              for (let i = 1; i < result.length; i++) {
+                let observer = new IntersectionObserver((entries) => {
+                  let y =
+                    document.getElementsByClassName("MuiDialogContent-root")[0]
+                      .scrollTop +
+                    document.getElementsByClassName("newsHistory")[0]
+                      .offsetHeight +
+                    150;
+                  if (
+                    document.getElementsByClassName("newsHistory")[i]
+                      .offsetTop < y
+                  ) {
+                    //show and close observer
+                    setNewsHistorySeen((prevState) => {
+                      return prevState.map((row, index) => {
+                        if (index === i) {
+                          return true;
+                        } else {
+                          return row;
+                        }
+                      });
+                    });
+                    observer.disconnect();
+                  }
+                });
+                observer.observe(
+                  document.getElementsByClassName("newsHistory")[i]
+                );
+                observerSubArray.push(observer);
+              }
+              setObserverArray(() => observerSubArray);
+            } else {
               document
                 .getElementsByClassName("MuiDialogContent-root")[0]
-                .removeEventListener("scroll", myScrollFunc);
+                .addEventListener("scroll", myScrollFunc);
             }
-            document
-              .getElementsByClassName("MuiDialogContent-root")[0]
-              .addEventListener("scroll", myScrollFunc);
           } else {
             alert(result.error);
           }
@@ -369,9 +439,9 @@ const DialogBox = (props) => {
     }
   };
   const fun_close_news = () => {
-    setNewsHistory([]);
-    setNewsHistorySeen([
-      false,
+    setNewsHistory(() => []);
+    setNewsHistorySeen(() => [
+      true,
       false,
       false,
       false,
@@ -382,9 +452,20 @@ const DialogBox = (props) => {
       false,
       false,
     ]);
-    document
-      .getElementsByClassName("MuiDialogContent-root")[0]
-      .removeEventListener("scroll", myScrollFunc);
+    if (
+      "IntersectionObserver" in window &&
+      "IntersectionObserverEntry" in window &&
+      "intersectionRatio" in window.IntersectionObserverEntry.prototype
+    ) {
+      for (let i = 0; i < observerArray.length; i++) {
+        observerArray[i].disconnect();
+      }
+      setObserverArray(() => []);
+    } else if (typeof myScrollFunc !== "undefined") {
+      document
+        .getElementsByClassName("MuiDialogContent-root")[0]
+        .removeEventListener("scroll", myScrollFunc);
+    }
   };
   const fun_dailyData = (stock) => {
     if (!loadingDailyData) {
