@@ -195,15 +195,15 @@ const App = () => {
       fun_login({});
     }
     return () => {
-      setWs(null);
+      setWs(() => null);
       setLogin({ email: "" });
-      setStockNotify([]);
-      setOldStockNotify([]);
-      setEdit(false);
-      setStockHistory([]);
-      setAddRoomList([]);
-      setSelectHistory([]);
-      setWs(null);
+      setStockNotify(() => []);
+      setOldStockNotify(() => []);
+      setEdit(() => false);
+      setStockHistory(() => []);
+      setAddRoomList(() => []);
+      setSelectHistory(() => []);
+      setWs(() => null);
     };
   }, []);
 
@@ -221,12 +221,12 @@ const App = () => {
       //console.log("do startConnectWS");
       startConnectWS();
     } else {
-      setStockNotify([]);
-      setOldStockNotify([]);
-      setEdit(false);
-      setStockHistory([]);
-      setAddRoomList([]);
-      setSelectHistory([]);
+      setStockNotify(() => []);
+      setOldStockNotify(() => []);
+      setEdit(() => false);
+      setStockHistory(() => []);
+      setAddRoomList(() => []);
+      setSelectHistory(() => []);
     }
   }, [login]);
 
