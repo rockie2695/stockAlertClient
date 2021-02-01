@@ -46,7 +46,8 @@ import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
-import "./App.css";
+//import "./App.css";
+import "./App.sass";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 
@@ -267,7 +268,7 @@ const App = () => {
     });
     ws.on("connect_error", function () {
       console.log("Failed to connect to server");
-      alert("websocket is fail to connect. Please refresh!");
+      //alert("websocket is fail to connect. Please refresh!");
       //window.location.reload()
     });
     ws.on("stockPrice", (message) => {
@@ -1416,37 +1417,33 @@ const App = () => {
                                   }
                                   display="flex"
                                   alignItems="center"
-                                  style={{ paddingLeft: 16, paddingRight: 16 }}
+                                  style={{
+                                    paddingLeft: 16,
+                                    paddingRight: 16,
+                                    height: 80,
+                                  }}
                                   onClick={() => openDialog(index)}
                                 >
                                   <Grid container alignItems="center">
-                                    <Grid
-                                      item
-                                      xs={6}
-                                      sm={6}
-                                      md={6}
-                                      className="margin1"
-                                    >
-                                      <Typography variant="h6">
-                                        <span style={{ float: "left" }}>
-                                          {row.stock}
-                                        </span>
-                                        <span style={{ float: "left" }}>
-                                          &nbsp;
-                                        </span>
-                                        {typeof row.name !== "undefined" ? (
-                                          <span style={{ float: "left" }}>
-                                            {row.name}
-                                          </span>
-                                        ) : (
-                                          <Skeleton
-                                            style={{
-                                              width: "50%",
-                                              float: "left",
-                                            }}
-                                          />
-                                        )}
+                                    <Grid item xs={6} sm={6} md={6}>
+                                      <Typography
+                                        variant="h6"
+                                        style={{ display: "inline-block" }}
+                                      >
+                                        {row.stock}
+                                        &nbsp;
+                                        {typeof row.name !== "undefined"
+                                          ? row.name
+                                          : null}
                                       </Typography>
+                                      {typeof row.name === "undefined" ? (
+                                        <Skeleton
+                                          style={{
+                                            width: "50%",
+                                            display: "inline-block",
+                                          }}
+                                        />
+                                      ) : null}
                                     </Grid>
                                     <Grid
                                       item
@@ -1637,26 +1634,25 @@ const App = () => {
                                           disabled={sendingForm}
                                         />
                                       ) : (
-                                        <Typography>
-                                          <span style={{ float: "left" }}>
+                                        <Fragment>
+                                          <Typography
+                                            style={{ display: "inline-block" }}
+                                          >
                                             {row.stock}
-                                          </span>
-                                          <span style={{ float: "left" }}>
                                             &nbsp;
-                                          </span>
-                                          {typeof row.name !== "undefined" ? (
-                                            <span style={{ float: "left" }}>
-                                              {row.name}
-                                            </span>
-                                          ) : (
+                                            {typeof row.name !== "undefined"
+                                              ? row.name
+                                              : null}
+                                          </Typography>
+                                          {typeof row.name === "undefined" ? (
                                             <Skeleton
                                               style={{
                                                 width: "50%",
-                                                float: "left",
+                                                display: "inline-block",
                                               }}
                                             />
-                                          )}
-                                        </Typography>
+                                          ) : null}
+                                        </Fragment>
                                       )}
                                     </Grid>
                                     <Grid
@@ -1978,8 +1974,8 @@ const App = () => {
                         value={window.location.href}
                         imageSettings={{
                           src: "../logo192.png",
-                          height: 50,
-                          width: 50,
+                          height: 30,
+                          width: 30,
                         }}
                       />
                     </Grid>
