@@ -1971,13 +1971,14 @@ const App = () => {
                       style={{ textAlign: "center" }}
                     >
                       <QRCode
-                        value={window.location.href}
+                        value={"https://rockie-stockalertclient.herokuapp.com/"}
                         imageSettings={{
                           src: "../logo192.png",
                           height: 30,
                           width: 30,
                         }}
                       />
+                      {/*window.location.href*/}
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
                       <Hidden only={["xs", "sm"]}>
