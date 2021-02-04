@@ -8,6 +8,15 @@ table
         tr
             td
                 padding: 8px
+        thead
+            position: sticky
+            top: 0
+            th
+                background: white
+                position: sticky
+                top: 0
+                text-align: left
+                padding: 8px
         tbody
             tr
                 transition-duration: 0.2s
@@ -20,6 +29,9 @@ table
 
     &.dialogDark
         @extend .dialog
+        thead
+            th
+                background: #424242
         tbody
             tr
                 &:hover

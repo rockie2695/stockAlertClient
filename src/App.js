@@ -407,8 +407,10 @@ const App = () => {
             if (!prevState.some((e) => e.time === time)) {
               addArray = [
                 {
+                  stock: message.stock,
                   time: time,
                   price: message.price,
+                  stringTime: message.time,
                   jsTime: message.jsTime,
                   low: message.low,
                   high: message.high,
@@ -423,8 +425,10 @@ const App = () => {
         setSelectHistory((prevState) => {
           return [
             {
+              stock: message.stock,
               time: time,
               price: message.price,
+              stringTime: message.time,
               jsTime: message.jsTime,
               low: message.low,
               high: message.high,

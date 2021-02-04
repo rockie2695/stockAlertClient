@@ -94,35 +94,23 @@ const HighLow = (props) => {
     return "no price";
   } else {
     //selectHistory.length>0
-    if (
-      typeof props.selectHistory[props.selectHistory.length - 1][
-        props.highOrLow
-      ] === "undefined"
-    ) {
+    for (let i = props.selectHistory.length - 1; i > -1; i--) {
       if (
-        props.selectHistory.length > 1 &&
-        typeof props.selectHistory[props.selectHistory.length - 2][
-          props.highOrLow
-        ] !== "undefined"
+        typeof props.selectHistory[i][props.highOrLow] !== "undefined" &&
+        props.selectHistory[i][props.highOrLow] !== 0
       ) {
-        return props.selectHistory[props.selectHistory.length - 2][
-          props.highOrLow
-        ];
-      } else {
-        return "no price";
+        return props.selectHistory[i][props.highOrLow];
       }
-    } else {
-      return props.selectHistory[props.selectHistory.length - 1][
-        props.highOrLow
-      ];
     }
+    return "no price";
   }
 };
 
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
   const [dailyDataHistory, setDailyDataHistory] = useState([]);
-  const [allDateTable, setAllDateTable] = useState(false);
+  const [allDataTable, setAllDataTable] = useState(false);
+  const [dailyDataTable, setDailyDataTable] = useState(false);
   const [newsHistory, setNewsHistory] = useState([]);
   const [loadingAllData, setLoadingAllData] = useState(false);
   const [loadingDailyData, setLoadingDailyData] = useState(false);
@@ -223,6 +211,9 @@ const DialogBox = (props) => {
         setIssuedShare("");
         setVol("");
         setTvr("");
+        setLoadingAllData(false);
+        setLoadingDailyData(false);
+        setLoadingNews(false);
         setNewsHistorySeen([
           true,
           false,
@@ -269,6 +260,9 @@ const DialogBox = (props) => {
       setLoadingAllData(false);
       setLoadingDailyData(false);
       setLoadingNews(false);
+      setAllDataTable(false);
+      setDailyDataTable(false);
+      setAreaChartSetting(false);
       setNewsHistorySeen([
         true,
         false,
@@ -556,6 +550,12 @@ const DialogBox = (props) => {
               insertHistory.push({
                 stringDay: dailyData[i][0],
                 price: dailyData[i][1],
+                high: dailyData[i][7],
+                low: dailyData[i][8],
+                shareVolume: fun_appendFix(
+                  parseInt(dailyData[i][10] !== null ? dailyData[i][10] : 0) *
+                    1000
+                ),
               });
             }
             setDailyDataHistory((prevState) => {
@@ -575,9 +575,6 @@ const DialogBox = (props) => {
           });
         });
     }
-  };
-  const fun_close_dailyDataHistory = () => {
-    setDailyDataHistory([]);
   };
   const fun_allData = (stock) => {
     //get all data from server
@@ -638,16 +635,21 @@ const DialogBox = (props) => {
         });
     }
   };
+  /*const fun_close_dailyDataHistory = () => {
+    setDailyDataHistory([]);
+  };
   const fun_close_allDataHistory = () => {
     setAllDataHistory([]);
   };
   const changeAreaChartSetting = () => {
     setAreaChartSetting((prevState) => !prevState);
   };
-  const changeAllDateTable = () => {
-    setAllDateTable((prevState) => !prevState);
+  const changeAllDataTable = () => {
+    setAllDataTable((prevState) => !prevState);
   };
-
+  const changeDailyDataTable = () => {
+    setDailyDataTable((prevState) => !prevState);
+  };*/
   const openLink = (linkUrl) => {
     window.open(linkUrl);
   };
@@ -923,7 +925,12 @@ const DialogBox = (props) => {
                               control={
                                 <Switch
                                   checked={areaChartSetting}
-                                  onChange={changeAreaChartSetting}
+                                  onChange={
+                                    () =>
+                                      setAreaChartSetting(
+                                        (prevState) => !prevState
+                                      ) /*changeAreaChartSetting*/
+                                  }
                                   name="Area Chart"
                                   color="primary"
                                 />
@@ -1558,7 +1565,9 @@ const DialogBox = (props) => {
                             color="primary"
                             onClick={() =>
                               allDataHistory.length > 0
-                                ? fun_close_allDataHistory()
+                                ? setAllDataHistory(
+                                    []
+                                  ) /*fun_close_allDataHistory()*/
                                 : fun_allData(
                                     props.stockNotify[props.dialogIndex].stock
                                   )
@@ -1594,8 +1603,13 @@ const DialogBox = (props) => {
                                     <FormControlLabel
                                       control={
                                         <Switch
-                                          checked={allDateTable}
-                                          onChange={changeAllDateTable}
+                                          checked={allDataTable}
+                                          onChange={
+                                            () =>
+                                              setAllDataTable(
+                                                (prevState) => !prevState
+                                              ) /*changeAllDataTable*/
+                                          }
                                           name="Table"
                                           color="primary"
                                         />
@@ -1604,51 +1618,97 @@ const DialogBox = (props) => {
                                       style={{ margin: 0 }}
                                     />
                                   </Typography>
-                                  <ResponsiveContainer
-                                    width="100%"
-                                    height={400}
-                                  >
-                                    <LineChart
-                                      data={allDataHistory}
-                                      margin={{
-                                        top: 10,
-                                        right: 10,
-                                        bottom: 10,
-                                        left: 0,
+                                  {allDataTable ? (
+                                    <div
+                                      style={{
+                                        maxHeight: 400,
+                                        overflow: "auto",
+                                        marginBottom: 8,
                                       }}
                                     >
-                                      <Line
-                                        type="monotone"
-                                        dataKey="price"
-                                        stroke="#8884d8"
-                                        activeDot={{ r: 8 }}
-                                        dot={false}
-                                      />
-                                      <CartesianGrid
-                                        stroke="#ccc"
-                                        strokeDasharray="5 5"
-                                      />
-                                      <XAxis
-                                        dataKey="stringTime"
-                                        type="category"
-                                        domain={["auto", "auto"]}
-                                        tick={{
-                                          fill: props.isDarkMode
-                                            ? "lightgray"
-                                            : "gray",
+                                      <table
+                                        className={
+                                          props.isDarkMode
+                                            ? "dialogDark"
+                                            : "dialog"
+                                        }
+                                      >
+                                        <colgroup>
+                                          <col style={{ width: "25%" }} />
+                                          <col style={{ width: "25%" }} />
+                                          <col style={{ width: "25%" }} />
+                                          <col style={{ width: "25%" }} />
+                                        </colgroup>
+                                        <thead>
+                                          <tr>
+                                            <th>Time</th>
+                                            <th>Price</th>
+                                            <th>High</th>
+                                            <th>Low</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {allDataHistory
+                                            .slice(0)
+                                            .reverse()
+                                            .map((row, index) => (
+                                              <tr key={index}>
+                                                <td>{row.stringTime}</td>
+                                                <td>{row.price}</td>
+                                                <td>{row.high}</td>
+                                                <td>{row.low}</td>
+                                              </tr>
+                                            ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  ) : (
+                                    <ResponsiveContainer
+                                      width="100%"
+                                      height={400}
+                                    >
+                                      <LineChart
+                                        data={allDataHistory}
+                                        margin={{
+                                          top: 10,
+                                          right: 10,
+                                          bottom: 10,
+                                          left: 0,
                                         }}
-                                      />
-                                      <YAxis
-                                        domain={["auto", "auto"]}
-                                        tick={{
-                                          fill: props.isDarkMode
-                                            ? "lightgray"
-                                            : "gray",
-                                        }}
-                                      />
-                                      <Tooltip content={<CustomToolTip />} />
-                                    </LineChart>
-                                  </ResponsiveContainer>
+                                      >
+                                        <Line
+                                          type="monotone"
+                                          dataKey="price"
+                                          stroke="#8884d8"
+                                          activeDot={{ r: 8 }}
+                                          dot={false}
+                                        />
+                                        <CartesianGrid
+                                          stroke="#ccc"
+                                          strokeDasharray="5 5"
+                                        />
+                                        <XAxis
+                                          dataKey="stringTime"
+                                          type="category"
+                                          domain={["auto", "auto"]}
+                                          tick={{
+                                            fill: props.isDarkMode
+                                              ? "lightgray"
+                                              : "gray",
+                                          }}
+                                        />
+                                        <YAxis
+                                          domain={["auto", "auto"]}
+                                          tick={{
+                                            fill: props.isDarkMode
+                                              ? "lightgray"
+                                              : "gray",
+                                          }}
+                                        />
+                                        <Tooltip content={<CustomToolTip />} />
+                                      </LineChart>
+                                    </ResponsiveContainer>
+                                  )}
                                 </Fragment>
                               ) : null}
                             </div>
@@ -1683,7 +1743,9 @@ const DialogBox = (props) => {
                             color="primary"
                             onClick={() =>
                               dailyDataHistory.length > 0
-                                ? fun_close_dailyDataHistory()
+                                ? setDailyDataHistory(
+                                    []
+                                  ) /*fun_close_dailyDataHistory()*/
                                 : fun_dailyData(
                                     props.stockNotify[props.dialogIndex].stock
                                   )
@@ -1717,48 +1779,121 @@ const DialogBox = (props) => {
                           <Fade in={dailyDataHistory.length > 0} timeout={1000}>
                             <div>
                               {dailyDataHistory.length > 0 ? (
-                                <ResponsiveContainer width="100%" height={400}>
-                                  <LineChart
-                                    data={dailyDataHistory}
-                                    margin={{
-                                      top: 10,
-                                      right: 10,
-                                      bottom: 10,
-                                      left: 0,
-                                    }}
-                                  >
-                                    <Line
-                                      type="monotone"
-                                      dataKey="price"
-                                      stroke="#8884d8"
-                                      activeDot={{ r: 8 }}
-                                      dot={false}
+                                <Fragment>
+                                  <Typography align="right" className="margin2">
+                                    <FormControlLabel
+                                      control={
+                                        <Switch
+                                          checked={dailyDataTable}
+                                          onChange={
+                                            () =>
+                                              setDailyDataTable(
+                                                (prevState) => !prevState
+                                              ) /*changeDailyDataTable*/
+                                          }
+                                          name="Table"
+                                          color="primary"
+                                        />
+                                      }
+                                      label="Table"
+                                      style={{ margin: 0 }}
                                     />
-                                    <CartesianGrid
-                                      stroke="#ccc"
-                                      strokeDasharray="5 5"
-                                    />
-                                    <XAxis
-                                      dataKey="stringDay"
-                                      type="category"
-                                      domain={["auto", "auto"]}
-                                      tick={{
-                                        fill: props.isDarkMode
-                                          ? "lightgray"
-                                          : "gray",
+                                  </Typography>
+                                  {dailyDataTable ? (
+                                    <div
+                                      style={{
+                                        maxHeight: 400,
+                                        overflow: "auto",
+                                        marginBottom: 8,
                                       }}
-                                    />
-                                    <YAxis
-                                      domain={["auto", "auto"]}
-                                      tick={{
-                                        fill: props.isDarkMode
-                                          ? "lightgray"
-                                          : "gray",
-                                      }}
-                                    />
-                                    <Tooltip content={<CustomToolTip />} />
-                                  </LineChart>
-                                </ResponsiveContainer>
+                                    >
+                                      <table
+                                        className={
+                                          props.isDarkMode
+                                            ? "dialogDark"
+                                            : "dialog"
+                                        }
+                                      >
+                                        <colgroup>
+                                          <col style={{ width: "20%" }} />
+                                          <col style={{ width: "20%" }} />
+                                          <col style={{ width: "20%" }} />
+                                          <col style={{ width: "20%" }} />
+                                          <col style={{ width: "20%" }} />
+                                        </colgroup>
+                                        <thead>
+                                          <tr>
+                                            <th>Date</th>
+                                            <th>Price</th>
+                                            <th>High</th>
+                                            <th>Low</th>
+                                            <th>shareVolume</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {dailyDataHistory
+                                            .slice(0)
+                                            .reverse()
+                                            .map((row, index) => (
+                                              <tr key={index}>
+                                                <td>{row.stringDay}</td>
+                                                <td>{row.price}</td>
+                                                <td>{row.high}</td>
+                                                <td>{row.low}</td>
+                                                <td>{row.shareVolume}</td>
+                                              </tr>
+                                            ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  ) : (
+                                    <ResponsiveContainer
+                                      width="100%"
+                                      height={400}
+                                    >
+                                      <LineChart
+                                        data={dailyDataHistory}
+                                        margin={{
+                                          top: 10,
+                                          right: 10,
+                                          bottom: 10,
+                                          left: 0,
+                                        }}
+                                      >
+                                        <Line
+                                          type="monotone"
+                                          dataKey="price"
+                                          stroke="#8884d8"
+                                          activeDot={{ r: 8 }}
+                                          dot={false}
+                                        />
+                                        <CartesianGrid
+                                          stroke="#ccc"
+                                          strokeDasharray="5 5"
+                                        />
+                                        <XAxis
+                                          dataKey="stringDay"
+                                          type="category"
+                                          domain={["auto", "auto"]}
+                                          tick={{
+                                            fill: props.isDarkMode
+                                              ? "lightgray"
+                                              : "gray",
+                                          }}
+                                        />
+                                        <YAxis
+                                          domain={["auto", "auto"]}
+                                          tick={{
+                                            fill: props.isDarkMode
+                                              ? "lightgray"
+                                              : "gray",
+                                          }}
+                                        />
+                                        <Tooltip content={<CustomToolTip />} />
+                                      </LineChart>
+                                    </ResponsiveContainer>
+                                  )}
+                                </Fragment>
                               ) : null}
                             </div>
                           </Fade>
