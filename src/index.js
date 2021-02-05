@@ -20,9 +20,9 @@ const rootElement = document.getElementById("root");
 } else {*/
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    {/*<BrowserRouter>*/}
+    <App />
+    {/*</BrowserRouter>*/}
   </React.StrictMode>,
   rootElement
 );

@@ -40,7 +40,11 @@ import CountUp from "react-countup";
 import Fade from "@material-ui/core/Fade";
 import Collapse from "@material-ui/core/Collapse";
 import AddIcon from "@material-ui/icons/Add";
-import { useHistory, withRouter } from "react-router-dom";
+import {
+  useHistory,
+  withRouter,
+  BrowserRouter as Router,
+} from "react-router-dom";
 
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -50,7 +54,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import "./App.sass";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
-
+import App2 from "./App2";
 /**
  * make dense mode
  */
@@ -173,71 +177,6 @@ const App = () => {
   const isDarkMode = theme.palette.type === "dark";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const hideAlert = useMediaQuery(theme.breakpoints.down("xs"));
-
-  useEffect(() => {
-    window.addEventListener("online", handleConnectionChange);
-    window.addEventListener("offline", handleConnectionChange);
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      //e.preventDefault();
-      // Stash the event so it can be triggered later.
-      setDeferredPrompt((prevState) => e);
-      e.userChoice.then(function (choiceResult) {
-        console.log(choiceResult.outcome);
-        if (choiceResult.outcome === "dismissed") {
-          console.log("User cancelled home screen install");
-        } else {
-          console.log("User added to home screen");
-        }
-      });
-    });
-    if (testlink && login.emil !== "") {
-      fun_login({});
-    }
-    return () => {
-      setWs(() => null);
-      setLogin({ email: "" });
-      setStockNotify(() => []);
-      setOldStockNotify(() => []);
-      setEdit(() => false);
-      setStockHistory(() => []);
-      setAddRoomList(() => []);
-      setSelectHistory(() => []);
-      setWs(() => null);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (ws) {
-      //連線成功在 console 中打印訊息
-      //console.log("success connect!");
-      //設定監聽
-      initWebSocket();
-    }
-  }, [ws]);
-
-  useEffect(() => {
-    if (login.email !== "") {
-      //console.log("do startConnectWS");
-      startConnectWS();
-    } else {
-      setStockNotify(() => []);
-      setOldStockNotify(() => []);
-      setEdit(() => false);
-      setStockHistory(() => []);
-      setAddRoomList(() => []);
-      setSelectHistory(() => []);
-    }
-  }, [login]);
-
-  useEffect(() => {
-    if (localStorage.getItem("darkModeSetting") === null) {
-      setDarkModeSetting(() => {
-        return prefersDarkMode;
-      });
-    }
-  }, [prefersDarkMode]);
 
   const handleConnectionChange = () => {
     const condition = navigator.onLine ? "online" : "offline";
@@ -1202,971 +1141,999 @@ const App = () => {
   */
 
   return (
-    <HttpsRedirect disabled={testlink ? true : false}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box
-          bgcolor="text.disabled"
-          style={{ height: "100%", minHeight: "100vh" }}
-        >
-          <Suspense fallback={renderLoader()}>
-            <Menu
-              login={login}
-              clientId={clientId}
-              fun_login={fun_login}
-              fun_logout={fun_logout}
-              sendingForm={sendingForm}
-              changeDarkModeSetting={changeDarkModeSetting}
-              darkModeSetting={darkModeSetting}
-            />
-          </Suspense>
+    <Router>
+      <HttpsRedirect disabled={testlink ? true : false}>
+        {/*<ThemeProvider theme={theme}>
+          <CssBaseline />
           <Box
-            position="fixed"
-            zIndex="0"
-            width="100vw"
-            height="40vh"
-            minHeight="200px"
-            bgcolor="text.primary"
-            color="background.paper"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
+            bgcolor="text.disabled"
+            style={{ height: "100%", minHeight: "100vh" }}
           >
-            <Typography align="center" variant="h2">
-              For HK Stock Price Showing And Notification
-            </Typography>
-          </Box>
-          <Box height="40vh"></Box>
-          <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
-            <Grid container alignItems="center">
-              <Hidden only={["xs", "sm"]}>
-                <Grid item sm={false} md={2} className="margin1"></Grid>
-              </Hidden>
-              <Grid item xs={12} sm={12} md={8} className="margin1">
-                <Paper style={{ paddingBottom: 2 }}>
-                  <Typography
-                    align="right"
-                    className="margin1"
-                    style={{ margin: "0.5em", paddingTop: "0.5em" }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={denseModeSetting}
-                          onChange={changeDenseModeSetting}
-                          name="Dense Mode Switch"
-                          color="primary"
-                        />
-                      }
-                      label="Dense Mode"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={priceDiffPercentSetting}
-                          onChange={changePriceDiffPercentSetting}
-                          name="Percent Price Diff Switch"
-                          color="primary"
-                        />
-                      }
-                      label="Percent Price Diff"
-                    />
-                    {!fullScreen ? (
+            <Suspense fallback={renderLoader()}>
+              <Menu
+                login={login}
+                clientId={clientId}
+                fun_login={fun_login}
+                fun_logout={fun_logout}
+                sendingForm={sendingForm}
+                changeDarkModeSetting={changeDarkModeSetting}
+                darkModeSetting={darkModeSetting}
+              />
+            </Suspense>
+            <Box
+              position="fixed"
+              zIndex="0"
+              width="100vw"
+              height="40vh"
+              minHeight="200px"
+              bgcolor="text.primary"
+              color="background.paper"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography align="center" variant="h2">
+                For HK Stock Price Showing And Notification
+              </Typography>
+            </Box>
+            <Box height="40vh"></Box>
+            <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
+              <Grid container alignItems="center">
+                <Hidden only={["xs", "sm"]}>
+                  <Grid item sm={false} md={2} className="margin1"></Grid>
+                </Hidden>
+                <Grid item xs={12} sm={12} md={8} className="margin1">
+                  <Paper style={{ paddingBottom: 2 }}>
+                    <Typography
+                      align="right"
+                      className="margin1"
+                      style={{ margin: "0.5em", paddingTop: "0.5em" }}
+                    >
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={fullScreenSetting}
-                            onChange={changeFullScreenSetting}
-                            name="Full Screen Switch"
+                            checked={denseModeSetting}
+                            onChange={changeDenseModeSetting}
+                            name="Dense Mode Switch"
                             color="primary"
                           />
                         }
-                        label="Full Screen Dialog"
+                        label="Dense Mode"
                       />
-                    ) : null}
-                  </Typography>
-
-                  <Typography
-                    align="right"
-                    className="margin1"
-                    style={{ margin: "0.5em" }}
-                  >
-                    {hideAlert ||
-                    denseModeSetting ||
-                    login.email === "" ? null : edit === true ? (
-                      <Fragment>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={fun_save}
-                          disabled={sendingForm}
-                        >
-                          <Typography style={{ marginRight: 8 }}>
-                            Save
-                          </Typography>
-                          {sendingForm ? (
-                            <CircularProgress
-                              size={20}
-                              style={{ color: "white" }}
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={priceDiffPercentSetting}
+                            onChange={changePriceDiffPercentSetting}
+                            name="Percent Price Diff Switch"
+                            color="primary"
+                          />
+                        }
+                        label="Percent Price Diff"
+                      />
+                      {!fullScreen ? (
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={fullScreenSetting}
+                              onChange={changeFullScreenSetting}
+                              name="Full Screen Switch"
+                              color="primary"
                             />
-                          ) : (
-                            <SaveIcon />
-                          )}
-                        </Button>
+                          }
+                          label="Full Screen Dialog"
+                        />
+                      ) : null}
+                    </Typography>
+
+                    <Typography
+                      align="right"
+                      className="margin1"
+                      style={{ margin: "0.5em" }}
+                    >
+                      {hideAlert ||
+                      denseModeSetting ||
+                      login.email === "" ? null : edit === true ? (
+                        <Fragment>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fun_save}
+                            disabled={sendingForm}
+                          >
+                            <Typography style={{ marginRight: 8 }}>
+                              Save
+                            </Typography>
+                            {sendingForm ? (
+                              <CircularProgress
+                                size={20}
+                                style={{ color: "white" }}
+                              />
+                            ) : (
+                              <SaveIcon />
+                            )}
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fun_edit}
+                            disabled={sendingForm}
+                          >
+                            <Typography>Cancel</Typography>
+                            <CloseIcon />
+                          </Button>
+                        </Fragment>
+                      ) : (
                         <Button
                           variant="contained"
                           color="primary"
                           onClick={fun_edit}
-                          disabled={sendingForm}
                         >
-                          <Typography>Cancel</Typography>
-                          <CloseIcon />
+                          <Typography style={{ marginRight: 8 }}>
+                            Edit
+                          </Typography>
+                          <EditIcon />
                         </Button>
-                      </Fragment>
-                    ) : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={fun_edit}
-                      >
-                        <Typography style={{ marginRight: 8 }}>Edit</Typography>
-                        <EditIcon />
-                      </Button>
-                    )}
-                  </Typography>
-                  <Box display="flex" alignItems="center" margin={2}>
-                    {denseModeSetting ? (
-                      <Grid container alignItems="center">
-                        <Grid item xs={6} sm={6} md={6}>
-                          <Typography>Stock Number</Typography>
-                        </Grid>
-                        <Grid item xs={6} sm={6} md={6}>
-                          <Typography>Price ($)</Typography>
-                        </Grid>
-                      </Grid>
-                    ) : (
-                      <Grid container spacing={3} alignItems="center">
-                        <Grid
-                          item
-                          xs={3}
-                          sm={1}
-                          md={1}
-                          className="margin1"
-                        ></Grid>
-                        <Grid item xs={5} sm={2} md={2} className="margin1">
-                          <Typography>Stock Number</Typography>
-                        </Grid>
-                        <Grid item xs={4} sm={2} md={2} className="margin1">
-                          <Typography>Price</Typography>
-                        </Grid>
-                        <Hidden only="xs">
-                          <Grid
-                            item
-                            xs={false}
-                            sm={2}
-                            md={2}
-                            className="margin1"
-                          ></Grid>
-                          <Grid
-                            item
-                            xs={false}
-                            sm={3}
-                            md={3}
-                            className="margin1"
-                          >
-                            <Typography style={{ textAlign: "center" }}>
-                              now$ to alert$
-                            </Typography>
+                      )}
+                    </Typography>
+                    <Box display="flex" alignItems="center" margin={2}>
+                      {denseModeSetting ? (
+                        <Grid container alignItems="center">
+                          <Grid item xs={6} sm={6} md={6}>
+                            <Typography>Stock Number</Typography>
                           </Grid>
+                          <Grid item xs={6} sm={6} md={6}>
+                            <Typography>Price ($)</Typography>
+                          </Grid>
+                        </Grid>
+                      ) : (
+                        <Grid container spacing={3} alignItems="center">
                           <Grid
                             item
-                            xs={false}
+                            xs={3}
                             sm={1}
                             md={1}
                             className="margin1"
                           ></Grid>
-                          <Grid item xs={false} sm={1} md={1}>
-                            <Typography>Alert</Typography>
+                          <Grid item xs={5} sm={2} md={2} className="margin1">
+                            <Typography>Stock Number</Typography>
                           </Grid>
-                        </Hidden>
-                      </Grid>
-                    )}
-                  </Box>
-                  <Divider />
-                  {stockNotify.length !== 0 ? (
-                    <Collapse in={!loading} timeout={1000}>
-                      {denseModeSetting
-                        ? stockNotify.map((row, index) => (
-                            <Fade
-                              in={true}
-                              timeout={1000}
-                              style={{
-                                transitionDelay:
-                                  (row.hasOwnProperty("_id") ? index : 0) *
-                                    150 +
-                                  "ms",
-                              }}
-                              key={index}
+                          <Grid item xs={4} sm={2} md={2} className="margin1">
+                            <Typography>Price</Typography>
+                          </Grid>
+                          <Hidden only="xs">
+                            <Grid
+                              item
+                              xs={false}
+                              sm={2}
+                              md={2}
+                              className="margin1"
+                            ></Grid>
+                            <Grid
+                              item
+                              xs={false}
+                              sm={3}
+                              md={3}
+                              className="margin1"
                             >
-                              <div>
-                                <Box
-                                  className={
-                                    edit
-                                      ? isDarkMode
-                                        ? "boxDark"
-                                        : "box"
-                                      : isDarkMode
-                                      ? "cursorPointer boxDark"
-                                      : "cursorPointer box"
-                                  }
-                                  display="flex"
-                                  alignItems="center"
-                                  style={{
-                                    paddingLeft: 16,
-                                    paddingRight: 16,
-                                    height: 80,
-                                  }}
-                                  onClick={() => openDialog(index)}
-                                >
-                                  <Grid container alignItems="center">
-                                    <Grid item xs={6} sm={6} md={6}>
-                                      <Typography
-                                        variant="h6"
-                                        style={{ display: "inline-block" }}
+                              <Typography style={{ textAlign: "center" }}>
+                                now$ to alert$
+                              </Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={false}
+                              sm={1}
+                              md={1}
+                              className="margin1"
+                            ></Grid>
+                            <Grid item xs={false} sm={1} md={1}>
+                              <Typography>Alert</Typography>
+                            </Grid>
+                          </Hidden>
+                        </Grid>
+                      )}
+                    </Box>
+                    <Divider />
+                    {stockNotify.length !== 0 ? (
+                      <Collapse in={!loading} timeout={1000}>
+                        {denseModeSetting
+                          ? stockNotify.map((row, index) => (
+                              <Fade
+                                in={true}
+                                timeout={1000}
+                                style={{
+                                  transitionDelay:
+                                    (row.hasOwnProperty("_id") ? index : 0) *
+                                      150 +
+                                    "ms",
+                                }}
+                                key={index}
+                              >
+                                <div>
+                                  <Box
+                                    className={
+                                      edit
+                                        ? isDarkMode
+                                          ? "boxDark"
+                                          : "box"
+                                        : isDarkMode
+                                        ? "cursorPointer boxDark"
+                                        : "cursorPointer box"
+                                    }
+                                    display="flex"
+                                    alignItems="center"
+                                    style={{
+                                      paddingLeft: 16,
+                                      paddingRight: 16,
+                                      height: 80,
+                                    }}
+                                    onClick={() => openDialog(index)}
+                                  >
+                                    <Grid container alignItems="center">
+                                      <Grid item xs={6} sm={6} md={6}>
+                                        <Typography
+                                          variant="h6"
+                                          style={{ display: "inline-block" }}
+                                        >
+                                          {row.stock}
+                                          &nbsp;
+                                          {typeof row.name !== "undefined"
+                                            ? row.name
+                                            : null}
+                                        </Typography>
+                                        {typeof row.name === "undefined" ? (
+                                          <Skeleton
+                                            style={{
+                                              width: "50%",
+                                              display: "inline-block",
+                                            }}
+                                          />
+                                        ) : null}
+                                      </Grid>
+                                      <Grid
+                                        item
+                                        xs={6}
+                                        sm={6}
+                                        md={6}
+                                        className="margin1"
                                       >
-                                        {row.stock}
-                                        &nbsp;
-                                        {typeof row.name !== "undefined"
-                                          ? row.name
-                                          : null}
-                                      </Typography>
-                                      {typeof row.name === "undefined" ? (
-                                        <Skeleton
-                                          style={{
-                                            width: "50%",
-                                            display: "inline-block",
-                                          }}
-                                        />
-                                      ) : null}
-                                    </Grid>
-                                    <Grid
-                                      item
-                                      xs={6}
-                                      sm={6}
-                                      md={6}
-                                      className="margin1"
-                                    >
-                                      {typeof row.nowPrice !== "undefined" ? (
-                                        <div
-                                          style={{
-                                            ...{
-                                              borderRadius: "10px",
-                                              textAlign: "center",
-                                              maxWidth: "120px",
-                                              color: "white",
-                                            },
-                                            ...{
-                                              background:
-                                                parseFloat(row.nowPrice) -
+                                        {typeof row.nowPrice !== "undefined" ? (
+                                          <div
+                                            style={{
+                                              ...{
+                                                borderRadius: "10px",
+                                                textAlign: "center",
+                                                maxWidth: "120px",
+                                                color: "white",
+                                              },
+                                              ...{
+                                                background:
+                                                  parseFloat(row.nowPrice) -
+                                                    parseFloat(row.past) >
+                                                  0
+                                                    ? green_color
+                                                    : parseFloat(row.nowPrice) -
+                                                        parseFloat(row.past) <
+                                                      0
+                                                    ? red_color
+                                                    : "gray",
+                                              },
+                                            }}
+                                          >
+                                            <Typography variant="h6">
+                                              {row.hasOwnProperty(
+                                                "oldPrice"
+                                              ) ? (
+                                                <CountUp
+                                                  start={row.oldPrice}
+                                                  end={row.nowPrice}
+                                                  decimals={3}
+                                                />
+                                              ) : (
+                                                <CountUp
+                                                  end={row.nowPrice}
+                                                  decimals={3}
+                                                />
+                                              )}
+                                            </Typography>
+                                            <div
+                                              style={{
+                                                borderBottom: "1px solid white",
+                                                width: "100%",
+                                                height: "1px",
+                                              }}
+                                            >
+                                              &nbsp;
+                                            </div>
+                                            {typeof row.past !== "undefined" &&
+                                            typeof row.nowPrice !==
+                                              "undefined" ? (
+                                              <Typography variant="h6">
+                                                {(parseFloat(row.nowPrice) -
                                                   parseFloat(row.past) >
                                                 0
-                                                  ? green_color
-                                                  : parseFloat(row.nowPrice) -
-                                                      parseFloat(row.past) <
-                                                    0
-                                                  ? red_color
-                                                  : "gray",
-                                            },
-                                          }}
+                                                  ? "+"
+                                                  : "") +
+                                                  (!priceDiffPercentSetting
+                                                    ? parseFloat(
+                                                        Math.round(
+                                                          (parseFloat(
+                                                            row.nowPrice
+                                                          ) -
+                                                            parseFloat(
+                                                              row.past
+                                                            ) +
+                                                            0.00001 *
+                                                              (parseFloat(
+                                                                row.nowPrice
+                                                              ) -
+                                                                parseFloat(
+                                                                  row.past
+                                                                ) >
+                                                              0
+                                                                ? 1
+                                                                : -1)) *
+                                                            1000
+                                                        ) / 1000
+                                                      )
+                                                    : parseFloat(
+                                                        Math.round(
+                                                          ((parseFloat(
+                                                            row.nowPrice
+                                                          ) -
+                                                            parseFloat(
+                                                              row.past
+                                                            ) +
+                                                            0.00001 *
+                                                              (parseFloat(
+                                                                row.nowPrice
+                                                              ) -
+                                                                parseFloat(
+                                                                  row.past
+                                                                ) >
+                                                              0
+                                                                ? 1
+                                                                : -1)) /
+                                                            row.past) *
+                                                            100000
+                                                        ) / 1000
+                                                      ) + "%")}
+                                              </Typography>
+                                            ) : null}
+                                          </div>
+                                        ) : (
+                                          <Skeleton />
+                                        )}
+                                      </Grid>
+                                    </Grid>
+                                  </Box>
+                                  {index === stockNotify.length - 1 ? null : (
+                                    <Divider />
+                                  )}
+                                </div>
+                              </Fade>
+                            ))
+                          : stockNotify.map((row, index) => (
+                              <Fade
+                                in={true}
+                                timeout={1000}
+                                style={{
+                                  transitionDelay:
+                                    (row.hasOwnProperty("_id") ? index : 0) *
+                                      150 +
+                                    "ms",
+                                }}
+                                key={index}
+                              >
+                                <div>
+                                  <Box
+                                    className={
+                                      edit
+                                        ? isDarkMode
+                                          ? "boxDark"
+                                          : "box"
+                                        : isDarkMode
+                                        ? "cursorPointer boxDark"
+                                        : "cursorPointer box"
+                                    }
+                                    display="flex"
+                                    alignItems="center"
+                                    padding={2}
+                                    onClick={() => openDialog(index)}
+                                  >
+                                    <Grid
+                                      container
+                                      spacing={3}
+                                      alignItems="center"
+                                    >
+                                      <Grid
+                                        item
+                                        xs={3}
+                                        sm={1}
+                                        md={1}
+                                        className="margin1"
+                                      >
+                                        <Avatar
+                                          className={
+                                            edit ? "cursorPointer" : ""
+                                          }
+                                          onClick={
+                                            edit
+                                              ? () => clickAvatar(index)
+                                              : null
+                                          }
                                         >
-                                          <Typography variant="h6">
-                                            {row.hasOwnProperty("oldPrice") ? (
+                                          {edit ? "X" : index + 1}
+                                        </Avatar>
+                                      </Grid>
+                                      <Grid
+                                        item
+                                        xs={5}
+                                        sm={2}
+                                        md={2}
+                                        className="margin1"
+                                      >
+                                        {edit === true ? (
+                                          <TextField
+                                            type="number"
+                                            style={{ minWidth: "85px" }}
+                                            id={`stock_${index}`}
+                                            name={`stock_${index}`}
+                                            label="stock"
+                                            variant="outlined"
+                                            value={row.stock}
+                                            margin="dense"
+                                            autoComplete="off"
+                                            onChange={changeAlertInfo}
+                                            onBlur={loseFocusAlertInfo}
+                                            disabled={sendingForm}
+                                          />
+                                        ) : (
+                                          <Fragment>
+                                            <Typography
+                                              style={{
+                                                display: "inline-block",
+                                              }}
+                                            >
+                                              {row.stock}
+                                              &nbsp;
+                                              {typeof row.name !== "undefined"
+                                                ? row.name
+                                                : null}
+                                            </Typography>
+                                            {typeof row.name === "undefined" ? (
+                                              <Skeleton
+                                                style={{
+                                                  width: "50%",
+                                                  display: "inline-block",
+                                                }}
+                                              />
+                                            ) : null}
+                                          </Fragment>
+                                        )}
+                                      </Grid>
+                                      <Grid
+                                        item
+                                        xs={4}
+                                        sm={2}
+                                        md={2}
+                                        className="margin1"
+                                      >
+                                        <Typography>
+                                          {typeof row.nowPrice !==
+                                          "undefined" ? (
+                                            row.hasOwnProperty("oldPrice") ? (
                                               <CountUp
                                                 start={row.oldPrice}
                                                 end={row.nowPrice}
                                                 decimals={3}
+                                                prefix="$ "
                                               />
                                             ) : (
                                               <CountUp
                                                 end={row.nowPrice}
                                                 decimals={3}
+                                                prefix="$ "
                                               />
-                                            )}
-                                          </Typography>
-                                          <div
-                                            style={{
-                                              borderBottom: "1px solid white",
-                                              width: "100%",
-                                              height: "1px",
-                                            }}
-                                          >
-                                            &nbsp;
-                                          </div>
+                                            )
+                                          ) : (
+                                            <Skeleton />
+                                          )}
+
                                           {typeof row.past !== "undefined" &&
                                           typeof row.nowPrice !==
                                             "undefined" ? (
-                                            <Typography variant="h6">
-                                              {(parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) >
-                                              0
-                                                ? "+"
-                                                : "") +
-                                                (!priceDiffPercentSetting
-                                                  ? parseFloat(
-                                                      Math.round(
-                                                        (parseFloat(
-                                                          row.nowPrice
-                                                        ) -
-                                                          parseFloat(row.past) +
-                                                          0.00001 *
-                                                            (parseFloat(
-                                                              row.nowPrice
-                                                            ) -
-                                                              parseFloat(
-                                                                row.past
-                                                              ) >
-                                                            0
-                                                              ? 1
-                                                              : -1)) *
-                                                          1000
-                                                      ) / 1000
-                                                    )
-                                                  : parseFloat(
-                                                      Math.round(
-                                                        ((parseFloat(
-                                                          row.nowPrice
-                                                        ) -
-                                                          parseFloat(row.past) +
-                                                          0.00001 *
-                                                            (parseFloat(
-                                                              row.nowPrice
-                                                            ) -
-                                                              parseFloat(
-                                                                row.past
-                                                              ) >
-                                                            0
-                                                              ? 1
-                                                              : -1)) /
-                                                          row.past) *
-                                                          100000
-                                                      ) / 1000
-                                                    ) + "%")}
-                                            </Typography>
-                                          ) : null}
-                                        </div>
-                                      ) : (
-                                        <Skeleton />
-                                      )}
-                                    </Grid>
-                                  </Grid>
-                                </Box>
-                                {index === stockNotify.length - 1 ? null : (
-                                  <Divider />
-                                )}
-                              </div>
-                            </Fade>
-                          ))
-                        : stockNotify.map((row, index) => (
-                            <Fade
-                              in={true}
-                              timeout={1000}
-                              style={{
-                                transitionDelay:
-                                  (row.hasOwnProperty("_id") ? index : 0) *
-                                    150 +
-                                  "ms",
-                              }}
-                              key={index}
-                            >
-                              <div>
-                                <Box
-                                  className={
-                                    edit
-                                      ? isDarkMode
-                                        ? "boxDark"
-                                        : "box"
-                                      : isDarkMode
-                                      ? "cursorPointer boxDark"
-                                      : "cursorPointer box"
-                                  }
-                                  display="flex"
-                                  alignItems="center"
-                                  padding={2}
-                                  onClick={() => openDialog(index)}
-                                >
-                                  <Grid
-                                    container
-                                    spacing={3}
-                                    alignItems="center"
-                                  >
-                                    <Grid
-                                      item
-                                      xs={3}
-                                      sm={1}
-                                      md={1}
-                                      className="margin1"
-                                    >
-                                      <Avatar
-                                        className={edit ? "cursorPointer" : ""}
-                                        onClick={
-                                          edit ? () => clickAvatar(index) : null
-                                        }
-                                      >
-                                        {edit ? "X" : index + 1}
-                                      </Avatar>
-                                    </Grid>
-                                    <Grid
-                                      item
-                                      xs={5}
-                                      sm={2}
-                                      md={2}
-                                      className="margin1"
-                                    >
-                                      {edit === true ? (
-                                        <TextField
-                                          type="number"
-                                          style={{ minWidth: "85px" }}
-                                          id={`stock_${index}`}
-                                          name={`stock_${index}`}
-                                          label="stock"
-                                          variant="outlined"
-                                          value={row.stock}
-                                          margin="dense"
-                                          autoComplete="off"
-                                          onChange={changeAlertInfo}
-                                          onBlur={loseFocusAlertInfo}
-                                          disabled={sendingForm}
-                                        />
-                                      ) : (
-                                        <Fragment>
-                                          <Typography
-                                            style={{ display: "inline-block" }}
-                                          >
-                                            {row.stock}
-                                            &nbsp;
-                                            {typeof row.name !== "undefined"
-                                              ? row.name
-                                              : null}
-                                          </Typography>
-                                          {typeof row.name === "undefined" ? (
-                                            <Skeleton
-                                              style={{
-                                                width: "50%",
-                                                display: "inline-block",
-                                              }}
-                                            />
-                                          ) : null}
-                                        </Fragment>
-                                      )}
-                                    </Grid>
-                                    <Grid
-                                      item
-                                      xs={4}
-                                      sm={2}
-                                      md={2}
-                                      className="margin1"
-                                    >
-                                      <Typography>
-                                        {typeof row.nowPrice !== "undefined" ? (
-                                          row.hasOwnProperty("oldPrice") ? (
-                                            <CountUp
-                                              start={row.oldPrice}
-                                              end={row.nowPrice}
-                                              decimals={3}
-                                              prefix="$ "
-                                            />
-                                          ) : (
-                                            <CountUp
-                                              end={row.nowPrice}
-                                              decimals={3}
-                                              prefix="$ "
-                                            />
-                                          )
-                                        ) : (
-                                          <Skeleton />
-                                        )}
-
-                                        {typeof row.past !== "undefined" &&
-                                        typeof row.nowPrice !== "undefined" ? (
-                                          <Fragment>
-                                            <span>{" ("}</span>
-                                            <span
-                                              style={
-                                                parseFloat(row.nowPrice) -
+                                            <Fragment>
+                                              <span>{" ("}</span>
+                                              <span
+                                                style={
+                                                  parseFloat(row.nowPrice) -
+                                                    parseFloat(row.past) >
+                                                  0
+                                                    ? { color: green_color }
+                                                    : parseFloat(row.nowPrice) -
+                                                        parseFloat(row.past) <
+                                                      0
+                                                    ? { color: red_color }
+                                                    : {}
+                                                }
+                                              >
+                                                {(parseFloat(row.nowPrice) -
                                                   parseFloat(row.past) >
                                                 0
-                                                  ? { color: green_color }
-                                                  : parseFloat(row.nowPrice) -
-                                                      parseFloat(row.past) <
-                                                    0
-                                                  ? { color: red_color }
-                                                  : {}
-                                              }
+                                                  ? "+"
+                                                  : "") +
+                                                  (!priceDiffPercentSetting
+                                                    ? parseFloat(
+                                                        Math.round(
+                                                          (parseFloat(
+                                                            row.nowPrice
+                                                          ) -
+                                                            parseFloat(
+                                                              row.past
+                                                            ) +
+                                                            0.00001 *
+                                                              (parseFloat(
+                                                                row.nowPrice
+                                                              ) -
+                                                                parseFloat(
+                                                                  row.past
+                                                                ) >
+                                                              0
+                                                                ? 1
+                                                                : -1)) *
+                                                            1000
+                                                        ) / 1000
+                                                      )
+                                                    : parseFloat(
+                                                        Math.round(
+                                                          ((parseFloat(
+                                                            row.nowPrice
+                                                          ) -
+                                                            parseFloat(
+                                                              row.past
+                                                            ) +
+                                                            0.00001 *
+                                                              (parseFloat(
+                                                                row.nowPrice
+                                                              ) -
+                                                                parseFloat(
+                                                                  row.past
+                                                                ) >
+                                                              0
+                                                                ? 1
+                                                                : -1)) /
+                                                            row.past) *
+                                                            100000
+                                                        ) / 1000
+                                                      ) + "%")}
+                                              </span>
+                                              <span>{")"}</span>
+                                            </Fragment>
+                                          ) : null}
+                                        </Typography>
+                                      </Grid>
+                                      <Grid
+                                        item
+                                        xs={12}
+                                        sm={2}
+                                        md={2}
+                                        className="margin1"
+                                      >
+                                        <Typography
+                                          color="textSecondary"
+                                          align="center"
+                                          variant="subtitle2"
+                                        >
+                                          {typeof row.nowTime !==
+                                          "undefined" ? (
+                                            row.nowTime
+                                          ) : (
+                                            <Skeleton />
+                                          )}
+                                        </Typography>
+                                      </Grid>
+                                      <Hidden only="xs">
+                                        <Grid
+                                          item
+                                          xs={false}
+                                          sm={2}
+                                          md={2}
+                                          className="margin1"
+                                        >
+                                          {edit ? (
+                                            <TextField
+                                              id={`equal_${index}`}
+                                              name={`equal_${index}`}
+                                              select
+                                              label="equal"
+                                              variant="outlined"
+                                              margin="dense"
+                                              value={row.equal}
+                                              style={{ minWidth: "18px" }}
+                                              onChange={changeAlertInfo}
+                                              disabled={sendingForm}
+                                              fullWidth={true}
                                             >
-                                              {(parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) >
-                                              0
-                                                ? "+"
-                                                : "") +
-                                                (!priceDiffPercentSetting
-                                                  ? parseFloat(
-                                                      Math.round(
-                                                        (parseFloat(
-                                                          row.nowPrice
-                                                        ) -
-                                                          parseFloat(row.past) +
-                                                          0.00001 *
-                                                            (parseFloat(
-                                                              row.nowPrice
-                                                            ) -
-                                                              parseFloat(
-                                                                row.past
-                                                              ) >
-                                                            0
-                                                              ? 1
-                                                              : -1)) *
-                                                          1000
-                                                      ) / 1000
-                                                    )
-                                                  : parseFloat(
-                                                      Math.round(
-                                                        ((parseFloat(
-                                                          row.nowPrice
-                                                        ) -
-                                                          parseFloat(row.past) +
-                                                          0.00001 *
-                                                            (parseFloat(
-                                                              row.nowPrice
-                                                            ) -
-                                                              parseFloat(
-                                                                row.past
-                                                              ) >
-                                                            0
-                                                              ? 1
-                                                              : -1)) /
-                                                          row.past) *
-                                                          100000
-                                                      ) / 1000
-                                                    ) + "%")}
-                                            </span>
-                                            <span>{")"}</span>
-                                          </Fragment>
-                                        ) : null}
-                                      </Typography>
-                                    </Grid>
-                                    <Grid
-                                      item
-                                      xs={12}
-                                      sm={2}
-                                      md={2}
-                                      className="margin1"
-                                    >
-                                      <Typography
-                                        color="textSecondary"
-                                        align="center"
-                                        variant="subtitle2"
-                                      >
-                                        {typeof row.nowTime !== "undefined" ? (
-                                          row.nowTime
-                                        ) : (
-                                          <Skeleton />
-                                        )}
-                                      </Typography>
-                                    </Grid>
-                                    <Hidden only="xs">
-                                      <Grid
-                                        item
-                                        xs={false}
-                                        sm={2}
-                                        md={2}
-                                        className="margin1"
-                                      >
-                                        {edit ? (
-                                          <TextField
-                                            id={`equal_${index}`}
-                                            name={`equal_${index}`}
-                                            select
-                                            label="equal"
-                                            variant="outlined"
-                                            margin="dense"
-                                            value={row.equal}
-                                            style={{ minWidth: "18px" }}
-                                            onChange={changeAlertInfo}
-                                            disabled={sendingForm}
-                                            fullWidth={true}
-                                          >
-                                            <MenuItem key=">=" value=">=">
-                                              {">="}
-                                            </MenuItem>
-                                            <MenuItem key="<=" value="<=">
-                                              {"<="}
-                                            </MenuItem>
-                                          </TextField>
-                                        ) : (
-                                          <Typography
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            {row.equal}
-                                          </Typography>
-                                        )}
-                                      </Grid>
-                                      <Grid
-                                        item
-                                        xs={false}
-                                        sm={2}
-                                        md={2}
-                                        className="margin1"
-                                      >
-                                        {edit ? (
-                                          <TextField
-                                            id={`price_${index}`}
-                                            name={`price_${index}`}
-                                            label="price"
-                                            variant="outlined"
-                                            value={row.price}
-                                            margin="dense"
-                                            autoComplete="off"
-                                            disabled={sendingForm}
-                                            InputProps={{
-                                              startAdornment: (
-                                                <InputAdornment position="start">
-                                                  $
-                                                </InputAdornment>
-                                              ),
-                                            }}
-                                            style={{ minWidth: "90px" }}
-                                            onChange={changeAlertInfo}
-                                            type="number"
-                                          />
-                                        ) : (
-                                          <Typography>${row.price}</Typography>
-                                        )}
-                                      </Grid>
-
-                                      <Grid
-                                        item
-                                        xs={false}
-                                        sm={1}
-                                        md={1}
-                                        className="margin1"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <FormControlLabel
-                                          control={
-                                            <Switch
-                                              checked={row.alert}
-                                              onChange={() =>
-                                                changeAlertSwitch(
-                                                  index,
-                                                  row._id,
-                                                  row.alert
-                                                )
-                                              }
-                                              name="alertCheck"
-                                              color="primary"
-                                              disabled={!edit || sendingForm}
+                                              <MenuItem key=">=" value=">=">
+                                                {">="}
+                                              </MenuItem>
+                                              <MenuItem key="<=" value="<=">
+                                                {"<="}
+                                              </MenuItem>
+                                            </TextField>
+                                          ) : (
+                                            <Typography
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              {row.equal}
+                                            </Typography>
+                                          )}
+                                        </Grid>
+                                        <Grid
+                                          item
+                                          xs={false}
+                                          sm={2}
+                                          md={2}
+                                          className="margin1"
+                                        >
+                                          {edit ? (
+                                            <TextField
+                                              id={`price_${index}`}
+                                              name={`price_${index}`}
+                                              label="price"
+                                              variant="outlined"
+                                              value={row.price}
+                                              margin="dense"
+                                              autoComplete="off"
+                                              disabled={sendingForm}
+                                              InputProps={{
+                                                startAdornment: (
+                                                  <InputAdornment position="start">
+                                                    $
+                                                  </InputAdornment>
+                                                ),
+                                              }}
+                                              style={{ minWidth: "90px" }}
+                                              onChange={changeAlertInfo}
+                                              type="number"
                                             />
-                                          }
-                                          label=""
-                                          className="marginLeftn11"
-                                        />
-                                      </Grid>
-                                    </Hidden>
-                                  </Grid>
-                                </Box>
-                                {index === stockNotify.length - 1 ? null : (
-                                  <Divider />
-                                )}
-                              </div>
-                            </Fade>
-                          ))}
-                    </Collapse>
-                  ) : (
-                    <Fragment>
-                      <Box
-                        textAlign="center"
-                        alignItems="center"
-                        padding={2}
-                        className={isDarkMode ? "boxDark" : "box"}
-                      >
-                        {loading === true ? (
-                          <CircularProgress />
-                        ) : (
+                                          ) : (
+                                            <Typography>
+                                              ${row.price}
+                                            </Typography>
+                                          )}
+                                        </Grid>
+
+                                        <Grid
+                                          item
+                                          xs={false}
+                                          sm={1}
+                                          md={1}
+                                          className="margin1"
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <FormControlLabel
+                                            control={
+                                              <Switch
+                                                checked={row.alert}
+                                                onChange={() =>
+                                                  changeAlertSwitch(
+                                                    index,
+                                                    row._id,
+                                                    row.alert
+                                                  )
+                                                }
+                                                name="alertCheck"
+                                                color="primary"
+                                                disabled={!edit || sendingForm}
+                                              />
+                                            }
+                                            label=""
+                                            className="marginLeftn11"
+                                          />
+                                        </Grid>
+                                      </Hidden>
+                                    </Grid>
+                                  </Box>
+                                  {index === stockNotify.length - 1 ? null : (
+                                    <Divider />
+                                  )}
+                                </div>
+                              </Fade>
+                            ))}
+                      </Collapse>
+                    ) : (
+                      <Fragment>
+                        <Box
+                          textAlign="center"
+                          alignItems="center"
+                          padding={2}
+                          className={isDarkMode ? "boxDark" : "box"}
+                        >
+                          {loading === true ? (
+                            <CircularProgress />
+                          ) : (
+                            <Typography color="textSecondary" align="center">
+                              {login.email === ""
+                                ? "Please login first"
+                                : "None of record"}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Fragment>
+                    )}
+                    {stockNotify.length < 10 && edit === true && !hideAlert ? (
+                      <Fragment>
+                        <Divider />
+                        <Box
+                          textAlign="center"
+                          alignItems="center"
+                          padding={2}
+                          className={isDarkMode ? "boxDark" : "box"}
+                        >
                           <Typography color="textSecondary" align="center">
-                            {login.email === ""
-                              ? "Please login first"
-                              : "None of record"}
+                            <IconButton
+                              color="primary"
+                              aria-label="add notify"
+                              onClick={fun_addNotify}
+                            >
+                              <AddCircleIcon fontSize="large" />
+                            </IconButton>
                           </Typography>
-                        )}
-                      </Box>
-                    </Fragment>
-                  )}
-                  {stockNotify.length < 10 && edit === true && !hideAlert ? (
-                    <Fragment>
-                      <Divider />
-                      <Box
-                        textAlign="center"
-                        alignItems="center"
-                        padding={2}
-                        className={isDarkMode ? "boxDark" : "box"}
+                        </Box>
+                      </Fragment>
+                    ) : null}
+                  </Paper>
+                </Grid>
+                <Hidden only={["xs", "sm"]}>
+                  <Grid item sm={false} md={2} className="margin1"></Grid>
+                </Hidden>
+                    </Grid>*/}
+        {/* following box is close of <Box paddingX={1} paddingY={3} overflow="auto" position="relative"> */}
+        {/*</Box>*/}
+        {/*bottom*/}
+        {/*<Box
+              position="relative"
+              paddingX={2}
+              width="100%"
+              minHeight="200px"
+              color="background.paper"
+              display="flex"
+              alignItems="flex-end"
+              justifyContent="center"
+            >
+              <Grid container alignItems="center">
+                <Hidden only={["xs", "sm"]}>
+                  <Grid item sm={false} md={2} className="margin1"></Grid>
+                </Hidden>
+
+                <Grid item xs={12} sm={12} md={8} className="margin1">
+                  <Box padding={1}>
+                    <Grid container alignItems="center">
+                      <Grid item xs={12} sm={12} md={4}>
+                        <Hidden only={["xs", "sm"]}>
+                          <Typography align="left" variant="h6">
+                            make by{" "}
+                            <Link href="mailto:rockie2695@gmail.com">
+                              rockie2695@gmail.com
+                            </Link>
+                          </Typography>
+                        </Hidden>
+                        <Hidden mdUp>
+                          <Typography align="center" variant="h6">
+                            make by{" "}
+                            <Link href="mailto:rockie2695@gmail.com">
+                              rockie2695@gmail.com
+                            </Link>
+                          </Typography>
+                        </Hidden>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={4}
+                        style={{ textAlign: "center" }}
                       >
-                        <Typography color="textSecondary" align="center">
-                          <IconButton
-                            color="primary"
-                            aria-label="add notify"
-                            onClick={fun_addNotify}
-                          >
-                            <AddCircleIcon fontSize="large" />
-                          </IconButton>
-                        </Typography>
-                      </Box>
-                    </Fragment>
-                  ) : null}
-                </Paper>
-              </Grid>
-              <Hidden only={["xs", "sm"]}>
-                <Grid item sm={false} md={2} className="margin1"></Grid>
-              </Hidden>
-            </Grid>
-            {/* following box is close of <Box paddingX={1} paddingY={3} overflow="auto" position="relative"> */}
-          </Box>
-          {/*bottom*/}
-          <Box
-            position="relative"
-            paddingX={2}
-            width="100%"
-            minHeight="200px"
-            color="background.paper"
-            display="flex"
-            alignItems="flex-end"
-            justifyContent="center"
-          >
-            <Grid container alignItems="center">
-              <Hidden only={["xs", "sm"]}>
-                <Grid item sm={false} md={2} className="margin1"></Grid>
-              </Hidden>
+                        <QRCode
+                          value={
+                            "https://rockie-stockalertclient.herokuapp.com/"
+                          }
+                          imageSettings={{
+                            src: "../logo192.png",
+                            height: 30,
+                            width: 30,
+                          }}
+                        />*/}
+        {/*window.location.href*/}
+        {/* </Grid>
+                      <Grid item xs={12} sm={12} md={4}>
+                        <Hidden only={["xs", "sm"]}>
+                          {deferredPrompt !== null ? (
+                            <Box textAlign="right">
+                              <Fab
+                                color="primary"
+                                aria-label="pwa"
+                                onClick={showA2HS}
+                                className={fullScreen ? "" : "marginRight12"}
+                              >
+                                <GetAppIcon />
+                              </Fab>
+                              <Typography variant="h6">Web App</Typography>
+                            </Box>
+                          ) : null}
+                        </Hidden>
+                        <Hidden mdUp>
+                          {deferredPrompt !== null ? (
+                            <Box textAlign="center">
+                              <Fab
+                                color="primary"
+                                aria-label="pwa"
+                                onClick={showA2HS}
+                                className={fullScreen ? "" : "marginRight12"}
+                              >
+                                <GetAppIcon />
+                              </Fab>
+                              <Typography variant="h6">Web App</Typography>
+                            </Box>
+                          ) : null}
+                        </Hidden>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
 
-              <Grid item xs={12} sm={12} md={8} className="margin1">
-                <Box padding={1}>
-                  <Grid container alignItems="center">
-                    <Grid item xs={12} sm={12} md={4}>
-                      <Hidden only={["xs", "sm"]}>
-                        <Typography align="left" variant="h6">
-                          make by{" "}
-                          <Link href="mailto:rockie2695@gmail.com">
-                            rockie2695@gmail.com
-                          </Link>
-                        </Typography>
-                      </Hidden>
-                      <Hidden mdUp>
-                        <Typography align="center" variant="h6">
-                          make by{" "}
-                          <Link href="mailto:rockie2695@gmail.com">
-                            rockie2695@gmail.com
-                          </Link>
-                        </Typography>
-                      </Hidden>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      sm={12}
-                      md={4}
-                      style={{ textAlign: "center" }}
-                    >
-                      <QRCode
-                        value={"https://rockie-stockalertclient.herokuapp.com/"}
-                        imageSettings={{
-                          src: "../logo192.png",
-                          height: 30,
-                          width: 30,
-                        }}
-                      />
-                      {/*window.location.href*/}
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={4}>
-                      <Hidden only={["xs", "sm"]}>
-                        {deferredPrompt !== null ? (
-                          <Box textAlign="right">
-                            <Fab
-                              color="primary"
-                              aria-label="pwa"
-                              onClick={showA2HS}
-                              className={fullScreen ? "" : "marginRight12"}
-                            >
-                              <GetAppIcon />
-                            </Fab>
-                            <Typography variant="h6">Web App</Typography>
-                          </Box>
-                        ) : null}
-                      </Hidden>
-                      <Hidden mdUp>
-                        {deferredPrompt !== null ? (
-                          <Box textAlign="center">
-                            <Fab
-                              color="primary"
-                              aria-label="pwa"
-                              onClick={showA2HS}
-                              className={fullScreen ? "" : "marginRight12"}
-                            >
-                              <GetAppIcon />
-                            </Fab>
-                            <Typography variant="h6">Web App</Typography>
-                          </Box>
-                        ) : null}
-                      </Hidden>
-                    </Grid>
-                  </Grid>
-                </Box>
+                <Hidden only={["xs", "sm"]}>
+                  <Grid item sm={false} md={2} className="margin1"></Grid>
+                </Hidden>
               </Grid>
-
-              <Hidden only={["xs", "sm"]}>
-                <Grid item sm={false} md={2} className="margin1"></Grid>
-              </Hidden>
-            </Grid>
-            {!edit && hideAlert && login.email !== "" ? (
-              <Fab
-                color="primary"
-                aria-label="add"
-                style={{
-                  position: "fixed",
-                  bottom: 16,
-                  left: "calc(100vw - 85px)",
-                }}
-                onClick={fun_addStockDialog}
-              >
-                <AddIcon />
-              </Fab>
-            ) : null}
-          </Box>
-          {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
-        </Box>
-        {/*show Dialog box after click each stock */}
-        <Suspense fallback={renderLoader()}>
-          <DialogBox
-            closeDialog={closeDialog}
-            open={open}
-            fullScreen={fullScreen || fullScreenSetting}
-            dialogIndex={dialogIndex}
-            stockNotify={stockNotify}
-            selectHistory={selectHistory}
-            login={login}
-            changeAlertSwitch={changeAlertSwitch}
-            hideAlert={hideAlert}
-            edit={edit}
-            sendingForm={sendingForm}
-            fun_edit={fun_edit}
-            fun_save={fun_save}
-            changeAlertInfo={changeAlertInfo}
-            isDarkMode={isDarkMode}
-            priceDiffPercentSetting={priceDiffPercentSetting}
-            clickAvatar={clickAvatar}
-          />
-        </Suspense>
-        <Dialog
-          aria-labelledby="dialog-title"
-          open={addStockDialog}
-          fullScreen={fullScreen}
-          maxWidth={"md"}
-          fullWidth={true}
-          onClose={fun_addStockDialog}
-        >
-          <DialogTitle id="dialog-title" onClose={fun_addStockDialog}>
-            Add
-          </DialogTitle>
-          <DialogContent dividers style={{ padding: "16px" }}>
-            {addStockDialog ? (
-              <Fragment>
-                <TextField
-                  type="number"
-                  style={{ minWidth: "85px" }}
-                  id={`stock_${dialogIndex}`}
-                  name={`stock_${dialogIndex}`}
-                  label="stock"
-                  variant="outlined"
-                  value={stockNotifyRef.current[dialogIndex].stock}
-                  margin="dense"
-                  autoComplete="off"
-                  onChange={changeAlertInfo}
-                  onBlur={loseFocusAlertInfo}
-                  disabled={sendingForm}
-                  fullWidth={true}
-                />
-                <TextField
-                  id={`equal_${dialogIndex}`}
-                  name={`equal_${dialogIndex}`}
-                  select
-                  label="equal"
-                  variant="outlined"
-                  margin="dense"
-                  value={stockNotifyRef.current[dialogIndex].equal}
-                  style={{ minWidth: "18px" }}
-                  onChange={changeAlertInfo}
-                  disabled={sendingForm}
-                  fullWidth={true}
-                >
-                  <MenuItem key=">=" value=">=">
-                    {">="}
-                  </MenuItem>
-                  <MenuItem key="<=" value="<=">
-                    {"<="}
-                  </MenuItem>
-                </TextField>
-                <TextField
-                  id={`price_${dialogIndex}`}
-                  name={`price_${dialogIndex}`}
-                  label="price"
-                  variant="outlined"
-                  value={stockNotify[dialogIndex].price}
-                  margin="dense"
-                  autoComplete="off"
-                  disabled={sendingForm}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">$</InputAdornment>
-                    ),
+              {!edit && hideAlert && login.email !== "" ? (
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  style={{
+                    position: "fixed",
+                    bottom: 16,
+                    left: "calc(100vw - 85px)",
                   }}
-                  style={{ minWidth: "90px" }}
-                  onChange={changeAlertInfo}
-                  type="number"
-                  fullWidth={true}
-                />
-                <div style={{ textAlign: "center" }}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={stockNotify[dialogIndex].alert}
-                        onChange={() =>
-                          changeAlertSwitch(
-                            dialogIndex,
-                            stockNotify[dialogIndex]._id,
-                            stockNotify[dialogIndex].alert
-                          )
-                        }
-                        name="alertCheck"
-                        color="primary"
-                        disabled={!edit || sendingForm}
-                      />
-                    }
-                    label="Enable Switch"
+                  onClick={fun_addStockDialog}
+                >
+                  <AddIcon />
+                </Fab>
+              ) : null}
+                </Box>*/}
+        {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
+        {/*</Box>*/}
+        {/*show Dialog box after click each stock */}
+        {/*<Suspense fallback={renderLoader()}>
+            <DialogBox
+              closeDialog={closeDialog}
+              open={open}
+              fullScreen={fullScreen || fullScreenSetting}
+              dialogIndex={dialogIndex}
+              stockNotify={stockNotify}
+              selectHistory={selectHistory}
+              login={login}
+              changeAlertSwitch={changeAlertSwitch}
+              hideAlert={hideAlert}
+              edit={edit}
+              sendingForm={sendingForm}
+              fun_edit={fun_edit}
+              fun_save={fun_save}
+              changeAlertInfo={changeAlertInfo}
+              isDarkMode={isDarkMode}
+              priceDiffPercentSetting={priceDiffPercentSetting}
+              clickAvatar={clickAvatar}
+            />
+          </Suspense>
+          <Dialog
+            aria-labelledby="dialog-title"
+            open={addStockDialog}
+            fullScreen={fullScreen}
+            maxWidth={"md"}
+            fullWidth={true}
+            onClose={fun_addStockDialog}
+          >
+            <DialogTitle id="dialog-title" onClose={fun_addStockDialog}>
+              Add
+            </DialogTitle>
+            <DialogContent dividers style={{ padding: "16px" }}>
+              {addStockDialog ? (
+                <Fragment>
+                  <TextField
+                    type="number"
+                    style={{ minWidth: "85px" }}
+                    id={`stock_${dialogIndex}`}
+                    name={`stock_${dialogIndex}`}
+                    label="stock"
+                    variant="outlined"
+                    value={stockNotifyRef.current[dialogIndex].stock}
+                    margin="dense"
+                    autoComplete="off"
+                    onChange={changeAlertInfo}
+                    onBlur={loseFocusAlertInfo}
+                    disabled={sendingForm}
+                    fullWidth={true}
                   />
-                </div>
-              </Fragment>
-            ) : null}
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={fun_save}>
-              <SaveIcon />
-              Save
-            </Button>
-            <Button autoFocus color="primary" onClick={fun_addStockDialog}>
-              <CloseIcon />
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </ThemeProvider>
-    </HttpsRedirect>
+                  <TextField
+                    id={`equal_${dialogIndex}`}
+                    name={`equal_${dialogIndex}`}
+                    select
+                    label="equal"
+                    variant="outlined"
+                    margin="dense"
+                    value={stockNotifyRef.current[dialogIndex].equal}
+                    style={{ minWidth: "18px" }}
+                    onChange={changeAlertInfo}
+                    disabled={sendingForm}
+                    fullWidth={true}
+                  >
+                    <MenuItem key=">=" value=">=">
+                      {">="}
+                    </MenuItem>
+                    <MenuItem key="<=" value="<=">
+                      {"<="}
+                    </MenuItem>
+                  </TextField>
+                  <TextField
+                    id={`price_${dialogIndex}`}
+                    name={`price_${dialogIndex}`}
+                    label="price"
+                    variant="outlined"
+                    value={stockNotify[dialogIndex].price}
+                    margin="dense"
+                    autoComplete="off"
+                    disabled={sendingForm}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
+                    style={{ minWidth: "90px" }}
+                    onChange={changeAlertInfo}
+                    type="number"
+                    fullWidth={true}
+                  />
+                  <div style={{ textAlign: "center" }}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={stockNotify[dialogIndex].alert}
+                          onChange={() =>
+                            changeAlertSwitch(
+                              dialogIndex,
+                              stockNotify[dialogIndex]._id,
+                              stockNotify[dialogIndex].alert
+                            )
+                          }
+                          name="alertCheck"
+                          color="primary"
+                          disabled={!edit || sendingForm}
+                        />
+                      }
+                      label="Enable Switch"
+                    />
+                  </div>
+                </Fragment>
+              ) : null}
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={fun_save}>
+                <SaveIcon />
+                Save
+              </Button>
+              <Button autoFocus color="primary" onClick={fun_addStockDialog}>
+                <CloseIcon />
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+                    </ThemeProvider>*/}
+        <App2 />
+      </HttpsRedirect>
+    </Router>
   );
 };
-export default withRouter(App);
+export default App;
