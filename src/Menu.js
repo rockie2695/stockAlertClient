@@ -36,7 +36,7 @@ const Menu = (props) => {
             href="https://rockie-stockalertclient.herokuapp.com/"
             color="inherit"
           >
-            StockAlertClient
+            Stock Alert
           </Link>
         </Typography>
         <IconButton

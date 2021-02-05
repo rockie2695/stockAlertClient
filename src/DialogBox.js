@@ -282,6 +282,20 @@ const DialogBox = (props) => {
       props.open &&
       typeof props.stockNotify[props.dialogIndex] !== "undefined"
     ) {
+      document.title =
+        props.stockNotify[props.dialogIndex].stock +
+        (typeof props.stockNotify[props.dialogIndex].name !== "undefined"
+          ? ` ( ${props.stockNotify[props.dialogIndex].name} )`
+          : "");
+    } else {
+      document.title = "Stock Alert";
+    }
+  }, [props.open, props.dialogIndex, props.stockNotify[props.dialogIndex]]);
+  useEffect(() => {
+    if (
+      props.open &&
+      typeof props.stockNotify[props.dialogIndex] !== "undefined"
+    ) {
       if (props.stockNotify[props.dialogIndex].marketValue !== "") {
         let sub_marketValue = props.stockNotify[props.dialogIndex].marketValue;
         setMarketValue(fun_appendFix(sub_marketValue));
