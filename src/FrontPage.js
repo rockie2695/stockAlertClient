@@ -25,7 +25,6 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import MenuItem from "@material-ui/core/MenuItem";
 import Link from "@material-ui/core/Link";
-import HttpsRedirect from "react-https-redirect";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Fab from "@material-ui/core/Fab";
@@ -34,18 +33,11 @@ import { subscribeUser } from "./subscription";
 import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 import CloseIcon from "@material-ui/icons/Close";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CountUp from "react-countup";
 import Fade from "@material-ui/core/Fade";
 import Collapse from "@material-ui/core/Collapse";
 import AddIcon from "@material-ui/icons/Add";
-import {
-  useHistory,
-  withRouter,
-  BrowserRouter as Router,
-} from "react-router-dom";
-
+import { useHistory, withRouter } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -93,7 +85,7 @@ const DialogTitle = (props) => {
   );
 };
 
-const App2 = () => {
+const FrontPage = (props) => {
   let history = useHistory();
 
   const cookies = new Cookies();
@@ -103,7 +95,6 @@ const App2 = () => {
   const [login, setLogin] = useState({
     email: testlink ? "rockie2695@gmail.com" : "",
   });
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [stockHistory, setStockHistory] = useState([]);
   const [ws, setWs] = useState(null);
   const [stockNotify, setStockNotify] = useState([]);
@@ -126,11 +117,6 @@ const App2 = () => {
       ? false
       : localStorage.getItem("priceDiffPercentSetting") === "true"
   );
-  const [darkModeSetting, setDarkModeSetting] = useState(
-    localStorage.getItem("darkModeSetting") === null
-      ? prefersDarkMode
-      : localStorage.getItem("darkModeSetting") === "true"
-  );
   const [addStockDialog, setAddStockDialog] = useState(false);
   const [denseModeSetting, setDenseModeSetting] = useState(
     localStorage.getItem("denseModeSetting") === null
@@ -152,7 +138,7 @@ const App2 = () => {
   loginRef.current = login;
   const stockHistoryRef = useRef(stockHistory);
   stockHistoryRef.current = stockHistory;
-
+  /*
   const theme = React.useMemo(
     () =>
       createMuiTheme({
@@ -177,7 +163,7 @@ const App2 = () => {
   const isDarkMode = theme.palette.type === "dark";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const hideAlert = useMediaQuery(theme.breakpoints.down("xs"));
-
+*/
   useEffect(() => {
     window.addEventListener("online", handleConnectionChange);
     window.addEventListener("offline", handleConnectionChange);
@@ -234,14 +220,6 @@ const App2 = () => {
       setSelectHistory(() => []);
     }
   }, [login]);
-
-  useEffect(() => {
-    if (localStorage.getItem("darkModeSetting") === null) {
-      setDarkModeSetting(() => {
-        return prefersDarkMode;
-      });
-    }
-  }, [prefersDarkMode]);
 
   const handleConnectionChange = () => {
     const condition = navigator.onLine ? "online" : "offline";
@@ -390,8 +368,8 @@ const App2 = () => {
     setFullScreenSetting((prevState) => !prevState);
   };
   const changeDarkModeSetting = () => {
-    localStorage.setItem("darkModeSetting", !darkModeSetting);
-    setDarkModeSetting((prevState) => !prevState);
+    localStorage.setItem("darkModeSetting", !props.darkModeSetting);
+    props.setDarkModeSetting((prevState) => !prevState);
   };
   const changeDenseModeSetting = () => {
     localStorage.setItem("denseModeSetting", !denseModeSetting);
@@ -1206,7 +1184,7 @@ const App2 = () => {
   */
 
   return (
-    <ThemeProvider theme={theme}>
+    <Fragment>
       <CssBaseline />
       <Box
         bgcolor="text.disabled"
@@ -1220,7 +1198,7 @@ const App2 = () => {
             fun_logout={fun_logout}
             sendingForm={sendingForm}
             changeDarkModeSetting={changeDarkModeSetting}
-            darkModeSetting={darkModeSetting}
+            darkModeSetting={props.darkModeSetting}
           />
         </Suspense>
         <Box
@@ -1235,7 +1213,7 @@ const App2 = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Typography align="center" variant="h2">
+          <Typography className="description" align="center" variant="h2">
             For HK Stock Price Showing And Notification
           </Typography>
         </Box>
@@ -1274,7 +1252,7 @@ const App2 = () => {
                     }
                     label="Percent Price Diff"
                   />
-                  {!fullScreen ? (
+                  {!props.fullScreen ? (
                     <FormControlLabel
                       control={
                         <Switch
@@ -1294,7 +1272,7 @@ const App2 = () => {
                   className="margin1"
                   style={{ margin: "0.5em" }}
                 >
-                  {hideAlert ||
+                  {props.hideAlert ||
                   denseModeSetting ||
                   login.email === "" ? null : edit === true ? (
                     <Fragment>
@@ -1406,10 +1384,10 @@ const App2 = () => {
                               <Box
                                 className={
                                   edit
-                                    ? isDarkMode
+                                    ? props.isDarkMode
                                       ? "boxDark"
                                       : "box"
-                                    : isDarkMode
+                                    : props.isDarkMode
                                     ? "cursorPointer boxDark"
                                     : "cursorPointer box"
                                 }
@@ -1574,10 +1552,10 @@ const App2 = () => {
                               <Box
                                 className={
                                   edit
-                                    ? isDarkMode
+                                    ? props.isDarkMode
                                       ? "boxDark"
                                       : "box"
-                                    : isDarkMode
+                                    : props.isDarkMode
                                     ? "cursorPointer boxDark"
                                     : "cursorPointer box"
                                 }
@@ -1877,7 +1855,7 @@ const App2 = () => {
                       textAlign="center"
                       alignItems="center"
                       padding={2}
-                      className={isDarkMode ? "boxDark" : "box"}
+                      className={props.isDarkMode ? "boxDark" : "box"}
                     >
                       {loading === true ? (
                         <CircularProgress />
@@ -1891,14 +1869,16 @@ const App2 = () => {
                     </Box>
                   </Fragment>
                 )}
-                {stockNotify.length < 10 && edit === true && !hideAlert ? (
+                {stockNotify.length < 10 &&
+                edit === true &&
+                !props.hideAlert ? (
                   <Fragment>
                     <Divider />
                     <Box
                       textAlign="center"
                       alignItems="center"
                       padding={2}
-                      className={isDarkMode ? "boxDark" : "box"}
+                      className={props.isDarkMode ? "boxDark" : "box"}
                     >
                       <Typography color="textSecondary" align="center">
                         <IconButton
@@ -1982,7 +1962,7 @@ const App2 = () => {
                             color="primary"
                             aria-label="pwa"
                             onClick={showA2HS}
-                            className={fullScreen ? "" : "marginRight12"}
+                            className={props.fullScreen ? "" : "marginRight12"}
                           >
                             <GetAppIcon />
                           </Fab>
@@ -1997,7 +1977,7 @@ const App2 = () => {
                             color="primary"
                             aria-label="pwa"
                             onClick={showA2HS}
-                            className={fullScreen ? "" : "marginRight12"}
+                            className={props.fullScreen ? "" : "marginRight12"}
                           >
                             <GetAppIcon />
                           </Fab>
@@ -2014,7 +1994,7 @@ const App2 = () => {
               <Grid item sm={false} md={2} className="margin1"></Grid>
             </Hidden>
           </Grid>
-          {!edit && hideAlert && login.email !== "" ? (
+          {!edit && props.hideAlert && login.email !== "" ? (
             <Fab
               color="primary"
               aria-label="add"
@@ -2036,19 +2016,19 @@ const App2 = () => {
         <DialogBox
           closeDialog={closeDialog}
           open={open}
-          fullScreen={fullScreen || fullScreenSetting}
+          fullScreen={props.fullScreen || fullScreenSetting}
           dialogIndex={dialogIndex}
           stockNotify={stockNotify}
           selectHistory={selectHistory}
           login={login}
           changeAlertSwitch={changeAlertSwitch}
-          hideAlert={hideAlert}
+          hideAlert={props.hideAlert}
           edit={edit}
           sendingForm={sendingForm}
           fun_edit={fun_edit}
           fun_save={fun_save}
           changeAlertInfo={changeAlertInfo}
-          isDarkMode={isDarkMode}
+          isDarkMode={props.isDarkMode}
           priceDiffPercentSetting={priceDiffPercentSetting}
           clickAvatar={clickAvatar}
         />
@@ -2056,7 +2036,7 @@ const App2 = () => {
       <Dialog
         aria-labelledby="dialog-title"
         open={addStockDialog}
-        fullScreen={fullScreen}
+        fullScreen={props.fullScreen}
         maxWidth={"md"}
         fullWidth={true}
         onClose={fun_addStockDialog}
@@ -2155,7 +2135,7 @@ const App2 = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </ThemeProvider>
+    </Fragment>
   );
 };
-export default withRouter(App2);
+export default withRouter(FrontPage);

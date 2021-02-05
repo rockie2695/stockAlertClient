@@ -3,7 +3,6 @@ import ReactDOM /*, { hydrate } */ from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { BrowserRouter } from "react-router-dom";
 
 require("dotenv").config();
 
@@ -20,9 +19,7 @@ const rootElement = document.getElementById("root");
 } else {*/
 ReactDOM.render(
   <React.StrictMode>
-    {/*<BrowserRouter>*/}
     <App />
-    {/*</BrowserRouter>*/}
   </React.StrictMode>,
   rootElement
 );
