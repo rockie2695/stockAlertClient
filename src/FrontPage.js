@@ -1214,7 +1214,7 @@ const FrontPage = (props) => {
           justifyContent="center"
         >
           <Typography className="description" align="center" variant="h2">
-            For HK Stock Price Showing And Notification
+            For HK Stock Price Showing And Notification test
           </Typography>
         </Box>
         <Box height="40vh"></Box>
