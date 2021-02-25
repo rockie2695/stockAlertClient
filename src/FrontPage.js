@@ -48,7 +48,8 @@ import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 
 /**
- * make dense mode
+ * test https://reactjs.org/docs/static-type-checking.html
+ * add ordering
  */
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
