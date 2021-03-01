@@ -1,4 +1,4 @@
-[![CircleCI Status](https://circleci.com/gh/rockie2695/stockAlertClient.svg?style=svg&circle-token=:circle-token)](https://circleci.com/gh/rockie2695/stockAlertClient)
+[![CircleCI Status](https://circleci.com/gh/rockie2695/stockAlertClient.svg?style=svg&circle-token=d00b7f22f22a012770d2bd3d0c6b59cfdee91d00)](https://circleci.com/gh/rockie2695/stockAlertClient)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
