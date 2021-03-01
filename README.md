@@ -1,3 +1,5 @@
+[![CircleCI Status](https://circleci.com/gh/rockie2695/stockAlertClient.svg?style=svg)](https://circleci.com/gh/facebook/react)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
