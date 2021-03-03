@@ -1902,116 +1902,123 @@ const FrontPage = (props) => {
           {/* following box is close of <Box paddingX={1} paddingY={3} overflow="auto" position="relative"> */}
         </Box>
         {/*bottom*/}
-        <Box
-          position="relative"
-          paddingX={2}
-          width="100%"
-          minHeight="200px"
-          color="background.paper"
-          display="flex"
-          alignItems="flex-end"
-          justifyContent="center"
-        >
-          <Grid container alignItems="center">
-            <Hidden only={["xs", "sm"]}>
-              <Grid item sm={false} md={2} className="margin1"></Grid>
-            </Hidden>
+        <footer>
+          <Box
+            position="relative"
+            paddingX={2}
+            width="100%"
+            minHeight="200px"
+            color="background.paper"
+            display="flex"
+            alignItems="flex-end"
+            justifyContent="center"
+          >
+            <Grid container alignItems="center">
+              <Hidden only={["xs", "sm"]}>
+                <Grid item sm={false} md={2} className="margin1"></Grid>
+              </Hidden>
 
-            <Grid item xs={12} sm={12} md={8} className="margin1">
-              <Box padding={1}>
-                <Grid container alignItems="center">
-                  <Grid item xs={12} sm={12} md={4}>
-                    <Hidden only={["xs", "sm"]}>
-                      <Typography align="left" variant="h6">
-                        make by{" "}
-                        <Link href="mailto:rockie2695@gmail.com">
-                          rockie2695@gmail.com
-                        </Link>
-                      </Typography>
-                    </Hidden>
-                    <Hidden mdUp>
-                      <Typography align="center" variant="h6">
-                        make by{" "}
-                        <Link href="mailto:rockie2695@gmail.com">
-                          rockie2695@gmail.com
-                        </Link>
-                      </Typography>
-                    </Hidden>
+              <Grid item xs={12} sm={12} md={8} className="margin1">
+                <Box padding={1}>
+                  <Grid container alignItems="center">
+                    <Grid item xs={12} sm={12} md={4}>
+                      <Hidden only={["xs", "sm"]}>
+                        <Typography align="left" variant="h6">
+                          make by{" "}
+                          <Link href="mailto:rockie2695@gmail.com">
+                            rockie2695@gmail.com
+                          </Link>
+                        </Typography>
+                      </Hidden>
+                      <Hidden mdUp>
+                        <Typography align="center" variant="h6">
+                          make by{" "}
+                          <Link href="mailto:rockie2695@gmail.com">
+                            rockie2695@gmail.com
+                          </Link>
+                        </Typography>
+                      </Hidden>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={4}
+                      style={{ textAlign: "center" }}
+                    >
+                      <QRCode
+                        value={"https://rockie-stockalertclient.herokuapp.com/"}
+                        imageSettings={{
+                          src: "../logo192.png",
+                          height: 30,
+                          width: 30,
+                        }}
+                      />
+                      {/*window.location.href*/}
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={4}>
+                      <Hidden only={["xs", "sm"]}>
+                        {deferredPrompt !== null ? (
+                          <Box textAlign="right">
+                            <Fab
+                              color="primary"
+                              aria-label="pwa"
+                              onClick={showA2HS}
+                              className={
+                                props.fullScreen ? "" : "marginRight12"
+                              }
+                            >
+                              <GetAppIcon />
+                            </Fab>
+                            <Typography variant="h6">Web App</Typography>
+                          </Box>
+                        ) : null}
+                      </Hidden>
+                      <Hidden mdUp>
+                        {deferredPrompt !== null ? (
+                          <Box textAlign="center">
+                            <Fab
+                              color="primary"
+                              aria-label="pwa"
+                              onClick={showA2HS}
+                              className={
+                                props.fullScreen ? "" : "marginRight12"
+                              }
+                            >
+                              <GetAppIcon />
+                            </Fab>
+                            <Typography variant="h6">Web App</Typography>
+                          </Box>
+                        ) : null}
+                      </Hidden>
+                    </Grid>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sm={12}
-                    md={4}
-                    style={{ textAlign: "center" }}
-                  >
-                    <QRCode
-                      value={"https://rockie-stockalertclient.herokuapp.com/"}
-                      imageSettings={{
-                        src: "../logo192.png",
-                        height: 30,
-                        width: 30,
-                      }}
-                    />
-                    {/*window.location.href*/}
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={4}>
-                    <Hidden only={["xs", "sm"]}>
-                      {deferredPrompt !== null ? (
-                        <Box textAlign="right">
-                          <Fab
-                            color="primary"
-                            aria-label="pwa"
-                            onClick={showA2HS}
-                            className={props.fullScreen ? "" : "marginRight12"}
-                          >
-                            <GetAppIcon />
-                          </Fab>
-                          <Typography variant="h6">Web App</Typography>
-                        </Box>
-                      ) : null}
-                    </Hidden>
-                    <Hidden mdUp>
-                      {deferredPrompt !== null ? (
-                        <Box textAlign="center">
-                          <Fab
-                            color="primary"
-                            aria-label="pwa"
-                            onClick={showA2HS}
-                            className={props.fullScreen ? "" : "marginRight12"}
-                          >
-                            <GetAppIcon />
-                          </Fab>
-                          <Typography variant="h6">Web App</Typography>
-                        </Box>
-                      ) : null}
-                    </Hidden>
-                  </Grid>
-                </Grid>
-              </Box>
+                </Box>
+              </Grid>
+
+              <Hidden only={["xs", "sm"]}>
+                <Grid item sm={false} md={2} className="margin1"></Grid>
+              </Hidden>
             </Grid>
-
-            <Hidden only={["xs", "sm"]}>
-              <Grid item sm={false} md={2} className="margin1"></Grid>
-            </Hidden>
-          </Grid>
-          {!edit && props.hideAlert && login.email !== "" ? (
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{
-                position: "fixed",
-                bottom: 16,
-                left: "calc(100vw - 85px)",
-              }}
-              onClick={fun_addStockDialog}
-            >
-              <AddIcon />
-            </Fab>
-          ) : null}
-        </Box>
+            {!edit && props.hideAlert && login.email !== "" ? (
+              <Fab
+                color="primary"
+                aria-label="add"
+                style={{
+                  position: "fixed",
+                  bottom: 16,
+                  left: "calc(100vw - 85px)",
+                }}
+                onClick={fun_addStockDialog}
+              >
+                <AddIcon />
+              </Fab>
+            ) : null}
+          </Box>
+        </footer>
         {/* following box is close of  <Box bgcolor="text.disabled" style={{ height: '100vh' }}>*/}
       </Box>
+
       {/*show Dialog box after click each stock */}
       <Suspense fallback={renderLoader()}>
         <DialogBox
