@@ -1,4 +1,5 @@
 [![CircleCI Status](https://circleci.com/gh/rockie2695/stockAlertClient.svg?style=svg&circle-token=d00b7f22f22a012770d2bd3d0c6b59cfdee91d00)](https://circleci.com/gh/rockie2695/stockAlertClient)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cd6001c2-27d6-425e-98a7-bae0c9d8e9b5/deploy-status)](https://app.netlify.com/sites/trusting-austin-bb7eb7/deploys)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

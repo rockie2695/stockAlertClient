@@ -19,7 +19,7 @@ table
                 padding: 8px
         tbody
             tr
-                transition-duration: 0.2s
+                transition-duration: 0.5s
                 transition-timing-function: ease
                 &:hover
                     background-color: $whiteHover
@@ -28,7 +28,7 @@ table
                         border-bottom: 1px solid #ddd
 
     &.dialogDark
-        @extend .dialog
+        //@extend .dialog
         thead
             th
                 background: #424242
@@ -39,12 +39,12 @@ table
 
 div
     &.box
-        transition-duration: 0.2s
+        transition-duration: 0.5s
         transition-timing-function: ease
         &:hover
             background-color: $whiteHover
     &.boxDark
-        @extend .box
+        //@extend .box
         &:hover
             background-color: $blackHover
     &.cursorPointer

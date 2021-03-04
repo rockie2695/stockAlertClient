@@ -9,6 +9,7 @@ import Brightness2Icon from "@material-ui/icons/Brightness2";
 import IconButton from "@material-ui/core/IconButton";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import "./App.css";
+import PropTypes from "prop-types";
 
 let testlink = false;
 if (
@@ -17,25 +18,16 @@ if (
 ) {
   testlink = true;
 }
-
+let url = "https://rockie-stockalertclient.herokuapp.com/";
+if (window.location.host === "trusting-austin-bb7eb7.netlify.app") {
+  url = "https://trusting-austin-bb7eb7.netlify.app/";
+}
 const Menu = (props) => {
-  /*
-  function ElevationScroll(props) {
-    const { children } = props;
-    const trigger = useScrollTrigger();
-    return React.cloneElement(children, {
-      elevation: trigger ? 4 : 1,
-    });
-  }
-*/
   return (
     <AppBar color="default" position="sticky" top={0}>
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
-          <Link
-            href="https://rockie-stockalertclient.herokuapp.com/"
-            color="inherit"
-          >
+          <Link href={url} color="inherit">
             Stock Alert
           </Link>
         </Typography>
@@ -69,3 +61,12 @@ const Menu = (props) => {
   );
 };
 export default Menu;
+
+Menu.prototype = {
+  darkModeSetting: PropTypes.bool.isRequired,
+  changeDarkModeSetting: PropTypes.func.isRequired,
+  sendingForm: PropTypes.bool.isRequired,
+  clientId: PropTypes.string.isRequired,
+  fun_logout: PropTypes.func.isRequired,
+  login: PropTypes.object.isRequired,
+};

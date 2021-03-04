@@ -46,6 +46,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import "./App.sass";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
+import classNames from "classnames";
+import styled, { css } from "styled-components";
 
 /**
  * test https://reactjs.org/docs/static-type-checking.html
@@ -69,6 +71,37 @@ const Menu = lazy(() => import("./Menu"));
 const DialogBox = lazy(() => import("./DialogBox"));
 const renderLoader = () => <div>Loading</div>;
 
+const ColorPriceDiv = styled.div`
+  border-radius: 10px;
+  text-align: center;
+  max-width: 120px;
+  color: white;
+  background: gray;
+  ${(props) =>
+    props.nowPrice - props.past > 0 &&
+    css`
+      background: ${green_color};
+    `}
+  ${(props) =>
+    props.nowPrice - props.past < 0 &&
+    css`
+      background: ${red_color};
+    `}
+`;
+const ColorPriceSpan = styled.span`
+  color: gray;
+  ${(props) =>
+    props.nowPrice - props.past > 0 &&
+    css`
+      color: ${green_color};
+    `}
+  ${(props) =>
+    props.nowPrice - props.past < 0 &&
+    css`
+      color: ${red_color};
+    `}
+`;
+
 const DialogTitle = (props) => {
   return (
     <MuiDialogTitle disableTypography className="padding2" {...props.other}>
@@ -90,9 +123,12 @@ const FrontPage = (props) => {
   let history = useHistory();
 
   const cookies = new Cookies();
-  const clientId =
+  let clientId =
     "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com";
-
+  if (window.location.host === "trusting-austin-bb7eb7.netlify.app") {
+    clientId =
+      "637550083168-0aqnadjb5ealolonvioba828rki4dhlo.apps.googleusercontent.com";
+  }
   const [login, setLogin] = useState({
     email: testlink ? "rockie2695@gmail.com" : "",
   });
@@ -139,32 +175,7 @@ const FrontPage = (props) => {
   loginRef.current = login;
   const stockHistoryRef = useRef(stockHistory);
   stockHistoryRef.current = stockHistory;
-  /*
-  const theme = React.useMemo(
-    () =>
-      createMuiTheme({
-        palette: {
-          type: darkModeSetting ? "dark" : "light",
-          primary: {
-            light: "#4dabf5",
-            main: "#2196f3",
-            dark: "#1769aa",
-            contrastText: "#fff",
-          },
-          secondary: {
-            light: "#ff7961",
-            main: "#f44336",
-            dark: "#ba000d",
-            contrastText: "#000",
-          },
-        },
-      }),
-    [darkModeSetting]
-  );
-  const isDarkMode = theme.palette.type === "dark";
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const hideAlert = useMediaQuery(theme.breakpoints.down("xs"));
-*/
+
   useEffect(() => {
     window.addEventListener("online", handleConnectionChange);
     window.addEventListener("offline", handleConnectionChange);
@@ -1184,6 +1195,22 @@ const FrontPage = (props) => {
   }
   */
 
+  const boxClassWithPointer = classNames({
+    box: true,
+    cursorPointer: !edit,
+    boxDark: props.isDarkMode,
+  });
+  const boxClassWithoutPointer = classNames({
+    box: true,
+    boxDark: props.isDarkMode,
+  });
+  const avatarClass = classNames({
+    cursorPointer: edit,
+  });
+  const webAppIconClass = classNames({
+    marginRight12: props.fullScreen,
+  });
+
   return (
     <Fragment>
       <CssBaseline />
@@ -1383,15 +1410,7 @@ const FrontPage = (props) => {
                           >
                             <div>
                               <Box
-                                className={
-                                  edit
-                                    ? props.isDarkMode
-                                      ? "boxDark"
-                                      : "box"
-                                    : props.isDarkMode
-                                    ? "cursorPointer boxDark"
-                                    : "cursorPointer box"
-                                }
+                                className={boxClassWithPointer}
                                 display="flex"
                                 alignItems="center"
                                 style={{
@@ -1430,27 +1449,9 @@ const FrontPage = (props) => {
                                     className="margin1"
                                   >
                                     {typeof row.nowPrice !== "undefined" ? (
-                                      <div
-                                        style={{
-                                          ...{
-                                            borderRadius: "10px",
-                                            textAlign: "center",
-                                            maxWidth: "120px",
-                                            color: "white",
-                                          },
-                                          ...{
-                                            background:
-                                              parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) >
-                                              0
-                                                ? green_color
-                                                : parseFloat(row.nowPrice) -
-                                                    parseFloat(row.past) <
-                                                  0
-                                                ? red_color
-                                                : "gray",
-                                          },
-                                        }}
+                                      <ColorPriceDiv
+                                        nowPrice={parseFloat(row.nowPrice)}
+                                        past={parseFloat(row.past)}
                                       >
                                         <Typography variant="h6">
                                           {row.hasOwnProperty("oldPrice") ? (
@@ -1525,7 +1526,7 @@ const FrontPage = (props) => {
                                                   ) + "%")}
                                           </Typography>
                                         ) : null}
-                                      </div>
+                                      </ColorPriceDiv>
                                     ) : (
                                       <Skeleton />
                                     )}
@@ -1551,15 +1552,7 @@ const FrontPage = (props) => {
                           >
                             <div>
                               <Box
-                                className={
-                                  edit
-                                    ? props.isDarkMode
-                                      ? "boxDark"
-                                      : "box"
-                                    : props.isDarkMode
-                                    ? "cursorPointer boxDark"
-                                    : "cursorPointer box"
-                                }
+                                className={boxClassWithPointer}
                                 display="flex"
                                 alignItems="center"
                                 padding={2}
@@ -1574,7 +1567,7 @@ const FrontPage = (props) => {
                                     className="margin1"
                                   >
                                     <Avatar
-                                      className={edit ? "cursorPointer" : ""}
+                                      className={avatarClass}
                                       onClick={
                                         edit ? () => clickAvatar(index) : null
                                       }
@@ -1659,18 +1652,9 @@ const FrontPage = (props) => {
                                       typeof row.nowPrice !== "undefined" ? (
                                         <Fragment>
                                           <span>{" ("}</span>
-                                          <span
-                                            style={
-                                              parseFloat(row.nowPrice) -
-                                                parseFloat(row.past) >
-                                              0
-                                                ? { color: green_color }
-                                                : parseFloat(row.nowPrice) -
-                                                    parseFloat(row.past) <
-                                                  0
-                                                ? { color: red_color }
-                                                : {}
-                                            }
+                                          <ColorPriceSpan
+                                            nowPrice={parseFloat(row.nowPrice)}
+                                            past={parseFloat(row.past)}
                                           >
                                             {(parseFloat(row.nowPrice) -
                                               parseFloat(row.past) >
@@ -1717,7 +1701,7 @@ const FrontPage = (props) => {
                                                         100000
                                                     ) / 1000
                                                   ) + "%")}
-                                          </span>
+                                          </ColorPriceSpan>
                                           <span>{")"}</span>
                                         </Fragment>
                                       ) : null}
@@ -1856,7 +1840,7 @@ const FrontPage = (props) => {
                       textAlign="center"
                       alignItems="center"
                       padding={2}
-                      className={props.isDarkMode ? "boxDark" : "box"}
+                      className={boxClassWithoutPointer}
                     >
                       {loading === true ? (
                         <CircularProgress />
@@ -1879,7 +1863,7 @@ const FrontPage = (props) => {
                       textAlign="center"
                       alignItems="center"
                       padding={2}
-                      className={props.isDarkMode ? "boxDark" : "box"}
+                      className={boxClassWithoutPointer}
                     >
                       <Typography color="textSecondary" align="center">
                         <IconButton
@@ -1964,9 +1948,7 @@ const FrontPage = (props) => {
                               color="primary"
                               aria-label="pwa"
                               onClick={showA2HS}
-                              className={
-                                props.fullScreen ? "" : "marginRight12"
-                              }
+                              className={webAppIconClass}
                             >
                               <GetAppIcon />
                             </Fab>
@@ -1981,9 +1963,7 @@ const FrontPage = (props) => {
                               color="primary"
                               aria-label="pwa"
                               onClick={showA2HS}
-                              className={
-                                props.fullScreen ? "" : "marginRight12"
-                              }
+                              className={webAppIconClass}
                             >
                               <GetAppIcon />
                             </Fab>
