@@ -44,28 +44,22 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 //import "./App.css";
 import "./App.sass";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
 import classNames from "classnames";
 import styled, { css } from "styled-components";
+import {
+  PriceDiff,
+  ColorPriceSpan,
+  green_color,
+  red_color,
+  testlink,
+  host,
+} from "./common";
 
 /**
- * test https://reactjs.org/docs/static-type-checking.html
  * add ordering
  */
 
-let host = "https://rockie-stockAlertServer.herokuapp.com";
-let testlink = false;
-if (
-  window.location.host === "localhost:3000" ||
-  window.location.host === "localhost:5000"
-) {
-  host = "http://localhost:3001";
-  testlink = true;
-}
 const QRCode = require("qrcode.react");
-const green_color = green[500];
-const red_color = red[500];
 
 const Menu = lazy(() => import("./Menu"));
 const DialogBox = lazy(() => import("./DialogBox"));
@@ -88,19 +82,6 @@ const ColorPriceDiv = styled.div`
       background: ${red_color};
     `}
 `;
-const ColorPriceSpan = styled.span`
-  color: gray;
-  ${(props) =>
-    props.nowPrice - props.past > 0 &&
-    css`
-      color: ${green_color};
-    `}
-  ${(props) =>
-    props.nowPrice - props.past < 0 &&
-    css`
-      color: ${red_color};
-    `}
-`;
 
 const DialogTitle = (props) => {
   return (
@@ -121,14 +102,7 @@ const DialogTitle = (props) => {
 
 const FrontPage = (props) => {
   let history = useHistory();
-
   const cookies = new Cookies();
-  let clientId =
-    "56496239522-mgnu8mmkmt1r8u9op32b0ik8n7b625pd.apps.googleusercontent.com";
-  if (window.location.host === "trusting-austin-bb7eb7.netlify.app") {
-    clientId =
-      "637550083168-0aqnadjb5ealolonvioba828rki4dhlo.apps.googleusercontent.com";
-  }
   const [login, setLogin] = useState({
     email: testlink ? "rockie2695@gmail.com" : "",
   });
@@ -1188,13 +1162,6 @@ const FrontPage = (props) => {
     return [todayHour, todayMinute, todayDay, today, todaySecond];
   }*/
 
-  /*
-  you can make style like this
-  const boxStyle={
-    height: '100%', minHeight: '100vh'
-  }
-  */
-
   const boxClassWithPointer = classNames({
     box: true,
     cursorPointer: !edit,
@@ -1208,7 +1175,7 @@ const FrontPage = (props) => {
     cursorPointer: edit,
   });
   const webAppIconClass = classNames({
-    marginRight12: props.fullScreen,
+    marginRight12: !props.fullScreen,
   });
 
   return (
@@ -1221,7 +1188,6 @@ const FrontPage = (props) => {
         <Suspense fallback={renderLoader()}>
           <Menu
             login={login}
-            clientId={clientId}
             fun_login={fun_login}
             fun_logout={fun_logout}
             sendingForm={sendingForm}
@@ -1245,7 +1211,7 @@ const FrontPage = (props) => {
             For HK Stock Price Showing And Notification
           </Typography>
         </Box>
-        <Box height="40vh"></Box>
+        <Box height="25vh"></Box>
         <Box paddingX={1} paddingY={3} overflow="auto" position="relative">
           <Grid container alignItems="center">
             <Hidden only={["xs", "sm"]}>
@@ -1479,51 +1445,15 @@ const FrontPage = (props) => {
                                         {typeof row.past !== "undefined" &&
                                         typeof row.nowPrice !== "undefined" ? (
                                           <Typography variant="h6">
-                                            {(parseFloat(row.nowPrice) -
-                                              parseFloat(row.past) >
-                                            0
-                                              ? "+"
-                                              : "") +
-                                              (!priceDiffPercentSetting
-                                                ? parseFloat(
-                                                    Math.round(
-                                                      (parseFloat(
-                                                        row.nowPrice
-                                                      ) -
-                                                        parseFloat(row.past) +
-                                                        0.00001 *
-                                                          (parseFloat(
-                                                            row.nowPrice
-                                                          ) -
-                                                            parseFloat(
-                                                              row.past
-                                                            ) >
-                                                          0
-                                                            ? 1
-                                                            : -1)) *
-                                                        1000
-                                                    ) / 1000
-                                                  )
-                                                : parseFloat(
-                                                    Math.round(
-                                                      ((parseFloat(
-                                                        row.nowPrice
-                                                      ) -
-                                                        parseFloat(row.past) +
-                                                        0.00001 *
-                                                          (parseFloat(
-                                                            row.nowPrice
-                                                          ) -
-                                                            parseFloat(
-                                                              row.past
-                                                            ) >
-                                                          0
-                                                            ? 1
-                                                            : -1)) /
-                                                        row.past) *
-                                                        100000
-                                                    ) / 1000
-                                                  ) + "%")}
+                                            <PriceDiff
+                                              nowPrice={parseFloat(
+                                                row.nowPrice
+                                              )}
+                                              past={parseFloat(row.past)}
+                                              priceDiffPercentSetting={
+                                                priceDiffPercentSetting
+                                              }
+                                            />
                                           </Typography>
                                         ) : null}
                                       </ColorPriceDiv>
@@ -1656,51 +1586,15 @@ const FrontPage = (props) => {
                                             nowPrice={parseFloat(row.nowPrice)}
                                             past={parseFloat(row.past)}
                                           >
-                                            {(parseFloat(row.nowPrice) -
-                                              parseFloat(row.past) >
-                                            0
-                                              ? "+"
-                                              : "") +
-                                              (!priceDiffPercentSetting
-                                                ? parseFloat(
-                                                    Math.round(
-                                                      (parseFloat(
-                                                        row.nowPrice
-                                                      ) -
-                                                        parseFloat(row.past) +
-                                                        0.00001 *
-                                                          (parseFloat(
-                                                            row.nowPrice
-                                                          ) -
-                                                            parseFloat(
-                                                              row.past
-                                                            ) >
-                                                          0
-                                                            ? 1
-                                                            : -1)) *
-                                                        1000
-                                                    ) / 1000
-                                                  )
-                                                : parseFloat(
-                                                    Math.round(
-                                                      ((parseFloat(
-                                                        row.nowPrice
-                                                      ) -
-                                                        parseFloat(row.past) +
-                                                        0.00001 *
-                                                          (parseFloat(
-                                                            row.nowPrice
-                                                          ) -
-                                                            parseFloat(
-                                                              row.past
-                                                            ) >
-                                                          0
-                                                            ? 1
-                                                            : -1)) /
-                                                        row.past) *
-                                                        100000
-                                                    ) / 1000
-                                                  ) + "%")}
+                                            <PriceDiff
+                                              nowPrice={parseFloat(
+                                                row.nowPrice
+                                              )}
+                                              past={parseFloat(row.past)}
+                                              priceDiffPercentSetting={
+                                                priceDiffPercentSetting
+                                              }
+                                            />
                                           </ColorPriceSpan>
                                           <span>{")"}</span>
                                         </Fragment>

@@ -3,16 +3,8 @@ import HttpsRedirect from "react-https-redirect";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { BrowserRouter as Router } from "react-router-dom";
-
+import { testlink } from "./common";
 import FrontPage from "./FrontPage";
-
-let testlink = false;
-if (
-  window.location.host === "localhost:3000" ||
-  window.location.host === "localhost:5000"
-) {
-  testlink = true;
-}
 
 const App = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");

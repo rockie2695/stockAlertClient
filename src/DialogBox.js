@@ -29,9 +29,6 @@ import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import DeleteIcon from "@material-ui/icons/Delete";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
-import grey from "@material-ui/core/colors/grey";
 import MaterialTooltip from "@material-ui/core/Tooltip";
 import {
   AreaChart,
@@ -46,18 +43,14 @@ import {
 } from "recharts";
 import classNames from "classnames";
 import styled, { css } from "styled-components";
-
-let host = "https://rockie-stockAlertServer.herokuapp.com";
-if (
-  window.location.host === "localhost:3000" ||
-  window.location.host === "localhost:5000"
-) {
-  host = "http://localhost:3001";
-}
-
-const green_color = green[500];
-const red_color = red[500];
-const grey_color = grey[500];
+import {
+  PriceDiff,
+  ColorPriceSpan,
+  green_color,
+  red_color,
+  grey_color,
+  host,
+} from "./common";
 
 const DayAvgTips = (props) => {
   if (
@@ -127,6 +120,7 @@ const TitleShadow = styled.div`
       display: none;
     `}
 `;
+
 const DialogBox = (props) => {
   const [allDataHistory, setAllDataHistory] = useState([]);
   const [dailyDataHistory, setDailyDataHistory] = useState([]);
@@ -1107,99 +1101,27 @@ const DialogBox = (props) => {
                             {props.stockNotify[props.dialogIndex].nowPrice}
                             <Fragment>
                               <span>{" ("}</span>
-                              <span
-                                style={
-                                  parseFloat(
+                              <ColorPriceSpan
+                                nowPrice={parseFloat(
+                                  props.stockNotify[props.dialogIndex].nowPrice
+                                )}
+                                past={parseFloat(
+                                  props.stockNotify[props.dialogIndex].past
+                                )}
+                              >
+                                <PriceDiff
+                                  nowPrice={parseFloat(
                                     props.stockNotify[props.dialogIndex]
                                       .nowPrice
-                                  ) -
-                                    parseFloat(
-                                      props.stockNotify[props.dialogIndex].past
-                                    ) >
-                                  0
-                                    ? { color: green_color }
-                                    : parseFloat(
-                                        props.stockNotify[props.dialogIndex]
-                                          .nowPrice
-                                      ) -
-                                        parseFloat(
-                                          props.stockNotify[props.dialogIndex]
-                                            .past
-                                        ) <
-                                      0
-                                    ? { color: red_color }
-                                    : {}
-                                }
-                              >
-                                {(parseFloat(
-                                  props.stockNotify[props.dialogIndex].nowPrice
-                                ) -
-                                  parseFloat(
+                                  )}
+                                  past={parseFloat(
                                     props.stockNotify[props.dialogIndex].past
-                                  ) >
-                                0
-                                  ? "+"
-                                  : "") +
-                                  (!props.priceDiffPercentSetting
-                                    ? parseFloat(
-                                        Math.round(
-                                          (parseFloat(
-                                            props.stockNotify[props.dialogIndex]
-                                              .nowPrice
-                                          ) -
-                                            parseFloat(
-                                              props.stockNotify[
-                                                props.dialogIndex
-                                              ].past
-                                            ) +
-                                            0.00001 *
-                                              (parseFloat(
-                                                props.stockNotify[
-                                                  props.dialogIndex
-                                                ].nowPrice
-                                              ) -
-                                                parseFloat(
-                                                  props.stockNotify[
-                                                    props.dialogIndex
-                                                  ].past
-                                                ) >
-                                              0
-                                                ? 1
-                                                : -1)) *
-                                            1000
-                                        ) / 1000
-                                      )
-                                    : parseFloat(
-                                        Math.round(
-                                          ((parseFloat(
-                                            props.stockNotify[props.dialogIndex]
-                                              .nowPrice
-                                          ) -
-                                            parseFloat(
-                                              props.stockNotify[
-                                                props.dialogIndex
-                                              ].past
-                                            ) +
-                                            0.00001 *
-                                              (parseFloat(
-                                                props.stockNotify[
-                                                  props.dialogIndex
-                                                ].nowPrice
-                                              ) -
-                                                parseFloat(
-                                                  props.stockNotify[
-                                                    props.dialogIndex
-                                                  ].past
-                                                ) >
-                                              0
-                                                ? 1
-                                                : -1)) /
-                                            props.stockNotify[props.dialogIndex]
-                                              .past) *
-                                            100000
-                                        ) / 1000
-                                      ) + "%")}
-                              </span>
+                                  )}
+                                  priceDiffPercentSetting={
+                                    props.priceDiffPercentSetting
+                                  }
+                                />
+                              </ColorPriceSpan>
                               <span>{")"}</span>
                             </Fragment>
                           </Typography>
