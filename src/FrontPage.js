@@ -53,6 +53,7 @@ import {
   red_color,
   testlink,
   host,
+  url,
 } from "./common";
 
 /**
@@ -1374,7 +1375,7 @@ const FrontPage = (props) => {
                             }}
                             key={index}
                           >
-                            <div>
+                            <section>
                               <Box
                                 className={boxClassWithPointer}
                                 display="flex"
@@ -1392,8 +1393,7 @@ const FrontPage = (props) => {
                                       variant="h6"
                                       style={{ display: "inline-block" }}
                                     >
-                                      {row.stock}
-                                      &nbsp;
+                                      {row.stock}{" "}
                                       {typeof row.name !== "undefined"
                                         ? row.name
                                         : null}
@@ -1466,7 +1466,7 @@ const FrontPage = (props) => {
                               {index === stockNotify.length - 1 ? null : (
                                 <Divider />
                               )}
-                            </div>
+                            </section>
                           </Fade>
                         ))
                       : stockNotify.map((row, index) => (
@@ -1480,7 +1480,7 @@ const FrontPage = (props) => {
                             }}
                             key={index}
                           >
-                            <div>
+                            <section>
                               <Box
                                 className={boxClassWithPointer}
                                 display="flex"
@@ -1724,7 +1724,7 @@ const FrontPage = (props) => {
                               {index === stockNotify.length - 1 ? null : (
                                 <Divider />
                               )}
-                            </div>
+                            </section>
                           </Fade>
                         ))}
                   </Collapse>
@@ -1825,7 +1825,7 @@ const FrontPage = (props) => {
                       style={{ textAlign: "center" }}
                     >
                       <QRCode
-                        value={"https://rockie-stockalertclient.herokuapp.com/"}
+                        value={url}
                         imageSettings={{
                           src: "../logo192.png",
                           height: 30,
