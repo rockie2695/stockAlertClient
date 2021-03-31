@@ -21,7 +21,7 @@
     "recharts": "^2.0.9",
     "serve": "^11.3.2",
     "socket.io-client": "^4.0.0",
-    "styled-components": "^5.2.1",
+    "styled-components": "^5.2.2",
     "universal-cookie": "^4.0.4",
     "webpack": "^4.44.2",
     "workbox-core": "^5.1.4",
@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^13.0.16",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/user-event": "^13.1.1",
     "flow-bin": "^0.147.0"
   },
   "scripts": {
