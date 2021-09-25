@@ -122,7 +122,6 @@ const TitleShadow = styled.div`
 `;
 
 const DialogBox = (props) => {
-  console.log(props.closeDialog);
   const [allDataHistory, setAllDataHistory] = useState([]);
   const [dailyDataHistory, setDailyDataHistory] = useState([]);
   const [allDataTable, setAllDataTable] = useState(false);
