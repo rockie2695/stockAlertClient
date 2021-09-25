@@ -122,6 +122,7 @@ const TitleShadow = styled.div`
 `;
 
 const DialogBox = (props) => {
+  console.log(props.closeDialog);
   const [allDataHistory, setAllDataHistory] = useState([]);
   const [dailyDataHistory, setDailyDataHistory] = useState([]);
   const [allDataTable, setAllDataTable] = useState(false);
@@ -716,11 +717,12 @@ const DialogBox = (props) => {
         <DialogTitle id="dialog-title" onClose={props.closeDialog}>
           Stock:&nbsp;
           {props.dialogIndex > -1
-            ? (typeof props.stockNotify[props.dialogIndex].stock !== "undefined"
-                ? props.stockNotify[props.dialogIndex].stock
+            ? (typeof props.stockNotify[props.dialogIndex]?.stock !==
+              "undefined"
+                ? props.stockNotify[props.dialogIndex]?.stock
                 : "") +
-              (typeof props.stockNotify[props.dialogIndex].name !== "undefined"
-                ? ` ( ${props.stockNotify[props.dialogIndex].name} )`
+              (typeof props.stockNotify[props.dialogIndex]?.name !== "undefined"
+                ? ` ( ${props.stockNotify[props.dialogIndex]?.name} )`
                 : "")
             : null}
         </DialogTitle>
@@ -822,7 +824,9 @@ const DialogBox = (props) => {
                               label="equal"
                               variant="outlined"
                               margin="dense"
-                              value={props.stockNotify[props.dialogIndex].equal}
+                              value={
+                                props.stockNotify[props.dialogIndex]?.equal
+                              }
                               style={{ minWidth: "18px" }}
                               onChange={props.changeAlertInfo}
                               disabled={props.sendingForm}
@@ -837,7 +841,7 @@ const DialogBox = (props) => {
                             </TextField>
                           ) : (
                             <Typography>
-                              {props.stockNotify[props.dialogIndex].equal}
+                              {props.stockNotify[props.dialogIndex]?.equal}
                             </Typography>
                           )}
                         </Grid>
@@ -848,7 +852,9 @@ const DialogBox = (props) => {
                               name={`price_${props.dialogIndex}`}
                               label="price"
                               variant="outlined"
-                              value={props.stockNotify[props.dialogIndex].price}
+                              value={
+                                props.stockNotify[props.dialogIndex]?.price
+                              }
                               margin="dense"
                               autoComplete="off"
                               disabled={props.sendingForm}
@@ -865,7 +871,7 @@ const DialogBox = (props) => {
                             />
                           ) : (
                             <Typography>
-                              ${props.stockNotify[props.dialogIndex].price}
+                              ${props.stockNotify[props.dialogIndex]?.price}
                             </Typography>
                           )}
                         </Grid>
@@ -881,13 +887,13 @@ const DialogBox = (props) => {
                             control={
                               <Switch
                                 checked={
-                                  props.stockNotify[props.dialogIndex].alert
+                                  props.stockNotify[props.dialogIndex]?.alert
                                 }
                                 onChange={() =>
                                   props.changeAlertSwitch(
                                     props.dialogIndex,
-                                    props.stockNotify[props.dialogIndex]._id,
-                                    props.stockNotify[props.dialogIndex].alert
+                                    props.stockNotify[props.dialogIndex]?._id,
+                                    props.stockNotify[props.dialogIndex]?.alert
                                   )
                                 }
                                 name="alertCheck"
@@ -1098,24 +1104,24 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].nowPrice}
+                            {props.stockNotify[props.dialogIndex]?.nowPrice}
                             <Fragment>
                               <span>{" ("}</span>
                               <ColorPriceSpan
                                 nowPrice={parseFloat(
-                                  props.stockNotify[props.dialogIndex].nowPrice
+                                  props.stockNotify[props.dialogIndex]?.nowPrice
                                 )}
                                 past={parseFloat(
-                                  props.stockNotify[props.dialogIndex].past
+                                  props.stockNotify[props.dialogIndex]?.past
                                 )}
                               >
                                 <PriceDiff
                                   nowPrice={parseFloat(
                                     props.stockNotify[props.dialogIndex]
-                                      .nowPrice
+                                      ?.nowPrice
                                   )}
                                   past={parseFloat(
-                                    props.stockNotify[props.dialogIndex].past
+                                    props.stockNotify[props.dialogIndex]?.past
                                   )}
                                   priceDiffPercentSetting={
                                     props.priceDiffPercentSetting
@@ -1159,7 +1165,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].nowTime}
+                            {props.stockNotify[props.dialogIndex]?.nowTime}
                           </Typography>
                         </td>
                       </tr>
@@ -1173,7 +1179,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].past}
+                            {props.stockNotify[props.dialogIndex]?.past}
                           </Typography>
                         </td>
                       </tr>
@@ -1211,9 +1217,9 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].tenDayLow}
+                            {props.stockNotify[props.dialogIndex]?.tenDayLow}
                             {" - "}
-                            {props.stockNotify[props.dialogIndex].tenDayHigh}
+                            {props.stockNotify[props.dialogIndex]?.tenDayHigh}
                           </Typography>
                         </td>
                       </tr>
@@ -1227,13 +1233,13 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].tenDayAvg}{" "}
+                            {props.stockNotify[props.dialogIndex]?.tenDayAvg}{" "}
                             <DayAvgTips
                               avgPrice={parseFloat(
-                                props.stockNotify[props.dialogIndex].tenDayAvg
+                                props.stockNotify[props.dialogIndex]?.tenDayAvg
                               )}
                               nowPrice={parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
+                                props.stockNotify[props.dialogIndex]?.nowPrice
                               )}
                             />
                           </Typography>
@@ -1249,9 +1255,9 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].monthLow}
+                            {props.stockNotify[props.dialogIndex]?.monthLow}
                             {" - "}
-                            {props.stockNotify[props.dialogIndex].monthHigh}
+                            {props.stockNotify[props.dialogIndex]?.monthHigh}
                           </Typography>
                         </td>
                       </tr>
@@ -1265,14 +1271,14 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].twentyDayAvg}{" "}
+                            {props.stockNotify[props.dialogIndex]?.twentyDayAvg}{" "}
                             <DayAvgTips
                               avgPrice={parseFloat(
                                 props.stockNotify[props.dialogIndex]
-                                  .twentyDayAvg
+                                  ?.twentyDayAvg
                               )}
                               nowPrice={parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
+                                props.stockNotify[props.dialogIndex]?.nowPrice
                               )}
                             />
                           </Typography>
@@ -1288,9 +1294,9 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].wk52Low}
+                            {props.stockNotify[props.dialogIndex]?.wk52Low}
                             {" - "}
-                            {props.stockNotify[props.dialogIndex].wk52High}
+                            {props.stockNotify[props.dialogIndex]?.wk52High}
                           </Typography>
                         </td>
                       </tr>
@@ -1304,13 +1310,14 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].fiftyDayAvg}{" "}
+                            {props.stockNotify[props.dialogIndex]?.fiftyDayAvg}{" "}
                             <DayAvgTips
                               avgPrice={parseFloat(
-                                props.stockNotify[props.dialogIndex].fiftyDayAvg
+                                props.stockNotify[props.dialogIndex]
+                                  ?.fiftyDayAvg
                               )}
                               nowPrice={parseFloat(
-                                props.stockNotify[props.dialogIndex].nowPrice
+                                props.stockNotify[props.dialogIndex]?.nowPrice
                               )}
                             />
                           </Typography>
@@ -1326,7 +1333,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].lotSize}
+                            {props.stockNotify[props.dialogIndex]?.lotSize}
                           </Typography>
                         </td>
                       </tr>
@@ -1340,7 +1347,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].eps}
+                            {props.stockNotify[props.dialogIndex]?.eps}
                           </Typography>
                         </td>
                       </tr>
@@ -1354,7 +1361,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].dividend}
+                            {props.stockNotify[props.dialogIndex]?.dividend}
                           </Typography>
                         </td>
                       </tr>
@@ -1368,7 +1375,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].rsi10}
+                            {props.stockNotify[props.dialogIndex]?.rsi10}
                           </Typography>
                         </td>
                       </tr>
@@ -1382,7 +1389,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].rsi14}
+                            {props.stockNotify[props.dialogIndex]?.rsi14}
                           </Typography>
                         </td>
                       </tr>
@@ -1396,7 +1403,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].rsi20}
+                            {props.stockNotify[props.dialogIndex]?.rsi20}
                           </Typography>
                         </td>
                       </tr>
@@ -1410,7 +1417,7 @@ const DialogBox = (props) => {
                         </td>
                         <td>
                           <Typography>
-                            {props.stockNotify[props.dialogIndex].pe}
+                            {props.stockNotify[props.dialogIndex]?.pe}
                           </Typography>
                         </td>
                       </tr>
@@ -1472,7 +1479,7 @@ const DialogBox = (props) => {
                         color="primary"
                         onClick={() =>
                           fun_allData(
-                            props.stockNotify[props.dialogIndex].stock
+                            props.stockNotify[props.dialogIndex]?.stock
                           )
                         }
                       >
@@ -1636,7 +1643,7 @@ const DialogBox = (props) => {
                         color="primary"
                         onClick={() =>
                           fun_dailyData(
-                            props.stockNotify[props.dialogIndex].stock
+                            props.stockNotify[props.dialogIndex]?.stock
                           )
                         }
                       >
