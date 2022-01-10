@@ -52,6 +52,7 @@ if (
   window.location.host === "localhost:5000"
 ) {
   host = "http://localhost:3001";
+  host2 = "http://localhost:3001";
   testlink = true;
 }
 let url = "https://rockie-stockalertclient.herokuapp.com/";

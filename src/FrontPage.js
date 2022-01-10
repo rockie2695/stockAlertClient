@@ -1019,7 +1019,7 @@ const FrontPage = (props) => {
   };
   const findStockName = (stock = "00001", subEmail, index = 0) => {
     //since email object may not contain before login
-    fetch(host2 + "/find/stockName/" + stock, {
+    fetch(host2 + "/stockName/" + stock, {
       method: "get",
       headers: { "Content-Type": "application/json", email: subEmail },
     })
