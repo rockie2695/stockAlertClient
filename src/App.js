@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HttpsRedirect from "react-https-redirect";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { BrowserRouter as Router } from "react-router-dom";
 import { testlink } from "./common";
 import FrontPage from "./FrontPage";
@@ -24,7 +24,7 @@ const App = () => {
 
   const theme = React.useMemo(
     () =>
-      createMuiTheme({
+      createTheme({
         palette: {
           type: darkModeSetting ? "dark" : "light",
           primary: {

@@ -50,6 +50,7 @@ import {
   red_color,
   grey_color,
   host,
+  host2
 } from "./common";
 
 const DayAvgTips = (props) => {
@@ -435,13 +436,9 @@ const DialogBox = (props) => {
       setLoadingNews((prevState) => {
         return true;
       });
-      fetch(host + "/find/stockNews/", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: props.login.email,
-          stock: stock,
-        }),
+      fetch(host2 + "/find/stockNews/" + stock, {
+        method: "get",
+        headers: { "Content-Type": "application/json", email: props.login.email, },
         signal: signal,
       })
         .then((res) => res.json())
@@ -452,7 +449,7 @@ const DialogBox = (props) => {
                 "IntersectionObserver" in window &&
                 "IntersectionObserverEntry" in window &&
                 "intersectionRatio" in
-                  window.IntersectionObserverEntry.prototype
+                window.IntersectionObserverEntry.prototype
               ) {
                 if (observerArray.length > 0) {
                   for (let i = 0; i < observerArray.length; i++) {
@@ -474,17 +471,19 @@ const DialogBox = (props) => {
             ) {
               let observerSubArray = [];
               for (let i = 1; i < result.length; i++) {
+                console.log('test')
                 let observer = new IntersectionObserver((entries) => {
                   let y =
                     document.getElementsByClassName("MuiDialogContent-root")[0]
                       .scrollTop +
                     document.getElementsByClassName("newsHistory")[0]
                       .offsetHeight +
-                    150;
+                    300;
                   if (
                     document.getElementsByClassName("newsHistory")[i]
                       .offsetTop < y
                   ) {
+                    console.log('here')
                     //show and close observer
                     setNewsHistorySeen((prevState) => {
                       return prevState.map((row, index) => {
@@ -567,13 +566,9 @@ const DialogBox = (props) => {
       setLoadingDailyData((prevState) => {
         return true;
       });
-      fetch(host + "/find/stockDailyPrice/", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: props.login.email,
-          stock: stock,
-        }),
+      fetch(host2 + "/find/stockDailyPrice/" + stock, {
+        method: "get",
+        headers: { "Content-Type": "application/json", email: props.login.email },
         signal: signal,
       })
         .then((res) => res.json())
@@ -589,7 +584,7 @@ const DialogBox = (props) => {
                 low: dailyData[i][8],
                 shareVolume: fun_appendFix(
                   parseInt(dailyData[i][10] !== null ? dailyData[i][10] : 0) *
-                    1000
+                  1000
                 ),
               });
             }
@@ -625,13 +620,9 @@ const DialogBox = (props) => {
       setLoadingAllData((prevState) => {
         return true;
       });
-      fetch(host + "/select/allStockPrice/", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: props.login.email,
-          stock: stock,
-        }),
+      fetch(host2 + "/dialogService/allStockPrice/" + stock, {
+        method: "get",
+        headers: { "Content-Type": "application/json", email: props.login.email, },
         signal: signal,
       })
         .then((res) => res.json())
@@ -718,11 +709,11 @@ const DialogBox = (props) => {
           {props.dialogIndex > -1
             ? (typeof props.stockNotify[props.dialogIndex]?.stock !==
               "undefined"
-                ? props.stockNotify[props.dialogIndex]?.stock
-                : "") +
-              (typeof props.stockNotify[props.dialogIndex]?.name !== "undefined"
-                ? ` ( ${props.stockNotify[props.dialogIndex]?.name} )`
-                : "")
+              ? props.stockNotify[props.dialogIndex]?.stock
+              : "") +
+            (typeof props.stockNotify[props.dialogIndex]?.name !== "undefined"
+              ? ` ( ${props.stockNotify[props.dialogIndex]?.name} )`
+              : "")
             : null}
         </DialogTitle>
         <DialogContent dividers style={{ padding: "0px" }}>
@@ -1848,10 +1839,10 @@ const DialogBox = (props) => {
                               style={
                                 typeof row.photo !== "undefined"
                                   ? {
-                                      position: props.fullScreen
-                                        ? "block"
-                                        : "absolute",
-                                    }
+                                    position: props.fullScreen
+                                      ? "block"
+                                      : "absolute",
+                                  }
                                   : ""
                               }
                             >

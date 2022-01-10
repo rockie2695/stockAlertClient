@@ -45,6 +45,7 @@ const red_color = red[500];
 const grey_color = grey[500];
 
 let host = "https://rockie-stockAlertServer.herokuapp.com";
+let host2 = "https://stock-alert-server2.herokuapp.com";
 let testlink = false;
 if (
   window.location.host === "localhost:3000" ||
@@ -70,6 +71,7 @@ export {
   red_color,
   grey_color,
   host,
+  host2,
   testlink,
   url,
   clientId,
