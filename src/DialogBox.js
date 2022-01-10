@@ -436,7 +436,7 @@ const DialogBox = (props) => {
       setLoadingNews((prevState) => {
         return true;
       });
-      fetch(host2 + "/find/stockNews/" + stock, {
+      fetch(host2 + "/dialogService/stockNews/" + stock, {
         method: "get",
         headers: { "Content-Type": "application/json", email: props.login.email, },
         signal: signal,
@@ -566,7 +566,7 @@ const DialogBox = (props) => {
       setLoadingDailyData((prevState) => {
         return true;
       });
-      fetch(host2 + "/find/stockDailyPrice/" + stock, {
+      fetch(host2 + "/dialogService/stockDailyPrice/" + stock, {
         method: "get",
         headers: { "Content-Type": "application/json", email: props.login.email },
         signal: signal,

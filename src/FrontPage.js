@@ -482,7 +482,7 @@ const FrontPage = (props) => {
       });
       subscribeUser(email);
       //getstockNotify
-      fetch(host2 + "/select/stockNotify", {
+      fetch(host2 + "/stockNotify", {
         method: "get",
         headers: { "Content-Type": "application/json", email: email },
       })
@@ -571,7 +571,7 @@ const FrontPage = (props) => {
         return true;
       });
       //getstockNotify
-      fetch(host2 + "/select/stockNotify", {
+      fetch(host2 + "/stockNotify", {
         method: "get",
         headers: { "Content-Type": "application/json", email: email },
       })
@@ -752,7 +752,7 @@ const FrontPage = (props) => {
       }
     }
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
-      fetch(host2 + "/update/stockNotify", {
+      fetch(host2 + "/stockNotify", {
         method: "put",
         headers: { "Content-Type": "application/json", email: login.email, },
         body: JSON.stringify({
@@ -857,7 +857,7 @@ const FrontPage = (props) => {
   };
   const changeAlertSwitch = (rowIndex, _id, alert) => {
     if (edit === true && typeof stockNotify[rowIndex]._id !== "undefined") {
-      fetch(host2 + "/update/stockNotify/" + _id + "/alert", {
+      fetch(host2 + "/stockNotify/" + _id + "/alert", {
         method: "put",
         headers: { "Content-Type": "application/json", email: login.email, },
         body: JSON.stringify({
@@ -901,7 +901,7 @@ const FrontPage = (props) => {
       let id = stockNotify[index]._id;
       let stock = stockNotify[index].stock;
       let count = stockNotify.filter((row) => row.stock === stock).length;
-      fetch(host2 + "/delete/stockNotify/" + id, {
+      fetch(host2 + "/stockNotify/" + id, {
         method: "delete",
         headers: { "Content-Type": "application/json", email: login.email },
         body: JSON.stringify({
@@ -959,7 +959,7 @@ const FrontPage = (props) => {
     }
   };
   const findStockHistory = (stock, subEmail, k) => {
-    fetch(host2 + "/select/stockPrice/" + stock, {
+    fetch(host2 + "/stockPrice/" + stock, {
       method: "get",
       headers: { "Content-Type": "application/json", email: subEmail, },
     })
