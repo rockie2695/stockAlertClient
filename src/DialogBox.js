@@ -620,7 +620,7 @@ const DialogBox = (props) => {
       setLoadingAllData((prevState) => {
         return true;
       });
-      fetch(host2 + "/dialogService/allStockPrice/" + stock, {
+      fetch(host2 + "/stockPrice/all/" + stock, {
         method: "get",
         headers: { "Content-Type": "application/json", email: props.login.email, },
         signal: signal,
