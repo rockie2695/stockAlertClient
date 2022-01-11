@@ -911,9 +911,8 @@ const FrontPage = (props) => {
           stock: stock,
         }),
       })
-        .then((res) => res.json())
-        .then((result) => {
-          if (typeof result.ok !== "undefined") {
+        .then((res) => {
+          if (res.status === 204) {
             setDialogIndex(() => -1);
             setOpen(() => false);
             //delete stockNotify , stockHistory && leave room
@@ -946,8 +945,11 @@ const FrontPage = (props) => {
               });
             }
             history.push("/");
-          } else if (typeof result.error !== "undefined") {
-            alert(result.error);
+          } else {
+            let result = res.json()
+            if (typeof result.error !== "undefined") {
+              alert(result.error);
+            }
           }
         })
         .catch((err) => {
