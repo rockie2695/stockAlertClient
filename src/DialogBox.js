@@ -471,7 +471,6 @@ const DialogBox = (props) => {
             ) {
               let observerSubArray = [];
               for (let i = 1; i < result.length; i++) {
-                console.log('test')
                 let observer = new IntersectionObserver((entries) => {
                   let y =
                     document.getElementsByClassName("MuiDialogContent-root")[0]
@@ -483,7 +482,6 @@ const DialogBox = (props) => {
                     document.getElementsByClassName("newsHistory")[i]
                       .offsetTop < y
                   ) {
-                    console.log('here')
                     //show and close observer
                     setNewsHistorySeen((prevState) => {
                       return prevState.map((row, index) => {

@@ -461,7 +461,6 @@ const FrontPage = (props) => {
   };
 
   const fun_login = (response) => {
-    console.log(response)
     if (response.hasOwnProperty("tokenId")) {
       let email = response.profileObj.email;
       let newLoginObj = {
