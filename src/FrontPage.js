@@ -521,8 +521,8 @@ const FrontPage = (props) => {
                     return prevState;
                   }
                 });
-                findStockName(resultArray[i].stock, email, i);
-                findStockHistory(resultArray[i].stock, email, i);
+                findStockName(resultArray[i].stock, email, response.tokenId, i);
+                findStockHistory(resultArray[i].stock, email, response.tokenId, i);
               }
             }
             setTimeout(function () {
@@ -569,13 +569,14 @@ const FrontPage = (props) => {
         });
     } else if (login.email !== "" && testlink) {
       let email = login.email;
+      let tokenId = login.id;
       setLoading((prevState) => {
         return true;
       });
       //getstockNotify
       fetch(host2 + "/stockNotify", {
         method: "get",
-        headers: { "Content-Type": "application/json", email: email, Authorization: login.id },
+        headers: { "Content-Type": "application/json", email: email, Authorization: tokenId },
       })
         .then((res) => res.json())
         .then((result) => {
@@ -610,8 +611,8 @@ const FrontPage = (props) => {
                     return prevState;
                   }
                 });
-                findStockName(resultArray[i].stock, email, login.id, i);
-                findStockHistory(resultArray[i].stock, email, login.id, i);
+                findStockName(resultArray[i].stock, email, tokenId, i);
+                findStockHistory(resultArray[i].stock, email, tokenId, i);
               }
             }
             setTimeout(function () {
