@@ -485,7 +485,7 @@ const FrontPage = (props) => {
       //getstockNotify
       fetch(host2 + "/stockNotify", {
         method: "get",
-        headers: { "Content-Type": "application/json", email: email },
+        headers: { "Content-Type": "application/json", email: email, Authorization: response.tokenId },
       })
         .then((res) => res.json())
         .then((result) => {
@@ -574,7 +574,7 @@ const FrontPage = (props) => {
       //getstockNotify
       fetch(host2 + "/stockNotify", {
         method: "get",
-        headers: { "Content-Type": "application/json", email: email },
+        headers: { "Content-Type": "application/json", email: email, Authorization: login.id },
       })
         .then((res) => res.json())
         .then((result) => {
@@ -755,7 +755,7 @@ const FrontPage = (props) => {
     if (updateMessage.length !== 0 || insertMessage.length !== 0) {
       fetch(host2 + "/stockNotify", {
         method: "put",
-        headers: { "Content-Type": "application/json", email: login.email, },
+        headers: { "Content-Type": "application/json", email: login.email, Authorization: login.id },
         body: JSON.stringify({
           update: updateMessage,
           insert: insertMessage,
@@ -803,8 +803,8 @@ const FrontPage = (props) => {
                   return prevState;
                 }
               });
-              findStockName(resultArray[i].stock, login.email, i);
-              findStockHistory(resultArray[i].stock, login.email, i);
+              findStockName(resultArray[i].stock, login.email, login.id, i);
+              findStockHistory(resultArray[i].stock, login.email, login.id, i);
             }
           }
         })
@@ -860,7 +860,7 @@ const FrontPage = (props) => {
     if (edit === true && typeof stockNotify[rowIndex]._id !== "undefined") {
       fetch(host2 + "/stockNotify/" + _id + "/alert", {
         method: "put",
-        headers: { "Content-Type": "application/json", email: login.email, },
+        headers: { "Content-Type": "application/json", email: login.email, Authorization: login.id },
         body: JSON.stringify({
           alert: !alert,
         }),
@@ -904,7 +904,7 @@ const FrontPage = (props) => {
       let count = stockNotify.filter((row) => row.stock === stock).length;
       fetch(host2 + "/stockNotify/" + id, {
         method: "delete",
-        headers: { "Content-Type": "application/json", email: login.email },
+        headers: { "Content-Type": "application/json", email: login.email, Authorization: login.id },
         body: JSON.stringify({
           stock: stock,
         }),
@@ -959,10 +959,10 @@ const FrontPage = (props) => {
       });
     }
   };
-  const findStockHistory = (stock, subEmail, k) => {
+  const findStockHistory = (stock, subEmail, subId, k) => {
     fetch(host2 + "/stockPrice/" + stock, {
       method: "get",
-      headers: { "Content-Type": "application/json", email: subEmail, },
+      headers: { "Content-Type": "application/json", email: subEmail, Authorization: subId },
     })
       .then((res) => res.json())
       .then((result) => {
@@ -1018,11 +1018,11 @@ const FrontPage = (props) => {
         console.log(err);
       });
   };
-  const findStockName = (stock = "00001", subEmail, index = 0) => {
+  const findStockName = (stock = "00001", subEmail, subId, index = 0) => {
     //since email object may not contain before login
     fetch(host2 + "/stockName/" + stock, {
       method: "get",
-      headers: { "Content-Type": "application/json", email: subEmail },
+      headers: { "Content-Type": "application/json", email: subEmail, Authorization: subId },
     })
       .then((res) => res.json())
       .then((result) => {

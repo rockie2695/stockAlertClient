@@ -438,7 +438,7 @@ const DialogBox = (props) => {
       });
       fetch(host2 + "/dialogService/stockNews/" + stock, {
         method: "get",
-        headers: { "Content-Type": "application/json", email: props.login.email, },
+        headers: { "Content-Type": "application/json", email: props.login.email, Authorization: props.login.id },
         signal: signal,
       })
         .then((res) => res.json())
@@ -568,7 +568,7 @@ const DialogBox = (props) => {
       });
       fetch(host2 + "/dialogService/stockDailyPrice/" + stock, {
         method: "get",
-        headers: { "Content-Type": "application/json", email: props.login.email },
+        headers: { "Content-Type": "application/json", email: props.login.email, Authorization: props.login.id },
         signal: signal,
       })
         .then((res) => res.json())
@@ -622,7 +622,7 @@ const DialogBox = (props) => {
       });
       fetch(host2 + "/stockPrice/all/" + stock, {
         method: "get",
-        headers: { "Content-Type": "application/json", email: props.login.email, },
+        headers: { "Content-Type": "application/json", email: props.login.email, Authorization: props.login.id },
         signal: signal,
       })
         .then((res) => res.json())
