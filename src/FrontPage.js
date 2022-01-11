@@ -610,8 +610,8 @@ const FrontPage = (props) => {
                     return prevState;
                   }
                 });
-                findStockName(resultArray[i].stock, email, i);
-                findStockHistory(resultArray[i].stock, email, i);
+                findStockName(resultArray[i].stock, email, login.id, i);
+                findStockHistory(resultArray[i].stock, email, login.id, i);
               }
             }
             setTimeout(function () {
