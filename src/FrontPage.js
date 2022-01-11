@@ -299,6 +299,7 @@ const FrontPage = (props) => {
         findStockName(
           findStockNameArray[0].stock,
           loginRef.current.email,
+          loginRef.current.id,
           findStockNameArray[0].index
         );
       } else if (
