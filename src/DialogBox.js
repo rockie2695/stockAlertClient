@@ -50,7 +50,7 @@ import {
   red_color,
   grey_color,
   host,
-  host2
+  host2,
 } from "./common";
 
 const DayAvgTips = (props) => {
@@ -438,7 +438,11 @@ const DialogBox = (props) => {
       });
       fetch(host2 + "/dialogService/stockNews/" + stock, {
         method: "get",
-        headers: { "Content-Type": "application/json", email: props.login.email, Authorization: props.login.id },
+        headers: {
+          "Content-Type": "application/json",
+          email: props.login.email,
+          Authorization: props.login.id,
+        },
         signal: signal,
       })
         .then((res) => res.json())
@@ -449,7 +453,7 @@ const DialogBox = (props) => {
                 "IntersectionObserver" in window &&
                 "IntersectionObserverEntry" in window &&
                 "intersectionRatio" in
-                window.IntersectionObserverEntry.prototype
+                  window.IntersectionObserverEntry.prototype
               ) {
                 if (observerArray.length > 0) {
                   for (let i = 0; i < observerArray.length; i++) {
@@ -566,7 +570,11 @@ const DialogBox = (props) => {
       });
       fetch(host2 + "/dialogService/stockDailyPrice/" + stock, {
         method: "get",
-        headers: { "Content-Type": "application/json", email: props.login.email, Authorization: props.login.id },
+        headers: {
+          "Content-Type": "application/json",
+          email: props.login.email,
+          Authorization: props.login.id,
+        },
         signal: signal,
       })
         .then((res) => res.json())
@@ -582,7 +590,7 @@ const DialogBox = (props) => {
                 low: dailyData[i][8],
                 shareVolume: fun_appendFix(
                   parseInt(dailyData[i][10] !== null ? dailyData[i][10] : 0) *
-                  1000
+                    1000
                 ),
               });
             }
@@ -620,7 +628,11 @@ const DialogBox = (props) => {
       });
       fetch(host2 + "/stockPrice/all/" + stock, {
         method: "get",
-        headers: { "Content-Type": "application/json", email: props.login.email, Authorization: props.login.id },
+        headers: {
+          "Content-Type": "application/json",
+          email: props.login.email,
+          Authorization: props.login.id,
+        },
         signal: signal,
       })
         .then((res) => res.json())
@@ -707,11 +719,11 @@ const DialogBox = (props) => {
           {props.dialogIndex > -1
             ? (typeof props.stockNotify[props.dialogIndex]?.stock !==
               "undefined"
-              ? props.stockNotify[props.dialogIndex]?.stock
-              : "") +
-            (typeof props.stockNotify[props.dialogIndex]?.name !== "undefined"
-              ? ` ( ${props.stockNotify[props.dialogIndex]?.name} )`
-              : "")
+                ? props.stockNotify[props.dialogIndex]?.stock
+                : "") +
+              (typeof props.stockNotify[props.dialogIndex]?.name !== "undefined"
+                ? ` ( ${props.stockNotify[props.dialogIndex]?.name} )`
+                : "")
             : null}
         </DialogTitle>
         <DialogContent dividers style={{ padding: "0px" }}>
@@ -1827,7 +1839,7 @@ const DialogBox = (props) => {
                               component="img"
                               image={
                                 typeof row.photo !== "undefined"
-                                  ? "data:image/png;base64, " + row.photo
+                                  ? /*"data:image/png;base64, " +*/ row.photo
                                   : ""
                               }
                               title={row.title}
@@ -1837,10 +1849,10 @@ const DialogBox = (props) => {
                               style={
                                 typeof row.photo !== "undefined"
                                   ? {
-                                    position: props.fullScreen
-                                      ? "block"
-                                      : "absolute",
-                                  }
+                                      position: props.fullScreen
+                                        ? "block"
+                                        : "absolute",
+                                    }
                                   : ""
                               }
                             >
