@@ -146,7 +146,7 @@ const FrontPage = (props) => {
 
   const connectWebSocket = () => {
     //開啟
-    setWs(webSocket(host));
+    setWs(webSocket(host2));
   };
   const wsRef = useRef(ws);
   wsRef.current = ws;
@@ -1853,8 +1853,8 @@ const FrontPage = (props) => {
                       <div
                         style={{
                           display: "flex",
-                          "justify-content": "center",
-                          "align-items": "center",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
                         <div style={{ height: "48px", width: "48px" }}>
