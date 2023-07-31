@@ -42,6 +42,8 @@ import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 //import "./App.css";
 import "./App.sass";
 import classNames from "classnames";
@@ -56,7 +58,11 @@ import {
   host2,
   url,
 } from "./common";
-
+import png1 from "./assert/00036-2404381471.png";
+import png2 from "./assert/00038-2404381473.png";
+import png3 from "./assert/00060-1182021442.png";
+import png4 from "./assert/00064-3412707899.png";
+import png5 from "./assert/00079-503425334.png";
 /**
  * add ordering
  */
@@ -136,6 +142,7 @@ const FrontPage = (props) => {
       ? false
       : localStorage.getItem("denseModeSetting") === "true"
   );
+  const [qrcodeSlideNum, setQrcodeSlideNum] = useState(0);
 
   const connectWebSocket = () => {
     //開啟
@@ -1842,21 +1849,92 @@ const FrontPage = (props) => {
                         </Typography>
                       </Hidden>
                     </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      sm={12}
-                      md={4}
-                      style={{ textAlign: "center" }}
-                    >
-                      <QRCode
-                        value={url}
-                        imageSettings={{
-                          src: "../logo192.png",
-                          height: 30,
-                          width: 30,
+                    <Grid item xs={12} sm={12} md={4}>
+                      <div
+                        style={{
+                          display: "flex",
+                          "justify-content": "center",
+                          "align-items": "center",
                         }}
-                      />
+                      >
+                        <div style={{ height: "48px", width: "48px" }}>
+                          <IconButton
+                            color="primary"
+                            aria-label="previous qrcode"
+                            onClick={() =>
+                              qrcodeSlideNum === 0
+                                ? setQrcodeSlideNum(5)
+                                : setQrcodeSlideNum((prev) => prev - 1)
+                            }
+                          >
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        </div>
+
+                        <div
+                          style={{
+                            width: "128px",
+
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              transform:
+                                "translateX(-" + qrcodeSlideNum * 128 + "px)",
+                              transition: "0.5s transform",
+                            }}
+                          >
+                            <QRCode
+                              value={url}
+                              imageSettings={{
+                                src: "../logo192.png",
+                                height: 30,
+                                width: 30,
+                              }}
+                            />
+                            <img
+                              src={png1}
+                              style={{ width: "128px" }}
+                              alt="qrcode"
+                            />
+                            <img
+                              src={png2}
+                              style={{ width: "128px" }}
+                              alt="qrcode"
+                            />
+                            <img
+                              src={png3}
+                              style={{ width: "128px" }}
+                              alt="qrcode"
+                            />
+                            <img
+                              src={png4}
+                              style={{ width: "128px" }}
+                              alt="qrcode"
+                            />
+                            <img
+                              src={png5}
+                              style={{ width: "128px" }}
+                              alt="qrcode"
+                            />
+                          </div>
+                        </div>
+                        <div style={{ height: "48px", width: "48px" }}>
+                          <IconButton
+                            color="primary"
+                            aria-label="previous qrcode"
+                            onClick={() =>
+                              qrcodeSlideNum > 4
+                                ? setQrcodeSlideNum(0)
+                                : setQrcodeSlideNum((prev) => prev + 1)
+                            }
+                          >
+                            <ArrowForwardIosIcon />
+                          </IconButton>
+                        </div>
+                      </div>
                       {/*window.location.href*/}
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
